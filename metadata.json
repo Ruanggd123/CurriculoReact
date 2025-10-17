@@ -1,0 +1,5 @@
+{
+  "name": "AI Resume Builder",
+  "description": "An intelligent resume builder that allows users to input their professional information on the left and see a live, beautifully formatted preview on the right. Features multiple templates, color schemes, photo integration, and PDF export with clickable links.",
+  "requestFramePermissions": []
+}
