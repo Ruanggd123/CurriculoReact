@@ -1,0 +1,15 @@
+{
+  "name": "pdf-generator-function",
+  "version": "1.0.0",
+  "description": "Generates PDF from HTML using Puppeteer",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=gerarPDF",
+    "gcp-build": "npx puppeteer browsers install chrome"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/storage": "^6.9.0",
+    "puppeteer": "^22.13.0"
+  }
+}
