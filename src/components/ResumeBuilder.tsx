@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useToast } from './Toast';
+import { useToast } from '../../components/Toast';
 import { ResumePreview } from './ResumePreview';
 import { LeftSidebar } from './LeftSidebar';
 import { FormPanel } from './FormPanel';
 import { OnboardingTour } from './OnboardingTour';
 import { useHistoryState } from '../hooks/useHistoryState';
-import { DownloadIcon, UndoIcon, RedoIcon, CheckIcon, CreditCardIcon, PixIcon } from './icons';
+import { DownloadIcon, UndoIcon, RedoIcon, CheckIcon, CreditCardIcon, PixIcon, PencilIcon, SwatchIcon, DocumentTextIcon } from './icons';
 import type { Resume, ResumeData, UiConfig, View } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-// FIX: Replaced non-existent 'registerDownload' with 'consumeUsage'.
 import { createPayment, getConfig, consumeUsage, checkPremiumStatus } from '../services/api';
 import { gerarPDFDemo, gerarPDFPremium } from '../utils/pdfGenerator';
 
@@ -28,8 +27,21 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [forceWatermark, setForceWatermark] = useState<boolean | null>(null);
   
+  // Mobile specific state
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileView, setMobileView] = useState<'edit' | 'design' | 'preview'>('edit');
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  
   // Payment States
-  const [hasPaidSession, setHasPaidSession] = useState(false);
+  const [hasPaidSession, setHasPaidSession] = useState(() => {
+    try {
+        // Initialize state from session storage to persist across reloads
+        return sessionStorage.getItem(`hasPaidSession_${initialResume.id}`) === 'true';
+    } catch (e) {
+        console.warn('Session storage is not available.');
+        return false;
+    }
+  });
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [payerEmail, setPayerEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'card'>('pix');
@@ -41,6 +53,49 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
       titulo: "Download Premium", 
       descricao: "Sem marca d'água" 
   });
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleFocusIn = (event: FocusEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        setIsKeyboardVisible(true);
+      }
+    };
+    const handleFocusOut = (event: FocusEvent) => {
+        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+            setIsKeyboardVisible(false);
+        }
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+
+    return () => {
+        document.removeEventListener('focusin', handleFocusIn);
+        document.removeEventListener('focusout', handleFocusOut);
+    };
+  }, [isMobile]);
+  
+  // Persist paid session status to sessionStorage
+  useEffect(() => {
+    try {
+        if (hasPaidSession) {
+            sessionStorage.setItem(`hasPaidSession_${initialResume.id}`, 'true');
+        } else {
+            sessionStorage.removeItem(`hasPaidSession_${initialResume.id}`);
+        }
+    } catch (e) {
+        console.warn('Session storage is not available.');
+    }
+  }, [hasPaidSession, initialResume.id]);
 
   // Save effect
   useEffect(() => {
@@ -59,20 +114,13 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
       const emailParam = params.get('email');
 
       if (status) {
-          // Limpa a URL para evitar reprocessamento ao recarregar
           window.history.replaceState({}, document.title, window.location.pathname);
-
           if (status === 'success' && emailParam) {
-              // Liberação otimista para melhor UX
               setHasPaidSession(true);
               setPayerEmail(emailParam);
               setForceWatermark(false);
               addToast('Pagamento confirmado! Acesso liberado.', 'success');
-
-              // Verifica status no backend para garantir e atualizar estado global se necessário
-              checkPremiumStatus(emailParam).catch(() => {
-                  console.warn('Verificação de status em segundo plano.');
-              });
+              checkPremiumStatus(emailParam).catch(() => console.warn('Verificação de status em segundo plano.'));
           } else if (status === 'failure') {
               addToast('O pagamento não foi aprovado. Tente novamente.', 'error');
           } else if (status === 'pending') {
@@ -88,57 +136,39 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
   };
 
   const handleDownloadClick = async () => {
-      // 1. Verifica permissões locais (Logado Pro ou Sessão Paga Ativa)
       if (user?.subscriptionStatus === 'pro' || hasPaidSession) {
           setForceWatermark(false);
-          setTimeout(() => {
-              handleDownloadPdf(true);
-          }, 200);
+          setTimeout(() => handleDownloadPdf(true), 200);
           return;
       }
 
       const emailToCheck = user?.email || resumeData.personal.email;
-
-      // 2. Verifica status no backend (Evita pagamento duplo se o usuário já pagou mas a sessão caiu)
       if (emailToCheck && emailToCheck.includes('@')) {
           addToast("Verificando status...", "info");
           try {
               const isPremium = await checkPremiumStatus(emailToCheck);
-              
               if (isPremium) {
                   addToast("Assinatura ativa encontrada! Liberando download...", "success");
                   setHasPaidSession(true);
                   setPayerEmail(emailToCheck);
                   setForceWatermark(false);
-                  setTimeout(() => {
-                      handleDownloadPdf(true);
-                  }, 200);
+                  setTimeout(() => handleDownloadPdf(true), 200);
                   return;
               }
           } catch (error) {
               console.error("Erro ao verificar status:", error);
           }
       }
-
-      // 3. Se não tiver crédito, abre modal de pagamento
-      setPayerEmail(emailToCheck || '');
+      setPayerEmail(''); // Limpa o e-mail ao abrir o modal
       setShowPaymentModal(true);
   };
 
   const handleFreeDownload = () => {
-      // Fechar modal e ativar marca d'água visualmente
       setShowPaymentModal(false);
       setForceWatermark(true);
-      
-      // Feedback imediato
       addToast("Preparando layout...", "info");
       setIsGeneratingPdf(true);
-
-      // Timeout maior para garantir que o React redesenhou a tela com a marca d'água
-      // e que o browser renderizou os novos estilos antes da captura
-      setTimeout(() => {
-          handleDownloadPdf(false); 
-      }, 1500); 
+      setTimeout(() => handleDownloadPdf(false), 1500); 
   }
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -149,9 +179,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
       }
       setIsProcessing(true);
       try {
-          // Chama o backend para criar o pagamento e obter a URL de checkout
           const response = await createPayment(payerEmail, paymentMethod);
-          
           if (response && response.checkoutUrl) {
               addToast(`Redirecionando para pagamento via ${paymentMethod === 'pix' ? 'Pix' : 'Cartão'}...`, "success");
               window.location.href = response.checkoutUrl;
@@ -171,97 +199,59 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
 
   const handleDownloadPdf = async (isPremium: boolean) => {
     setIsGeneratingPdf(true);
-    
     try {
         addToast("Enviando para o servidor de PDF...", "info");
-        
-        // CAPTURA HTML DO PREVIEW
         const previewElement = document.getElementById('resume-preview-container');
-        if (!previewElement) {
-            throw new Error("Erro interno: Preview não encontrado.");
-        }
-
-        // CLONAR E LIMPAR O HTML
-        // Isso remove as linhas pontilhadas e indicadores de página que forçam páginas extras
-        const clone = previewElement.cloneNode(true) as HTMLElement;
+        if (!previewElement) throw new Error("Erro interno: Preview não encontrado.");
         
-        // Remove elementos marcados como 'no-print-export' (linhas de quebra, botões, etiquetas de página)
+        const clone = previewElement.cloneNode(true) as HTMLElement;
         const nonPrintables = clone.querySelectorAll('.no-print-export');
         nonPrintables.forEach(el => el.remove());
-
-        // Remove elementos absolutos de paginação se existirem (garantia extra caso a classe falhe)
         const pageIndicators = clone.querySelectorAll('div[style*="top:"][style*="297mm"]');
         pageIndicators.forEach(el => el.remove());
 
         const capturedHtml = clone.outerHTML;
         const emailToVerify = user?.email || payerEmail || resumeData.personal.email;
-        const dataForPdf: ResumeData = {
-            ...resumeData,
-            personal: { ...resumeData.personal, email: emailToVerify }
-        };
+        const dataForPdf: ResumeData = { ...resumeData, personal: { ...resumeData.personal, email: emailToVerify } };
 
-        let result;
-        if (isPremium) {
-            result = await gerarPDFPremium(dataForPdf, uiConfig, capturedHtml);
-            if (result.premium === false) { 
-                addToast(result.erro || "Acesso Premium necessário.", "error");
-                setShowPaymentModal(true); 
-                setIsGeneratingPdf(false);
-                return;
-            }
-        } else {
-            result = await gerarPDFDemo(dataForPdf, uiConfig, capturedHtml);
+        const result = isPremium ? await gerarPDFPremium(dataForPdf, uiConfig, capturedHtml) : await gerarPDFDemo(dataForPdf, uiConfig, capturedHtml);
+
+        if (isPremium && result.premium === false) {
+            addToast(result.erro || "Acesso Premium necessário.", "error");
+            setShowPaymentModal(true); 
+            setIsGeneratingPdf(false);
+            return;
         }
 
         if (result.sucesso) {
             const cleanName = resumeData.personal.name.replace(/[^a-zA-Z0-9]/g, '_') || 'curriculo';
             const filename = `curriculo_${cleanName}.pdf`;
 
-            // Download Direto via Blob (Base64)
             if (result.pdfBase64) {
                 const binStr = atob(result.pdfBase64);
                 const len = binStr.length;
                 const arr = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    arr[i] = binStr.charCodeAt(i);
-                }
+                for (let i = 0; i < len; i++) arr[i] = binStr.charCodeAt(i);
                 const blob = new Blob([arr], { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
-                
-                // Cria link invisível e clica
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename;
                 document.body.appendChild(link);
                 link.click();
-                
-                // Limpeza
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                }, 200);
-                
-                addToast("Download iniciado!", "success");
-            } 
-            // Fallback para URL (Premium com Storage)
-            else if (result.pdfUrl) {
+                setTimeout(() => { document.body.removeChild(link); window.URL.revokeObjectURL(url); }, 200);
+            } else if (result.pdfUrl) {
                  const link = document.createElement('a');
                  link.href = result.pdfUrl;
                  link.download = filename;
-                 // IMPORTANTE: NÃO definir target="_blank" para evitar bloqueadores de popup
-                 // O backend já envia headers 'Content-Disposition: attachment' para garantir download direto
                  document.body.appendChild(link);
                  link.click();
                  document.body.removeChild(link);
-                 
-                 addToast("Download iniciado!", "success");
             }
+            addToast("Download iniciado!", "success");
 
             if (isPremium) {
-                // FIX: Replaced `registerDownload` with `consumeUsage` and removed extra argument.
                 await consumeUsage(emailToVerify);
-
-                // ✅ LÓGICA DE CONSUMO DE CRÉDITO ÚNICO
                 if (user?.subscriptionStatus !== 'pro') {
                     setHasPaidSession(false);
                     setForceWatermark(null);
@@ -269,15 +259,9 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                 }
             }
         } else {
-            // Tratamento para Cold Start e Erros
             const msg = result.erro || "Falha ao gerar PDF.";
-            if (msg.includes('acordando')) {
-                 addToast("Servidor iniciando... Tente novamente em 10s.", "info");
-            } else {
-                 addToast(msg, "error");
-            }
+            addToast(msg.includes('acordando') ? "Servidor iniciando... Tente novamente em 10s." : msg, "error");
         }
-        
     } catch (error: any) {
         console.error("Erro UI:", error);
         addToast("Erro de conexão. Tente novamente.", "error");
@@ -290,72 +274,80 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
         ? forceWatermark 
         : (user?.subscriptionStatus !== 'pro' && !hasPaidSession);
   
-  return (
-      <div className="flex h-screen bg-gray-900 text-white overflow-hidden relative">
-        <LeftSidebar 
-            activeSection={activeSection} 
-            setActiveSection={setActiveSection} 
-            resumeData={resumeData} 
-            setResumeData={setResumeData} 
-            scrollToSection={scrollToSection} 
-        />
-        
-        {activeSection && (
-             <div className="absolute left-20 md:left-24 top-0 bottom-0 w-full md:w-[450px] z-20 md:static md:z-0 transition-all duration-300 shadow-2xl">
-                 <FormPanel 
-                    activeSection={activeSection} 
-                    resumeData={resumeData} 
-                    setResumeData={setResumeData} 
-                    uiConfig={uiConfig} 
-                    setUiConfig={setUiConfig} 
-                    onClose={() => setActiveSection(null)} 
-                 />
-             </div>
-        )}
+  const handleMobileNav = (view: 'edit' | 'design' | 'preview') => {
+    if (view === 'edit') {
+        setActiveSection(null); // Go to section list, not a specific one
+    } else if (view === 'design') {
+        setActiveSection('appearance'); // Open design panel directly
+    }
+    setMobileView(view);
+  };
 
-        <div className="flex-1 flex flex-col relative bg-gray-800/50 overflow-hidden">
-             <div className="h-16 border-b border-gray-700 flex items-center justify-between px-4 md:px-6 bg-gray-900/80 backdrop-blur-sm z-10">
-                 <div className="flex items-center gap-4">
-                     <button onClick={() => setCurrentView('meus-curriculos')} className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                         </svg>
-                         <span className="hidden sm:inline">Voltar</span>
-                     </button>
-                     <div className="h-6 w-px bg-gray-700 hidden sm:block"></div>
-                     <span className="font-medium truncate max-w-[150px] sm:max-w-[300px] text-sm sm:text-base">{resumeData.personal.name || 'Meu Currículo'}</span>
-                 </div>
-                 
-                 <div className="flex items-center gap-2 sm:gap-3">
-                     <button onClick={() => undo()} disabled={!canUndo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><UndoIcon className="w-5 h-5" /></button>
-                     <button onClick={() => redo()} disabled={!canRedo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><RedoIcon className="w-5 h-5" /></button>
-                     
-                     <button 
-                        onClick={handleDownloadClick} 
-                        disabled={isGeneratingPdf}
-                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-50 transition-all shadow-lg shadow-blue-900/20 font-bold text-sm sm:text-base disabled:opacity-70 disabled:cursor-wait"
-                     >
-                        {isGeneratingPdf ? <span className="animate-pulse">Processando...</span> : <> <DownloadIcon className="w-5 h-5" /> <span className="hidden sm:inline">Baixar PDF</span> </>}
-                     </button>
-                 </div>
-             </div>
+  const MobileBottomNav = () => (
+    <div className={`md:hidden fixed bottom-0 left-0 right-0 h-20 bg-gray-900 border-t border-gray-700/50 flex justify-around items-center z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] transition-transform duration-300 ${isKeyboardVisible ? 'translate-y-full' : 'translate-y-0'}`} data-tour="mobile-bottom-nav">
+        {[
+            { view: 'edit', label: 'Editar', icon: <PencilIcon className="w-6 h-6 mb-1"/> },
+            { view: 'design', label: 'Design', icon: <SwatchIcon className="w-6 h-6 mb-1"/> },
+            { view: 'preview', label: 'Visualizar', icon: <DocumentTextIcon className="w-6 h-6 mb-1"/> }
+        ].map(item => {
+            const isActive = mobileView === item.view;
+            return (
+                <button key={item.view} onClick={() => handleMobileNav(item.view as any)} className={`flex flex-col items-center justify-center transition-colors duration-200 p-2 rounded-lg ${isActive ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}>
+                    {item.icon}
+                    <span className="text-xs font-bold tracking-wide">{item.label}</span>
+                </button>
+            )
+        })}
+    </div>
+  );
+  
+  // RENDER LOGIC
+  if (isMobile) {
+      const isEditingSection = mobileView === 'edit' && activeSection;
+      const isEditingAppearance = mobileView === 'design';
 
-             <div className="flex-1 overflow-auto p-4 md:p-8 flex justify-center bg-[#0f172a] relative custom-scrollbar">
-                <div className="my-auto">
-                    <ResumePreview
-                        resumeData={resumeData}
-                        uiConfig={uiConfig}
-                        showWatermark={shouldShowWatermark}
-                        isPrinting={false}
+      return (
+        <div className="flex flex-col h-full bg-transparent text-white overflow-hidden">
+             <div className="h-16 border-b border-gray-700 flex items-center justify-between px-4 bg-gray-900/80 backdrop-blur-sm z-10 flex-shrink-0">
+                 <button onClick={() => setCurrentView('meus-curriculos')} className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                     <span>Voltar</span>
+                 </button>
+                 <button onClick={handleDownloadClick} disabled={isGeneratingPdf} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm disabled:opacity-70">
+                    {isGeneratingPdf ? 'Gerando...' : 'Baixar PDF'}
+                 </button>
+             </div>
+             <main className="flex-1 overflow-y-auto pb-24 bg-[#0f172a]">
+                {(isEditingSection || isEditingAppearance) ? (
+                    <FormPanel 
+                        activeSection={activeSection || 'appearance'} 
+                        resumeData={resumeData} setResumeData={setResumeData} 
+                        uiConfig={uiConfig} setUiConfig={setUiConfig} 
+                        onClose={() => handleMobileNav('edit')} 
+                        isMobile={true} 
                     />
-                </div>
-             </div>
-        </div>
-        
-        <OnboardingTour />
-        
-        {showPaymentModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                ) : mobileView === 'edit' ? (
+                     <LeftSidebar 
+                        activeSection={activeSection} 
+                        setActiveSection={setActiveSection} 
+                        resumeData={resumeData} 
+                        setResumeData={setResumeData} 
+                        scrollToSection={() => {}} 
+                        isMobile={true}
+                    />
+                ) : (
+                    <div className="p-4 flex justify-center bg-gray-900/50 min-h-full">
+                        <div className="my-auto scale-[0.45] sm:scale-[0.6] origin-top transform-gpu">
+                            <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} />
+                        </div>
+                    </div>
+                )}
+             </main>
+             <MobileBottomNav />
+             <OnboardingTour />
+             {showPaymentModal && ( 
+                 
+             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                 <div className="bg-[#1e293b] rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-700 relative">
                     <button onClick={() => setShowPaymentModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
                     
@@ -372,52 +364,108 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                             </ul>
                             
                             <form onSubmit={handlePaymentSubmit} className="space-y-3">
-                                
                                 <div className="space-y-2 mb-4">
                                     <p className="text-sm text-white font-medium text-left">Escolha a forma de pagamento:</p>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <button 
-                                            type="button"
-                                            onClick={() => setPaymentMethod('pix')}
-                                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}
-                                        >
+                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
                                             <PixIcon className={`w-5 h-5 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
                                         </button>
-                                        <button 
-                                            type="button"
-                                            onClick={() => setPaymentMethod('card')}
-                                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}
-                                        >
+                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
                                             <CreditCardIcon className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
                                         </button>
                                     </div>
                                 </div>
-
-                                <input 
-                                    type="email" 
-                                    required 
-                                    value={payerEmail} 
-                                    onChange={e => setPayerEmail(e.target.value)} 
-                                    className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none" 
-                                    placeholder="Seu melhor e-mail" 
-                                />
-                                <button 
-                                    type="submit" 
-                                    disabled={isProcessing}
-                                    className="w-full py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 transition-colors shadow-lg disabled:opacity-70 disabled:cursor-wait mt-2"
-                                >
+                                <input type="email" required value={payerEmail} onChange={e => setPayerEmail(e.target.value)} className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none" placeholder="Seu melhor e-mail" />
+                                <button type="submit" disabled={isProcessing} className="w-full py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 transition-colors shadow-lg disabled:opacity-70 disabled:cursor-wait mt-2">
                                     {isProcessing ? 'Gerando Link...' : (paymentMethod === 'pix' ? 'Gerar Pix' : 'Pagar com Cartão')}
                                 </button>
                             </form>
                         </div>
-                        
                         <button onClick={handleFreeDownload} className="text-gray-400 hover:text-white text-sm underline mt-4 decoration-gray-600 hover:decoration-white">
                             📥 Baixar PDF Gratuito (com marca d'água)
                         </button>
                     </div>
                 </div>
             </div>
+            )}
+        </div>
+      );
+  }
+
+  // Desktop View
+  return (
+      <div className="hidden md:flex h-full bg-transparent text-white overflow-hidden relative">
+        <LeftSidebar activeSection={activeSection} setActiveSection={setActiveSection} resumeData={resumeData} setResumeData={setResumeData} scrollToSection={scrollToSection} />
+        {activeSection && (
+             <div className="w-[450px] z-20 shadow-2xl">
+                 <FormPanel activeSection={activeSection} resumeData={resumeData} setResumeData={setResumeData} uiConfig={uiConfig} setUiConfig={setUiConfig} onClose={() => setActiveSection(null)} />
+             </div>
         )}
+        <div className="flex-1 flex flex-col relative bg-transparent overflow-hidden">
+             <div className="h-16 border-b border-gray-700 flex items-center justify-between px-6 bg-gray-900/80 backdrop-blur-sm z-10">
+                 <div className="flex items-center gap-4">
+                     <button onClick={() => setCurrentView('meus-curriculos')} className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                         <span className="hidden sm:inline">Voltar</span>
+                     </button>
+                     <div className="h-6 w-px bg-gray-700"></div>
+                     <span className="font-medium truncate max-w-[300px]">{resumeData.personal.name || 'Meu Currículo'}</span>
+                 </div>
+                 <div className="flex items-center gap-3">
+                     <button onClick={() => undo()} disabled={!canUndo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><UndoIcon className="w-5 h-5" /></button>
+                     <button onClick={() => redo()} disabled={!canRedo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><RedoIcon className="w-5 h-5" /></button>
+                     <button onClick={handleDownloadClick} disabled={isGeneratingPdf} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-900/20 font-bold disabled:opacity-70 transform hover:-translate-y-px">
+                        {isGeneratingPdf ? <span className="animate-pulse">Processando...</span> : <> <DownloadIcon className="w-5 h-5" /> <span>Baixar PDF</span> </>}
+                     </button>
+                 </div>
+             </div>
+             <div className="flex-1 overflow-auto p-8 flex justify-center bg-[#0f172a] relative custom-scrollbar">
+                <div className="my-auto">
+                    <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} />
+                </div>
+             </div>
+        </div>
+        <OnboardingTour />
+        {showPaymentModal && ( <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                <div className="bg-[#1e293b] rounded-2xl shadow-2xl max-w-md w-full p-8 border border-gray-700 relative">
+                    <button onClick={() => setShowPaymentModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+                    
+                    <div className="text-center space-y-6">
+                         <div className="mx-auto w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mb-2"><DownloadIcon className="w-8 h-8 text-blue-400" /></div>
+                        <div><h3 className="text-2xl font-bold text-white">{paymentConfig.titulo}</h3><p className="text-gray-400 mt-2 text-sm">Geração via Nuvem com formatação perfeita.</p></div>
+                        
+                        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 shadow-xl border border-blue-400/30">
+                            <div className="text-3xl font-black text-white">R$ {paymentConfig.preco.toFixed(2).replace('.', ',')}</div>
+                            <div className="text-blue-100 text-sm mb-4">Pagamento único</div>
+                            <ul className="text-left text-sm text-white space-y-2 mb-6 bg-white/10 p-4 rounded-lg">
+                                <li className="flex items-center gap-2"><CheckIcon className="w-4 h-4 text-green-300"/> <span>{paymentConfig.descricao}</span></li>
+                                <li className="flex items-center gap-2"><CheckIcon className="w-4 h-4 text-green-300"/> <span>Layout 100% Otimizado</span></li>
+                            </ul>
+                            
+                            <form onSubmit={handlePaymentSubmit} className="space-y-3">
+                                <div className="space-y-2 mb-4">
+                                    <p className="text-sm text-white font-medium text-left">Escolha a forma de pagamento:</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <PixIcon className={`w-5 h-5 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
+                                        </button>
+                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <CreditCardIcon className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="email" required value={payerEmail} onChange={e => setPayerEmail(e.target.value)} className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-blue-200 focus:ring-2 focus:ring-white focus:outline-none" placeholder="Seu melhor e-mail" />
+                                <button type="submit" disabled={isProcessing} className="w-full py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 transition-colors shadow-lg disabled:opacity-70 disabled:cursor-wait mt-2">
+                                    {isProcessing ? 'Gerando Link...' : (paymentMethod === 'pix' ? 'Gerar Pix' : 'Pagar com Cartão')}
+                                </button>
+                            </form>
+                        </div>
+                        <button onClick={handleFreeDownload} className="text-gray-400 hover:text-white text-sm underline mt-4 decoration-gray-600 hover:decoration-white">
+                            📥 Baixar PDF Gratuito (com marca d'água)
+                        </button>
+                    </div>
+                </div>
+            </div>)}
       </div>
   );
 };

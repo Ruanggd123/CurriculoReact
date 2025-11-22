@@ -1,4 +1,3 @@
-
 import { ResumeData, UiConfig } from './types';
 import { generateId } from './utils';
 

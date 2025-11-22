@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 import type { View, Resume, ResumeData, UiConfig, TemplateOption } from './types';
 import { ToastProvider, useToast } from './components/Toast';
@@ -180,7 +181,7 @@ const AppContent: React.FC = () => {
          return (
              <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300">
                  <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent dark:from-blue-500/20"></div>
+                    <div className="absolute inset-0 gradient-overlay-tr"></div>
                 </div>
                 <Header setCurrentView={setCurrentView} currentView={currentView}/>
                 <main className="flex-1 flex items-center justify-center overflow-auto">
@@ -196,8 +197,8 @@ const AppContent: React.FC = () => {
              
              <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full`}>
                 <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent dark:from-blue-500/20"></div>
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-400/10 via-transparent to-transparent dark:from-indigo-500/20"></div>
+                    <div className="absolute inset-0 gradient-overlay-tr"></div>
+                    <div className="absolute inset-0 gradient-overlay-bl"></div>
                 </div>
                 {renderPage()}
                 {!isBuilder && <Footer setCurrentView={setCurrentView} />}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { ResumeData, UiConfig, ResumeSection, TemplateOption } from '../types';
 import { 
@@ -383,10 +382,10 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     };
 
     const renderStandardLayout = () => (
-        <div className={`px-10 py-16 ${config.fontFamily} ${patternClass} flex-1`} style={{ backgroundColor: activeBgColor }}>
+        <div className={`px-10 py-16 ${config.fontFamily} ${patternClass} flex-1`}>
             {renderHeader()}
             {effectiveMainSections.map(s => (
-                <section key={s.id} className={config.sectionGap}>
+                <section key={s.id} className={`${config.sectionGap} resume-section`}>
                     {renderSectionTitle(s.title, s.type)}
                     {s.type === 'skills' ? (
                         <div className="flex flex-wrap gap-2">
@@ -400,7 +399,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 </section>
             ))}
             {effectiveSideSections.map(s => (
-                <section key={s.id} className={config.sectionGap}>
+                <section key={s.id} className={`${config.sectionGap} resume-section`}>
                      {renderSectionTitle(s.title, s.type)}
                      {renderItems(s)}
                 </section>
@@ -426,7 +425,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         </div>
                     )}
                     {effectiveMainSections.map(s => (
-                        <section key={s.id} className="mb-8">
+                        <section key={s.id} className="mb-8 resume-section">
                             {renderSectionTitle(s.title, s.type)}
                             {renderItems(s)}
                         </section>
@@ -455,7 +454,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                          {personal.website && <ContactItem icon={<WebsiteIcon {...contactIconProps} />} text="Portfólio" link={personal.website} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
                     </div>
                     {effectiveSideSections.map(s => (
-                        <section key={s.id} className="mb-8">
+                        <section key={s.id} className="mb-8 resume-section">
                              {renderSectionTitle(s.title, s.type, true)}
                              {s.type === 'skills' ? (
                                  <div className="flex flex-wrap gap-2">
@@ -472,16 +471,20 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
             </div>
         );
     };
-
+    
     // Flag para identificar layouts de sidebar para estilização específica no PDF
     const isSidebarLayout = config.layout.includes('sidebar');
 
     const containerClasses = [
-        isPrinting
+        isPrinting 
             ? `w-[210mm] min-h-[297mm] mx-auto relative overflow-visible ${config.bgClass} break-words whitespace-pre-wrap flex flex-col`
-            : `w-[210mm] min-h-[594mm] relative print:shadow-none ${config.bgClass} break-words whitespace-pre-wrap shadow-2xl shadow-black/50 box-border flex flex-col`, // FIX: Altura aumentada para 2 páginas para consistência.
+            : `w-[210mm] min-h-[594mm] relative print:shadow-none ${config.bgClass} break-words whitespace-pre-wrap shadow-2xl shadow-black/50 box-border flex flex-col`,
         isSidebarLayout ? 'is-sidebar-layout' : ''
     ].join(' ');
+
+    const watermarkBaseClasses = "border-[8px] rounded-[30px] px-16 py-10";
+    const watermarkTextColor = isDarkBg ? 'text-white/10' : 'text-black/10';
+    const watermarkBorderColor = isDarkBg ? 'border-white/10' : 'border-black/10';
 
     return (
         <div 
@@ -502,16 +505,16 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
             {isSidebarLayout ? renderSidebarLayout(config.layout === 'sidebar-left' ? 'left' : 'right') : renderStandardLayout()}
             
             {showWatermark && (
-                <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center overflow-hidden no-print-export select-none">
-                    <div className="transform -rotate-45 border-[8px] border-black/10 rounded-[30px] px-16 py-10 flex flex-col items-center justify-center bg-transparent backdrop-blur-[1px]">
-                         <div className="text-6xl md:text-[80px] font-black text-black/10 uppercase tracking-[0.2em] whitespace-nowrap leading-none">
-                             VERSÃO GRATUITA
-                         </div>
-                         <div className="text-xl md:text-2xl font-bold text-black/10 uppercase tracking-widest mt-4">
-                             CRIADO COM CURRICULUM PRO
-                         </div>
-                    </div>
-                </div>
+                 <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center overflow-hidden no-print-export select-none">
+                     <div className={`transform -rotate-45 flex flex-col items-center justify-center bg-transparent backdrop-blur-[1px] ${watermarkBaseClasses} ${watermarkBorderColor}`}>
+                          <div className={`text-6xl md:text-[80px] font-black uppercase tracking-[0.2em] whitespace-nowrap leading-none ${watermarkTextColor}`}>
+                              VERSÃO GRATUITA
+                          </div>
+                          <div className={`text-xl md:text-2xl font-bold uppercase tracking-widest mt-4 ${watermarkTextColor}`}>
+                              CRIADO COM CURRICULUM PRO
+                          </div>
+                     </div>
+                 </div>
             )}
         </div>
     );

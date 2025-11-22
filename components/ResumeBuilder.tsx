@@ -159,7 +159,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
               console.error("Erro ao verificar status:", error);
           }
       }
-      setPayerEmail(emailToCheck || '');
+      setPayerEmail(''); // Limpa o e-mail ao abrir o modal
       setShowPaymentModal(true);
   };
 
@@ -352,8 +352,8 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                     <button onClick={() => setShowPaymentModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
                     
                     <div className="text-center space-y-6">
-                         <div className="mx-auto w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mb-2"><DownloadIcon className="w-8 h-8 text-blue-400" /></div>
-                        <div><h3 className="text-2xl font-bold text-white">{paymentConfig.titulo}</h3><p className="text-gray-400 mt-2 text-sm">Geração via Nuvem com formatação perfeita.</p></div>
+                         <div className="mx-auto w-24 h-24 bg-blue-900/30 rounded-full flex items-center justify-center mb-2"><DownloadIcon className="w-12 h-12 text-blue-400" /></div>
+                        <div><h3 className="text-3xl font-bold text-white">{paymentConfig.titulo}</h3><p className="text-gray-400 mt-2 text-base">Geração via Nuvem com formatação perfeita.</p></div>
                         
                         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 shadow-xl border border-blue-400/30">
                             <div className="text-3xl font-black text-white">R$ {paymentConfig.preco.toFixed(2).replace('.', ',')}</div>
@@ -367,11 +367,11 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 <div className="space-y-2 mb-4">
                                     <p className="text-sm text-white font-medium text-left">Escolha a forma de pagamento:</p>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
-                                            <PixIcon className={`w-5 h-5 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
+                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-3 p-5 rounded-xl border-2 transition-all duration-200 text-lg ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <PixIcon className={`w-7 h-7 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
                                         </button>
-                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
-                                            <CreditCardIcon className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
+                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-3 p-5 rounded-xl border-2 transition-all duration-200 text-lg ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <CreditCardIcon className={`w-7 h-7 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
                                         </button>
                                     </div>
                                 </div>
@@ -431,8 +431,8 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                     <button onClick={() => setShowPaymentModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
                     
                     <div className="text-center space-y-6">
-                         <div className="mx-auto w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mb-2"><DownloadIcon className="w-8 h-8 text-blue-400" /></div>
-                        <div><h3 className="text-2xl font-bold text-white">{paymentConfig.titulo}</h3><p className="text-gray-400 mt-2 text-sm">Geração via Nuvem com formatação perfeita.</p></div>
+                         <div className="mx-auto w-24 h-24 bg-blue-900/30 rounded-full flex items-center justify-center mb-4"><DownloadIcon className="w-12 h-12 text-blue-400" /></div>
+                        <div><h3 className="text-4xl font-bold text-white">{paymentConfig.titulo}</h3><p className="text-gray-400 mt-2 text-base">Geração via Nuvem com formatação perfeita.</p></div>
                         
                         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 shadow-xl border border-blue-400/30">
                             <div className="text-3xl font-black text-white">R$ {paymentConfig.preco.toFixed(2).replace('.', ',')}</div>
@@ -446,11 +446,11 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 <div className="space-y-2 mb-4">
                                     <p className="text-sm text-white font-medium text-left">Escolha a forma de pagamento:</p>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
-                                            <PixIcon className={`w-5 h-5 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
+                                        <button type="button" onClick={() => setPaymentMethod('pix')} className={`flex items-center justify-center gap-3 p-5 rounded-xl border-2 transition-all duration-200 text-lg ${paymentMethod === 'pix' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <PixIcon className={`w-8 h-8 ${paymentMethod === 'pix' ? 'text-blue-600' : 'text-gray-400'}`} /> Pix
                                         </button>
-                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
-                                            <CreditCardIcon className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
+                                        <button type="button" onClick={() => setPaymentMethod('card')} className={`flex items-center justify-center gap-3 p-5 rounded-xl border-2 transition-all duration-200 text-lg ${paymentMethod === 'card' ? 'bg-white text-blue-900 border-white font-bold shadow-lg scale-105' : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20 hover:border-white/30'}`}>
+                                            <CreditCardIcon className={`w-8 h-8 ${paymentMethod === 'card' ? 'text-blue-600' : 'text-gray-400'}`} /> Cartão
                                         </button>
                                     </div>
                                 </div>
