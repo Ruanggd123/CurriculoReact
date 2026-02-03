@@ -1,0 +1,85 @@
+
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage[paper=a4paper, margin=0cm]{geometry} % Start with 0 margins for full bleed
+\usepackage{xcolor}
+\usepackage{paracol} % For multi-column layouts
+\usepackage{enumitem} % For cleaner lists
+\usepackage{titlesec} % For section formatting
+\usepackage{hyperref} % For clickable links
+\usepackage{fontawesome5} % For icons
+\usepackage{lmodern} % Better fonts
+\usepackage{scrextend} % For addmargin
+
+% Define custom colors
+\definecolor{primary}{HTML}{0055AA}
+\definecolor{darktext}{HTML}{1A1A1A}
+\definecolor{lighttext}{HTML}{FFFFFF}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=primary,
+    urlcolor=primary,
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Custom commands
+\newcommand{\header}[3]{
+    \begin{center}
+        {\Huge \textbf{#1}} \\[0.2cm]
+        {\Large #2} \\[0.2cm]
+        \small #3
+    \end{center}
+}
+
+\begin{document}
+\newgeometry{top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm} % Restore margins for Classic
+
+% Header
+\header{João Silva}{Desenvolvedor Full Stack}{
+    \faEnvelope\ joao.silva@email.com \quad \faPhone\ (11) 99999-9999 \\
+    \faMapMarker*\ São Paulo, SP
+}
+
+\vspace{0.5cm}
+
+
+\section*{Resumo}
+Desenvolvedor apaixonado por criar soluções escaláveis e eficientes.
+\vspace{0.3cm}
+\section*{Experiência Profissional}
+
+\noindent \textbf{Tech Solutions} \hfill 2020 - Presente \\
+\textit{Engenheiro de Software Sênior} \\
+Liderança técnica de projetos web utilizando React e Node.js.
+\vspace{0.3cm}
+
+\noindent \textbf{Web Corp} \hfill 2018 - 2020 \\
+\textit{Desenvolvedor Front-end} \\
+Desenvolvimento de interfaces responsivas e acessíveis.
+\vspace{0.3cm}
+\section*{Formação Acadêmica}
+
+\noindent \textbf{Universidade de Tecnologia} \hfill 2014 - 2018 \\
+Bacharelado em Ciência da Computação
+\vspace{0.2cm}
+\section*{Habilidades}
+\begin{itemize}[leftmargin=*]
+\item JavaScript
+\item TypeScript
+\item React
+\item Node.js
+\item Docker
+\end{itemize}
+\section*{Idiomas}
+\begin{itemize}[leftmargin=*]
+\item Português (Nativo)
+\item Inglês (Avançado)
+\end{itemize}
+\end{document}

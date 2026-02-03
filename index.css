@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@layer base {
+  @media print {
+
+    /* RESET: Hide everything */
+    body>* {
+      display: none !important;
+    }
+
+    /* ALLOW: Only the Print Mount is visible */
+    #print-mount {
+      display: block !important;
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      width: 210mm !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      z-index: 999999 !important;
+      background: white;
+    }
+
+    /* Restore children visibility */
+    #print-mount * {
+      visibility: visible !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Scrollbar hiding within print mount if needed */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Page Setup */
+    @page {
+      size: A4;
+      margin: 0 !important;
+      /* Force strict zero margin */
+    }
+
+    /* Manual Page Break Support */
+    .break-before {
+      page-break-before: always !important;
+    }
+
+    html,
+    body {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+  }
+}
+
+/* Custom Utilities for A4 */
+@layer utilities {
+  .a4-screen {
+    width: 210mm;
+    height: 297mm;
+  }
+}

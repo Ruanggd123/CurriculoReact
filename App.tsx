@@ -18,6 +18,7 @@ import {
 import { ProfilePage } from './pages/ProfilePage';
 import { SubscriptionPage } from './pages/SubscriptionPage';
 import { Footer } from './components/Footer';
+import PageManager from './components/PageManager';
 
 const AppContent: React.FC = () => {
     const { user, loading } = useAuth();
@@ -31,7 +32,7 @@ const AppContent: React.FC = () => {
         if (!loading) {
             try {
                 const userId = user?.id || 'guest';
-                const savedResumes = localStorage.getItem(`resumes_${userId}`);
+                const savedResumes = localStorage.getItem(`resumes_v4_${userId}`); // Bumped version to v4
                 if (savedResumes) {
                     setResumes(JSON.parse(savedResumes));
                 } else {
@@ -39,7 +40,7 @@ const AppContent: React.FC = () => {
                         id: generateId(),
                         title: 'Meu Currículo',
                         lastModified: new Date().toISOString(),
-                        data: { ...initialResumeData, personal: { ...initialResumeData.personal, name: 'Seu Nome' }},
+                        data: initialResumeData,
                         ui: initialUiConfig
                     };
                     setResumes([defaultResume]);
@@ -55,7 +56,7 @@ const AppContent: React.FC = () => {
         if (resumes.length > 0) {
             try {
                 const userId = user?.id || 'guest';
-                localStorage.setItem(`resumes_${userId}`, JSON.stringify(resumes));
+                localStorage.setItem(`resumes_v4_${userId}`, JSON.stringify(resumes)); // Bumped version to v4
             } catch (error) {
                 console.error("Failed to save resumes to localStorage", error);
             }
@@ -83,19 +84,19 @@ const AppContent: React.FC = () => {
             if (index === -1) return prevResumes;
 
             const currentResume = prevResumes[index];
-            
+
             // Check if actual changes occurred to prevent unnecessary updates
-            if (JSON.stringify(currentResume.data) === JSON.stringify(newData) && 
+            if (JSON.stringify(currentResume.data) === JSON.stringify(newData) &&
                 JSON.stringify(currentResume.ui) === JSON.stringify(newUi)) {
                 return prevResumes;
             }
 
-            const updatedResume = { 
-                ...currentResume, 
-                data: newData, 
-                ui: newUi, 
-                title: newData.personal.name || 'Currículo sem título', 
-                lastModified: new Date().toISOString() 
+            const updatedResume = {
+                ...currentResume,
+                data: newData,
+                ui: newUi,
+                title: newData.personal.name || 'Currículo sem título',
+                lastModified: new Date().toISOString()
             };
 
             const newResumes = [...prevResumes];
@@ -106,13 +107,13 @@ const AppContent: React.FC = () => {
 
     const handleApplyTemplate = (template: TemplateOption) => {
         const targetId = activeResumeId || resumes[0]?.id;
-        
+
         if (targetId) {
-            setResumes(prevResumes => 
-                prevResumes.map(r => 
-                    r.id === targetId 
-                    ? { ...r, ui: { ...r.ui, template } }
-                    : r
+            setResumes(prevResumes =>
+                prevResumes.map(r =>
+                    r.id === targetId
+                        ? { ...r, ui: { ...r.ui, template } }
+                        : r
                 )
             );
             if (!activeResumeId) {
@@ -124,13 +125,13 @@ const AppContent: React.FC = () => {
                 id: generateId(),
                 title: 'Meu Currículo',
                 lastModified: new Date().toISOString(),
-                data: { ...initialResumeData, personal: { ...initialResumeData.personal, name: 'Seu Nome' }},
+                data: initialResumeData,
                 ui: { ...initialUiConfig, template }
             };
             setResumes([newResume, ...resumes]);
             setActiveResumeId(newResume.id);
         }
-        
+
         setCurrentView('builder');
     };
 
@@ -145,10 +146,10 @@ const AppContent: React.FC = () => {
         );
     }
 
-    const activeResume = resumes.find(r => r.id === activeResumeId) || resumes[0]; 
+    const activeResume = resumes.find(r => r.id === activeResumeId) || resumes[0];
 
     const renderPage = () => {
-        switch(currentView) {
+        switch (currentView) {
             case 'home': return <CreateResumePage setCurrentView={setCurrentView} onApplyTemplate={handleApplyTemplate} />;
             case 'auth': return <Auth />;
             case 'builder': return <ResumeBuilder key={activeResume?.id || 'new'} initialResume={activeResume} saveResume={handleSaveResume} setCurrentView={setCurrentView} />;
@@ -170,39 +171,40 @@ const AppContent: React.FC = () => {
             case 'privacidade': return <PrivacyPolicyPage setCurrentView={setCurrentView} />;
             case 'cookies': return <CookiePolicyPage setCurrentView={setCurrentView} />;
             case 'dados-lgpd': return <DataRequestPage setCurrentView={setCurrentView} />;
+            case 'a4-editor': return <PageManager />;
             default: return <CreateResumePage setCurrentView={setCurrentView} onApplyTemplate={handleApplyTemplate} />;
         }
     };
-    
-    const isBuilder = currentView === 'builder'; 
-    const isAuth = currentView === 'auth'; 
+
+    const isBuilder = currentView === 'builder';
+    const isAuth = currentView === 'auth';
 
     if (isAuth) {
-         return (
-             <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300">
-                 <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
+        return (
+            <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300">
+                <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
                     <div className="absolute inset-0 gradient-overlay-tr"></div>
                 </div>
-                <Header setCurrentView={setCurrentView} currentView={currentView}/>
+                <Header setCurrentView={setCurrentView} currentView={currentView} />
                 <main className="flex-1 flex items-center justify-center overflow-auto">
                     <Auth />
                 </main>
-             </div>
-         )
+            </div>
+        )
     }
 
     return (
         <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden">
-             {!isBuilder && <Header setCurrentView={setCurrentView} currentView={currentView}/>}
-             
-             <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full`}>
+            {!isBuilder && <Header setCurrentView={setCurrentView} currentView={currentView} />}
+
+            <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full`}>
                 <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
                     <div className="absolute inset-0 gradient-overlay-tr"></div>
                     <div className="absolute inset-0 gradient-overlay-bl"></div>
                 </div>
                 {renderPage()}
                 {!isBuilder && <Footer setCurrentView={setCurrentView} />}
-             </main>
+            </main>
         </div>
     )
 }

@@ -1,0 +1,138 @@
+
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage[paper=a4paper, margin=0cm]{geometry} % Start with 0 margins for full bleed
+\usepackage{xcolor}
+\usepackage{paracol} % For multi-column layouts
+\usepackage{enumitem} % For cleaner lists
+\usepackage{titlesec} % For section formatting
+\usepackage{hyperref} % For clickable links
+\usepackage{fontawesome5} % For icons
+\usepackage{lmodern} % Better fonts
+\usepackage{scrextend} % For addmargin
+
+% Define custom colors
+\definecolor{primary}{HTML}{0055AA}
+\definecolor{darktext}{HTML}{1A1A1A}
+\definecolor{lighttext}{HTML}{FFFFFF}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=primary,
+    urlcolor=primary,
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Custom commands
+\newcommand{\header}[3]{
+    \begin{center}
+        {\Huge \textbf{#1}} \\[0.2cm]
+        {\Large #2} \\[0.2cm]
+        \small #3
+    \end{center}
+}
+
+\begin{document}
+
+% Set column ratio (2/3 for main, 1/3 for sidebar)
+\columnratio{0.65}
+\setlength{\columnsep}{0pt}
+
+% Background color for the right column (Sidebar)
+\backgroundcolor{C[1](10000pt, 10000pt)}{primary} % Fill column 1 (right) with primary color
+\backgroundcolor{C[0](10000pt, 10000pt)}{white} % Fill column 0 (left) with white
+
+\begin{paracol}{2}
+
+% --- LEFT COLUMN (Main Content) ---
+\begin{leftcolumn}
+    \vspace*{1.5cm} % Top padding
+    \begin{addmargin}[1.5cm]{1cm} % Left/Right padding
+    
+    {\Huge \textbf{\color{darktext} João Silva}} \\[0.2cm]
+    {\Large \color{darktext} Desenvolvedor Full Stack}
+    \vspace{0.5cm}
+
+    
+    \section*{Resumo}
+    \color{darktext}
+    Desenvolvedor apaixonado por criar soluções escaláveis e eficientes.
+    \vspace{0.5cm}
+    
+
+    
+    \section*{Experiência}
+    \color{darktext}
+    
+    \noindent \textbf{Tech Solutions} \hfill 2020 - Presente \\
+    \textit{Engenheiro de Software Sênior} \\
+    Liderança técnica de projetos web utilizando React e Node.js.
+    \vspace{0.4cm}
+    
+
+    \noindent \textbf{Web Corp} \hfill 2018 - 2020 \\
+    \textit{Desenvolvedor Front-end} \\
+    Desenvolvimento de interfaces responsivas e acessíveis.
+    \vspace{0.4cm}
+    
+    
+    
+    \end{addmargin}
+    \vspace*{1.5cm} % Bottom padding
+\end{leftcolumn}
+
+% --- RIGHT COLUMN (Sidebar) ---
+\begin{rightcolumn}
+    \vspace*{1.5cm} % Top padding
+    \begin{addmargin}[1cm]{1cm} % Left/Right padding
+    \color{lighttext} % White text for sidebar
+
+    \section*{\color{lighttext} Contato}
+    \small
+    \faEnvelope\ joao.silva@email.com \\
+    \faPhone\ (11) 99999-9999 \\
+    \faMapMarker*\ São Paulo, SP
+    \vspace{0.5cm}
+
+    
+    \section*{\color{lighttext} Habilidades}
+    \begin{itemize}[leftmargin=*]
+    \item JavaScript
+\item TypeScript
+\item React
+\item Node.js
+\item Docker
+    \end{itemize}
+    \vspace{0.5cm}
+    
+
+    
+    \section*{\color{lighttext} Idiomas}
+    \begin{itemize}[leftmargin=*]
+    \item Português (Nativo)
+\item Inglês (Avançado)
+    \end{itemize}
+    
+    
+    
+    \section*{\color{lighttext} Formação}
+    
+    \textbf{Universidade de Tecnologia} \\
+    Bacharelado em Ciência da Computação \\
+    2014 - 2018
+    \vspace{0.2cm}
+    
+    
+
+    \end{addmargin}
+    \vspace*{1.5cm} % Bottom padding
+\end{rightcolumn}
+
+\end{paracol}
+\end{document}

@@ -11,8 +11,8 @@ export interface PersonalData {
 }
 
 export interface SummaryItem {
-    id: string;
-    text: string;
+  id: string;
+  text: string;
 }
 
 export interface Experience {
@@ -46,9 +46,9 @@ export interface Project {
 }
 
 export interface Language {
-    id: string;
-    language: string;
-    proficiency: string;
+  id: string;
+  language: string;
+  proficiency: string;
 }
 
 export type SectionType = 'summary' | 'experience' | 'education' | 'skills' | 'projects' | 'languages';
@@ -71,15 +71,15 @@ export interface PhotoConfig {
   src: string;
   show: boolean;
   style: 'rounded-full' | 'rounded-lg' | 'rounded-none';
-  position: string; 
+  position: string;
   zoom: number;
 }
 
-export type TemplateOption = 
-  | 'classic' 
-  | 'modern' 
-  | 'compact' 
-  | 'executive' 
+export type TemplateOption =
+  | 'classic'
+  | 'modern'
+  | 'compact'
+  | 'executive'
   | 'creative'
   | 'modern-minimalist'
   | 'modern-colorful'
@@ -138,7 +138,7 @@ export interface Resume {
   ui: UiConfig;
 }
 
-export type View = 
+export type View =
   | 'home'
   | 'auth'
   | 'builder'
@@ -160,7 +160,8 @@ export type View =
   | 'cookies'
   | 'dados-lgpd'
   | 'perfil'
-  | 'assinatura';
+  | 'assinatura'
+  | 'a4-editor';
 
 export interface User {
   id: string;

@@ -5,17 +5,17 @@ import { checkPremiumStatus } from '../services/api';
 const CLOUD_RUN_URL = 'https://curriculum-pdf-781855708546-781855708546.us-central1.run.app';
 
 function wrapCapturedHtml(html: string, uiConfig: UiConfig, demo: boolean): string {
-    const isDark = document.documentElement.classList.contains('dark') || uiConfig.template === 'tech';
+  const isDark = document.documentElement.classList.contains('dark') || uiConfig.template === 'tech';
 
-    // Define a cor da marca d'água com base no tema
-    const watermarkColor = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)';
-    const watermarkBorderColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+  // Define a cor da marca d'água com base no tema
+  const watermarkColor = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)';
+  const watermarkBorderColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
 
-    const printStyles = `
+  const printStyles = `
     <style>
         * { box-sizing: border-box; }
         html { -webkit-font-smoothing: antialiased; zoom: 1; }
-        @page { size: A4; margin: 0; }
+        @page { size: A4; margin: 10mm 0mm; }
         
         body { 
             margin: 0; padding: 0; 
@@ -68,33 +68,12 @@ function wrapCapturedHtml(html: string, uiConfig: UiConfig, demo: boolean): stri
             margin-bottom: 0 !important;
         }
 
-        /* Estilos da Marca d'água */
-        .watermark-layer {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            z-index: 9999; pointer-events: none; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            border: 8px solid ${watermarkBorderColor};
-            padding: 40px 60px; border-radius: 30px; opacity: 1;
-        }
-        .watermark-text, .watermark-sub {
-            color: ${watermarkColor};
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-        .watermark-text { font-size: 60px; font-weight: 900; letter-spacing: 5px; }
-        .watermark-sub { font-size: 24px; font-weight: 700; margin-top: 10px; letter-spacing: 2px; }
-        
-        /* Força a remoção da marca d'água de canto no modo premium */
-        body.premium-pdf::after {
-            content: none !important;
-            display: none !important;
-        }
+    /* Estilos da Marca d'água REMOVIDOS */
+
     </style>
     `;
 
-    return `
+  return `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -124,12 +103,6 @@ function wrapCapturedHtml(html: string, uiConfig: UiConfig, demo: boolean): stri
   ${printStyles}
 </head>
 <body class="${!demo ? 'premium-pdf' : ''}">
-  ${demo ? `
-    <div class="watermark-layer">
-        <div class="watermark-text">VERSÃO GRATUITA</div>
-        <div class="watermark-sub">CRIADO COM CURRICULUM PRO</div>
-    </div>
-  ` : ''}
   <div class="resume-page">${html}</div>
 </body>
 </html>
@@ -147,7 +120,7 @@ const fetchWithRetry = async (url: string, options: any, retries = 1, delay = 30
   try {
     const response = await fetch(url, options);
     if (!response.ok && (response.status === 503 || response.status === 504)) {
-        throw new Error(`Status ${response.status}`);
+      throw new Error(`Status ${response.status}`);
     }
     return response;
   } catch (err) {
@@ -168,13 +141,13 @@ async function gerarPDFCloud(
 ): Promise<{ sucesso: boolean; pdfUrl?: string; erro?: string; pdfBase64?: string }> {
   try {
     console.log(`📤 Iniciando geração de PDF (Demo: ${demo})...`);
-    
+
     if (!capturedHtml) {
       throw new Error('HTML não capturado.');
     }
 
     const htmlCompleto = wrapCapturedHtml(capturedHtml, uiConfig, demo);
-    
+
     const response = await fetchWithRetry(`${CLOUD_RUN_URL}/gerarPDF`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -185,46 +158,46 @@ async function gerarPDFCloud(
         demo: demo
       })
     }, 1, 4000);
-    
+
     if (!response.ok) {
       let msgErro = `Erro HTTP ${response.status}`;
-      try { const erro = await response.json(); msgErro = erro.erro || msgErro; } catch (e) {}
+      try { const erro = await response.json(); msgErro = erro.erro || msgErro; } catch (e) { }
       throw new Error(msgErro);
     }
-    
-    const contentType = response.headers.get("content-type");
-    
-    if (contentType && contentType.includes("application/pdf")) {
-        const blob = await response.blob();
-        const base64 = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const result = reader.result as string;
-                const rawBase64 = result.replace(/^data:.+;base64,/, '');
-                resolve(rawBase64);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
 
-        return { sucesso: true, pdfBase64: base64 };
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/pdf")) {
+      const blob = await response.blob();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result as string;
+          const rawBase64 = result.replace(/^data:.+;base64,/, '');
+          resolve(rawBase64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      return { sucesso: true, pdfBase64: base64 };
     } else {
-        const resultado = await response.json();
-        if (resultado.sucesso) {
-          return {
-            sucesso: true,
-            pdfUrl: resultado.pdfUrl || resultado.url,
-            pdfBase64: resultado.pdfBase64
-          };
-        } else {
-          throw new Error('Resposta inválida do servidor');
-        }
+      const resultado = await response.json();
+      if (resultado.sucesso) {
+        return {
+          sucesso: true,
+          pdfUrl: resultado.pdfUrl || resultado.url,
+          pdfBase64: resultado.pdfBase64
+        };
+      } else {
+        throw new Error('Resposta inválida do servidor');
+      }
     }
-    
+
   } catch (erro: any) {
     console.error('❌ Erro PDF:', erro);
     if (erro.message && (erro.message.includes('503') || erro.message.includes('504') || erro.message.includes('fetch'))) {
-        return { sucesso: false, erro: "O servidor está acordando. Por favor, tente novamente em 10 segundos." };
+      return { sucesso: false, erro: "O servidor está acordando. Por favor, tente novamente em 10 segundos." };
     }
     return { sucesso: false, erro: erro.message || "Erro desconhecido" };
   }
@@ -235,7 +208,7 @@ export async function gerarPDFDemo(
   uiConfig: UiConfig,
   capturedHtml?: string
 ): Promise<{ sucesso: boolean; pdfUrl?: string; erro?: string; pdfBase64?: string; premium: boolean; }> {
-  const result = await gerarPDFCloud(resumeData, uiConfig, true, capturedHtml);
+  const result = await gerarPDFCloud(resumeData, uiConfig, false, capturedHtml);
   return { ...result, premium: false };
 }
 
@@ -244,12 +217,12 @@ export async function gerarPDFPremium(
   uiConfig: UiConfig,
   capturedHtml?: string
 ): Promise<{ sucesso: boolean; pdfUrl?: string; erro?: string; premium: boolean; pdfBase64?: string }> {
-  
+
   const premiumCheck = await verificarPremium(resumeData.personal.email);
   if (!premiumCheck.premium) {
     return { sucesso: false, premium: false, erro: 'Acesso premium necessário' };
   }
-  
+
   const cloudResult = await gerarPDFCloud(resumeData, uiConfig, false, capturedHtml);
   return { ...cloudResult, premium: cloudResult.sucesso };
 }
