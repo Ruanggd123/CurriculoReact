@@ -64,7 +64,7 @@ const AppearanceForm: React.FC<Pick<FormPanelProps, 'uiConfig' | 'setUiConfig'>>
     };
 
     const handleUiChange = (key: keyof UiConfig, value: any) => {
-        setUiConfig(prev => ({ ...prev, [key]: value }));
+        setUiConfig(prev => ({ ...prev, [key]: value }), true);
     };
 
     const handlePhotoChange = (key: keyof PhotoConfig, value: any) => {

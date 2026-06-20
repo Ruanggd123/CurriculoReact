@@ -170,119 +170,6 @@ function applyOklchFixAndGetRestoreFunction(el: HTMLElement): () => void {
     };
 }
 
-/**
- * Adiciona anotações de link clicável no PDF para cada <a> do DOM naquela página.
- */
-function addLinkAnnotations(
-    pdf: jsPDF,
-    element: HTMLElement,
-    containerRect: DOMRect,
-    pageIndex: number,
-    PAGE_HEIGHT_PX: number,
-    A4_WIDTH_MM: number,
-    A4_HEIGHT_MM: number
-) {
-    const links = element.querySelectorAll('a[href]');
-    links.forEach(linkEl => {
-        const anchor = linkEl as HTMLAnchorElement;
-        let href = anchor.getAttribute('href') || '';
-
-        // Ignora âncoras internas ou javascript:
-        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-
-        // Garante protocolo
-        if (!href.startsWith('http')) href = 'https://' + href.replace(/^\/\//, '');
-
-        const linkRect = anchor.getBoundingClientRect();
-
-        // Posição relativa ao container nesta página
-        const relTop = linkRect.top - containerRect.top - pageIndex * PAGE_HEIGHT_PX;
-        const relBottom = linkRect.bottom - containerRect.top - pageIndex * PAGE_HEIGHT_PX;
-
-        // Ignora se o link não está nesta página
-        if (relBottom < 0 || relTop > PAGE_HEIGHT_PX) return;
-
-        // Converte pixels → milímetros PDF
-        const pdfX = (linkRect.left - containerRect.left) / containerRect.width * A4_WIDTH_MM;
-        const pdfY = Math.max(0, relTop) / PAGE_HEIGHT_PX * A4_HEIGHT_MM;
-        const pdfW = linkRect.width / containerRect.width * A4_WIDTH_MM;
-        const pdfH = (Math.min(relBottom, PAGE_HEIGHT_PX) / PAGE_HEIGHT_PX * A4_HEIGHT_MM) - pdfY;
-
-        if (pdfW > 0 && pdfH > 0) {
-            pdf.link(pdfX, pdfY, pdfW, pdfH, { url: href });
-        }
-    });
-}
-
-/**
- * Adiciona uma camada de texto invisível mas selecionável/pesquisável sobre a imagem de cada página.
- * Isso torna o PDF "digitalizado" — o texto pode ser copiado, buscado (Ctrl+F) e lido por
- * leitores de tela, sem alterar a aparência visual do documento.
- */
-function addInvisibleTextLayer(
-    pdf: jsPDF,
-    element: HTMLElement,
-    containerRect: DOMRect,
-    pageIndex: number,
-    PAGE_HEIGHT_PX: number,
-    A4_WIDTH_MM: number,
-    A4_HEIGHT_MM: number
-) {
-    pdf.setFont('helvetica', 'normal');
-
-    // TreeWalker percorre todos os nós de texto do DOM
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
-        acceptNode(node) {
-            const text = node.textContent?.trim();
-            if (!text) return NodeFilter.FILTER_REJECT;
-            const parent = node.parentElement;
-            if (parent?.closest('[data-html2canvas-ignore]')) return NodeFilter.FILTER_REJECT;
-            return NodeFilter.FILTER_ACCEPT;
-        }
-    });
-
-    const range = document.createRange();
-
-    let node: Node | null;
-    while ((node = walker.nextNode())) {
-        const textContent = node.textContent?.trim();
-        if (!textContent || !node.parentElement) continue;
-
-        try {
-            range.selectNodeContents(node);
-            const rects = range.getClientRects();
-
-            for (const rect of Array.from(rects)) {
-                if (rect.width === 0 || rect.height === 0) continue;
-
-                const relTop = rect.top - containerRect.top - pageIndex * PAGE_HEIGHT_PX;
-                const relBottom = rect.bottom - containerRect.top - pageIndex * PAGE_HEIGHT_PX;
-
-                if (relBottom < 0 || relTop > PAGE_HEIGHT_PX) continue;
-
-                const computedStyle = window.getComputedStyle(node.parentElement);
-                const fontSizePx = parseFloat(computedStyle.fontSize) || 12;
-                // px → mm (proporção de escala da página)
-                const fontSizeMm = fontSizePx * (A4_HEIGHT_MM / PAGE_HEIGHT_PX);
-                pdf.setFontSize(Math.max(3, Math.min(fontSizeMm * 2.835, 30)));
-
-                const pdfX = (rect.left - containerRect.left) / containerRect.width * A4_WIDTH_MM;
-                const pdfY = (Math.max(0, relTop) + rect.height * 0.85) / PAGE_HEIGHT_PX * A4_HEIGHT_MM;
-
-                if (pdfX >= 0 && pdfX < A4_WIDTH_MM && pdfY >= 0 && pdfY <= A4_HEIGHT_MM) {
-                    // renderingMode: 'invisible' — texto no PDF mas 100% transparente
-                    pdf.text(textContent, pdfX, pdfY, {
-                        baseline: 'alphabetic',
-                        renderingMode: 'invisible'
-                    });
-                }
-            }
-        } catch {
-            // Ignora nós que não podem ser medidos
-        }
-    }
-}
-
 export const generateResumePDF = async (containerId: string): Promise<Blob> => {
     const originalElement = document.getElementById(containerId);
     if (!originalElement) throw new Error("Container não encontrado");
@@ -295,33 +182,53 @@ export const generateResumePDF = async (containerId: string): Promise<Blob> => {
     window.scrollTo(0, 0);
 
     const separators = originalElement.querySelectorAll('[data-html2canvas-ignore="true"]');
+    
+    // Esconder separadores visuais
     separators.forEach(el => (el as HTMLElement).style.opacity = '0');
 
-    // Remover transformações (scale) do elemento pai que causam o bug de corte de texto no html2canvas
-    const parentWrapper = originalElement.parentElement;
-    const originalTransform = parentWrapper ? parentWrapper.style.transform : '';
-    const originalTransition = parentWrapper ? parentWrapper.style.transition : '';
-    if (parentWrapper) {
-        parentWrapper.style.transition = 'none';
-        parentWrapper.style.transform = 'none';
+    // Remover transformações (scale) do elemento pai E avô que causam bug de corte de texto no html2canvas
+    // O ScaledPreview tem 2 níveis: wrapper externo (sem transform) e inner div (com transform: scale)
+    const innerWrapper = originalElement.parentElement; // o div com transform: scale()
+    const outerWrapper = innerWrapper?.parentElement;   // o div#preview-wrapper (sem transform)
+    const originalInnerTransform = innerWrapper ? innerWrapper.style.transform : '';
+    const originalOuterWidth = outerWrapper ? outerWrapper.style.width : '';
+    const originalOuterHeight = outerWrapper ? outerWrapper.style.height : '';
+    
+    if (innerWrapper) {
+        innerWrapper.style.transition = 'none';
+        innerWrapper.style.transform = 'none';
+        innerWrapper.style.width = '100%'; // restaura para 100% sem compensação de escala
+    }
+    if (outerWrapper) {
+        // Remove as dimensões fixas do wrapper para a folha se expandir ao tamanho real
+        outerWrapper.style.width = 'auto';
+        outerWrapper.style.height = 'auto';
     }
 
-    // O html2canvas buga com overflow-hidden e truncate quando a escala muda
+    // O html2canvas buga com overflow-hidden e truncate quando a escala muda, vamos desabilitar temporariamente
     const truncateElements = originalElement.querySelectorAll('.truncate');
     truncateElements.forEach(el => {
         (el as HTMLElement).style.overflow = 'visible';
         (el as HTMLElement).style.whiteSpace = 'normal';
     });
 
-    // Aplicar a correção de cores no elemento ORIGINAL
+    // Aplicar a correção de cores no elemento ORIGINAL (para manter layout e fontes perfeitas)
     const restoreColors = applyOklchFixAndGetRestoreFunction(originalElement);
 
+    // Aguardar o navegador recalcular o layout após remover os transforms
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
+        // Agora sem transform, o elemento está com seu tamanho real em 210mm
+        // Usamos scrollHeight para medir e BoundingRect para a posição
         const rect = originalElement.getBoundingClientRect();
-        const PAGE_HEIGHT_PX = rect.width * (297 / 210);
+        const PAGE_HEIGHT_PX = rect.width * (297 / 210); // Proporção A4 exata
         
         const totalHeight = originalElement.scrollHeight;
         const totalPages = Math.max(1, Math.round(totalHeight / PAGE_HEIGHT_PX));
+
+        // Coordenada Y de início do elemento em relação ao documento inteiro
+        const elementStartY = rect.top + window.scrollY;
 
         for (let i = 0; i < totalPages; i++) {
             if (i > 0) pdf.addPage();
@@ -331,20 +238,14 @@ export const generateResumePDF = async (containerId: string): Promise<Blob> => {
                 useCORS: true,
                 logging: false,
                 backgroundColor: null,
-                y: originalElement.offsetTop + (i * PAGE_HEIGHT_PX),
+                // y relativo ao elemento, não ao documento
+                y: i * PAGE_HEIGHT_PX,
                 height: PAGE_HEIGHT_PX, 
                 windowWidth: 1200,
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.98);
-            // 1. Adiciona a imagem visual da página
             pdf.addImage(imgData, 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
-
-            // 2. Camada de texto invisível (selecionável, pesquisável, acessível)
-            addInvisibleTextLayer(pdf, originalElement, rect, i, PAGE_HEIGHT_PX, A4_WIDTH_MM, A4_HEIGHT_MM);
-
-            // 3. Anotações de links clicáveis
-            addLinkAnnotations(pdf, originalElement, rect, i, PAGE_HEIGHT_PX, A4_WIDTH_MM, A4_HEIGHT_MM);
         }
 
         return pdf.output('blob');
@@ -353,22 +254,28 @@ export const generateResumePDF = async (containerId: string): Promise<Blob> => {
         console.error("Erro ao gerar PDF:", error);
         throw error;
     } finally {
+        // Restaurar as cores originais
         restoreColors();
         
+        // Restaurar truncate e overflow
         truncateElements.forEach(el => {
             (el as HTMLElement).style.overflow = '';
             (el as HTMLElement).style.whiteSpace = '';
         });
 
-        if (parentWrapper) {
-            parentWrapper.style.transform = originalTransform;
-            setTimeout(() => {
-                parentWrapper.style.transition = originalTransition;
-            }, 50);
+        // Restaurar transformações dos wrappers do ScaledPreview
+        if (innerWrapper) {
+            innerWrapper.style.transform = originalInnerTransform;
+            innerWrapper.style.width = ''; // remove o override que pusemos
+        }
+        if (outerWrapper) {
+            outerWrapper.style.width = originalOuterWidth;
+            outerWrapper.style.height = originalOuterHeight;
         }
 
+        // Restaurar visibilidade dos separadores
         separators.forEach(el => (el as HTMLElement).style.opacity = '1');
+        
         window.scrollTo(0, originalScrollPos);
     }
 };
-

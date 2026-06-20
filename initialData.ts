@@ -134,11 +134,11 @@ export const initialUiConfig: UiConfig = {
   backgroundColor: '#ffffff',
   accentColor: '#6366f1',
   photo: {
-    src: 'https://ui-avatars.com/api/?name=Ana+Carolina+Mendes&size=400&background=6366f1&color=ffffff&bold=true&format=svg',
+    src: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
     show: true,
     style: 'rounded-full',
-    position: '50% 50%',
-    zoom: 100,
+    position: '50% 20%',
+    zoom: 110,
   },
   sectionSizes: {
     name: 32,

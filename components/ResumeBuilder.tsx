@@ -14,6 +14,56 @@ import { generateA4PDF, generateResumePDF } from '../utils/a4PdfGenerator';
 import { CodeEditor } from './CodeEditor';
 import { keysService, MASTER_KEY, KeyData } from '../services/keysService';
 
+const PREVIEW_SCALE = 0.72;
+
+/**
+ * Componente que escala o preview de currículo corretamente.
+ * Usa ResizeObserver para medir a altura real do conteúdo A4
+ * e ajusta o wrapper para ter as dimensões visuais corretas.
+ * Isso evita o colapso de layout que `scale` CSS causava.
+ */
+const ScaledPreview: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const innerRef = React.useRef<HTMLDivElement>(null);
+    const [innerHeight, setInnerHeight] = React.useState(1123); // altura default de 1 página A4
+
+    React.useEffect(() => {
+        const el = innerRef.current;
+        if (!el) return;
+        const observer = new ResizeObserver(() => {
+            setInnerHeight(el.scrollHeight);
+        });
+        observer.observe(el);
+        setInnerHeight(el.scrollHeight);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div
+            id="preview-wrapper"
+            style={{
+                // Largura visual = largura A4 real * escala
+                // A4 em pixels (96dpi) ≈ 794px; 794 * 0.72 ≈ 572px
+                width: `${794 * PREVIEW_SCALE}px`,
+                // Altura visual = altura real * escala
+                height: `${innerHeight * PREVIEW_SCALE}px`,
+                flexShrink: 0,
+                position: 'relative',
+            }}
+        >
+            <div
+                ref={innerRef}
+                style={{
+                    transform: `scale(${PREVIEW_SCALE})`,
+                    transformOrigin: 'top left',
+                    width: `${100 / PREVIEW_SCALE}%`, // Compensa a escala para manter a largura real
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    );
+};
+
 interface ResumeBuilderProps {
     initialResume: Resume;
     saveResume: (id: string, data: ResumeData, ui: UiConfig) => void;
@@ -405,10 +455,12 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         />
                     ) : (
                         <div className="p-4 flex justify-center items-start bg-gray-900/50 min-h-full overflow-auto">
-                            <div
-                                className="origin-top transform-gpu mt-4"
-                                style={{ scale: '0.45' }}
-                            >
+                            <div style={{
+                                transform: 'scale(0.43)',
+                                transformOrigin: 'top center',
+                                /* Margem negativa para compensar o espaço que o scale deixa */
+                                marginBottom: 'calc(-57% * var(--pages, 1))',
+                            }}>
                                 <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
                             </div>
                         </div>
@@ -505,20 +557,20 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         </button>
                     </div>
                 </div>
-                <div className="flex-1 overflow-auto p-8 flex justify-center items-start bg-[#0f172a] relative custom-scrollbar">
+                <div className="flex-1 overflow-auto flex justify-center items-start bg-[#0f172a] relative custom-scrollbar py-8">
                     {viewMode === 'visual' ? (
-                        <div
-                            id="preview-wrapper"
-                            className="origin-top transform-gpu"
-                            style={{
-                                /* Escala o preview A4 para caber na tela do editor sem scroll horizontal */
-                                /* Calcula proporcionalmente ao container disponível */
-                                scale: '0.75',
-                                marginBottom: '-12%'
-                            }}
-                        >
+                        /*
+                         * ESTRATÉGIA DE ESCALA:
+                         * - O wrapper externo tem a largura/altura VISUAL (após escala)
+                         * - O div interno tem o tamanho real do A4 e recebe transform: scale()
+                         * - Isso evita o colapso de layout que a prop CSS "scale" causava
+                         *
+                         * Folha A4 = ~794px de largura
+                         * Escala 0.72 → 794 * 0.72 ≈ 572px de largura visual
+                         */
+                        <ScaledPreview>
                             <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
-                        </div>
+                        </ScaledPreview>
                     ) : (
                         <div className="w-full h-full max-w-4xl mx-auto">
                             <CodeEditor data={resumeData} onChange={setResumeData} />

@@ -401,7 +401,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <section key={s.id} className={`${config.sectionGap} resume-section`}>
                     {renderSectionTitle(s.title, s.type)}
                     {s.type === 'skills' ? (
-                        <div className="flex flex-wrap gap-2 break-inside-avoid">
+                        <div className="flex flex-wrap gap-2">
                             {s.items.map((item: any) => (
                                 <span key={item.id} className={`px-2.5 py-1 text-sm rounded-md font-medium ${config.id === 'tech' ? 'bg-gray-800 border border-green-900 font-mono text-xs text-green-400' : 'bg-slate-100 text-slate-700'}`}>
                                     {item.name}
@@ -471,7 +471,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         <section key={s.id} className="mb-8 resume-section break-inside-avoid">
                             {renderSectionTitle(s.title, s.type, true)}
                             {s.type === 'skills' ? (
-                                <div className="flex flex-wrap gap-2 break-inside-avoid">
+                                <div className="flex flex-wrap gap-2">
                                     {s.items.map((item: any) => (
                                         <span key={item.id} className={`text-xs px-2 py-1 rounded font-semibold ${config.useAccentBackground ? 'bg-white/20 text-white' : 'bg-white border border-gray-200 text-slate-600'}`}>
                                             {item.name}
@@ -490,7 +490,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     const containerClasses = [
         isPrinting
             ? `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} break-words whitespace-pre-wrap flex flex-col`
-            : `w-[210mm] mx-auto relative overflow-hidden ${config.bgClass} shadow-2xl transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
+            : `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} shadow-2xl transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
     ].join(' ');
 
     const [totalPages, setTotalPages] = React.useState(1);
