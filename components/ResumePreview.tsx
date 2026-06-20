@@ -366,10 +366,10 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                             </div>
                         )}
                         {section.type === 'skills' && (
-                            <div className={`${config.id === 'tech' ? 'font-mono text-xs' : 'text-sm'} flex flex-wrap gap-2`}>
+                            <div className={`${config.id === 'tech' ? 'font-mono text-xs' : 'text-sm'} flex flex-wrap gap-2 items-center`}>
                                 {config.id === 'tech'
                                     ? <span className="text-green-300/80">{`<${item.name} />`}</span>
-                                    : <span className={`inline-block px-2 py-1 rounded ${isContextDark ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>{item.name}</span>
+                                    : <span className={`inline-flex items-center justify-center px-2 py-1 rounded ${isContextDark ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>{item.name}</span>
                                 }
                             </div>
                         )}
@@ -401,9 +401,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <section key={s.id} className={`${config.sectionGap} resume-section`}>
                     {renderSectionTitle(s.title, s.type)}
                     {s.type === 'skills' ? (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 items-center">
                             {s.items.map((item: any) => (
-                                <span key={item.id} className={`px-2.5 py-1 text-sm rounded-md font-medium ${config.id === 'tech' ? 'bg-gray-800 border border-green-900 font-mono text-xs text-green-400' : 'bg-slate-100 text-slate-700'}`}>
+                                <span key={item.id} className={`px-2.5 py-1 text-sm rounded-md font-medium flex items-center justify-center ${config.id === 'tech' ? 'bg-gray-800 border border-green-900 font-mono text-xs text-green-400' : 'bg-slate-100 text-slate-700'}`}>
                                     {item.name}
                                 </span>
                             ))}
@@ -471,9 +471,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         <section key={s.id} className="mb-8 resume-section break-inside-avoid">
                             {renderSectionTitle(s.title, s.type, true)}
                             {s.type === 'skills' ? (
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 items-center">
                                     {s.items.map((item: any) => (
-                                        <span key={item.id} className={`text-xs px-2 py-1 rounded font-semibold ${config.useAccentBackground ? 'bg-white/20 text-white' : 'bg-white border border-gray-200 text-slate-600'}`}>
+                                        <span key={item.id} className={`text-xs px-2 py-1 rounded font-semibold flex items-center justify-center ${config.useAccentBackground ? 'bg-white/20 text-white' : 'bg-white border border-gray-200 text-slate-600'}`}>
                                             {item.name}
                                         </span>
                                     ))}
