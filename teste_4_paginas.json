@@ -1,0 +1,165 @@
+{
+  "personal": {
+    "name": "João Engenheiro Silva",
+    "jobTitle": "Arquiteto de Software & Especialista em Cloud",
+    "email": "joao.silva.arch@example.com",
+    "phone": "+55 11 98765-4321",
+    "location": "São Paulo, SP - Brasil",
+    "linkedin": "https://linkedin.com/in/joaosilva",
+    "website": "https://joaosilva.dev"
+  },
+  "sections": [
+    {
+      "id": "sec-summary",
+      "type": "summary",
+      "title": "Perfil Profissional",
+      "items": [
+        {
+          "id": "sum-1",
+          "text": "Profissional sênior com mais de 15 anos de experiência em engenharia de software, focado em arquiteturas escaláveis, microsserviços e computação em nuvem (AWS e Azure). Histórico comprovado de liderança técnica em times de alta performance, entregando soluções que impactaram diretamente a receita de grandes corporações do setor financeiro e de e-commerce. Especialista em modernização de sistemas legados e implementação de cultura DevOps. Apaixonado por código limpo, testes automatizados e mentoria de desenvolvedores juniores e plenos."
+        }
+      ]
+    },
+    {
+      "id": "sec-experience",
+      "type": "experience",
+      "title": "Experiência Profissional",
+      "items": [
+        {
+          "id": "exp-1",
+          "role": "Tech Lead / Arquiteto de Software",
+          "company": "Fintech Global S.A.",
+          "startDate": "2019-03",
+          "endDate": "Presente",
+          "description": "- Liderança de uma tribo de 40 desenvolvedores na modernização do core bancário.\n- Migração completa de um monolito legado em Java EE para microsserviços usando Spring Boot e Go.\n- Redução de custos de infraestrutura em 45% através de otimização de clusters Kubernetes (EKS) e adoção de Serverless (AWS Lambda) para rotinas assíncronas.\n- Implementação de pipelines CI/CD com GitLab CI, reduzindo o tempo de deploy de semanas para horas.\n- Desenho e implementação de arquitetura orientada a eventos utilizando Apache Kafka, processando mais de 5000 TPS com latência inferior a 50ms.\n- Mentoria técnica, code reviews e definição de diretrizes arquiteturais (Architecture Decision Records - ADRs)."
+        },
+        {
+          "id": "exp-2",
+          "role": "Engenheiro de Software Sênior",
+          "company": "E-commerce Varejo Brasil",
+          "startDate": "2015-08",
+          "endDate": "2019-02",
+          "description": "- Desenvolvimento da plataforma de checkout de alta disponibilidade (99.99% uptime) durante a Black Friday.\n- Integração com mais de 15 gateways de pagamento diferentes, garantindo segurança (PCI-DSS) e resiliência.\n- Criação de um motor de recomendação em tempo real utilizando Python, Redis e Elasticsearch, aumentando a taxa de conversão em 12%.\n- Refatoração de código crítico visando performance, diminuindo o tempo de resposta do carrinho de compras de 2s para 300ms."
+        },
+        {
+          "id": "exp-3",
+          "role": "Desenvolvedor Backend Pleno",
+          "company": "Startup de Logística FastDelivery",
+          "startDate": "2012-01",
+          "endDate": "2015-07",
+          "description": "- Criação da API de roteamento de motoristas, integrando com Google Maps API e algoritmos próprios de otimização em Node.js.\n- Manutenção de bancos de dados relacionais gigantescos (PostgreSQL), criando índices otimizados e stored procedures para geração de relatórios complexos.\n- Desenvolvimento do painel administrativo em React (primeiras versões) para acompanhamento em tempo real da frota.\n- Automação de infraestrutura utilizando Terraform e Ansible."
+        },
+        {
+          "id": "exp-4",
+          "role": "Desenvolvedor Fullstack Júnior",
+          "company": "Agência Web Criativa",
+          "startDate": "2009-04",
+          "endDate": "2011-12",
+          "description": "- Desenvolvimento de mais de 30 websites institucionais e e-commerces em PHP e WordPress.\n- Criação de plugins customizados e integrações com APIs de redes sociais.\n- Participação no levantamento de requisitos junto a clientes e designers.\n- Otimização de SEO e performance front-end."
+        }
+      ]
+    },
+    {
+      "id": "sec-projects",
+      "type": "projects",
+      "title": "Projetos Relevantes",
+      "items": [
+        {
+          "id": "proj-1",
+          "name": "Sistema de Detecção de Fraude Real-time",
+          "description": "Desenvolvimento de uma pipeline de dados utilizando Apache Flink, Kafka e Machine Learning para analisar transações financeiras em milissegundos. O sistema interceptou mais de R$ 5 Milhões em transações fraudulentas no primeiro trimestre de uso."
+        },
+        {
+          "id": "proj-2",
+          "name": "Open Source: Biblioteca de Cache Distribuído",
+          "description": "Autor de uma biblioteca open source em Go (Golang) para cache distribuído que alcançou mais de 2000 stars no GitHub. A biblioteca foca em eficiência de memória e baixo overhead de rede."
+        },
+        {
+          "id": "proj-3",
+          "name": "Migração Multi-Cloud Strategy",
+          "description": "Liderou o projeto estratégico de tornar a infraestrutura agnóstica de provedor, permitindo deploy transparente tanto na AWS quanto na Azure utilizando Kubernetes e Terraform. O projeto garantiu alta resiliência contra quedas de provedores."
+        },
+        {
+          "id": "proj-4",
+          "name": "Plataforma de Educação Corporativa Interna",
+          "description": "Criação do zero de um LMS (Learning Management System) interno para treinamento de desenvolvedores, utilizando Next.js, GraphQL e banco de dados Neo4j para mapeamento de skills. A plataforma foi adotada globalmente pela empresa."
+        }
+      ]
+    },
+    {
+      "id": "sec-education",
+      "type": "education",
+      "title": "Formação Acadêmica",
+      "items": [
+        {
+          "id": "edu-1",
+          "degree": "Mestrado em Ciência da Computação",
+          "institution": "Universidade de São Paulo (USP)",
+          "startDate": "2014-02",
+          "endDate": "2016-12",
+          "description": "Dissertação: 'Otimização de Sistemas Distribuídos e Consenso de Dados em Redes de Alta Latência'. Bolsa de pesquisa pela FAPESP."
+        },
+        {
+          "id": "edu-2",
+          "degree": "Bacharelado em Engenharia da Computação",
+          "institution": "Universidade Estadual de Campinas (UNICAMP)",
+          "startDate": "2008-02",
+          "endDate": "2012-12",
+          "description": "Trabalho de Conclusão de Curso focado em algoritmos de inteligência artificial. Participação na Empresa Júnior por 2 anos."
+        }
+      ]
+    },
+    {
+      "id": "sec-skills",
+      "type": "skills",
+      "title": "Habilidades Técnicas",
+      "items": [
+        { "id": "sk-1", "name": "Java & Spring Boot" },
+        { "id": "sk-2", "name": "Go (Golang)" },
+        { "id": "sk-3", "name": "Node.js & TypeScript" },
+        { "id": "sk-4", "name": "React & Next.js" },
+        { "id": "sk-5", "name": "Arquitetura de Microsserviços" },
+        { "id": "sk-6", "name": "Event-Driven Architecture (Kafka/RabbitMQ)" },
+        { "id": "sk-7", "name": "AWS (EKS, Lambda, S3, RDS, DynamoDB)" },
+        { "id": "sk-8", "name": "Kubernetes & Docker" },
+        { "id": "sk-9", "name": "CI/CD (GitLab, GitHub Actions, Jenkins)" },
+        { "id": "sk-10", "name": "Terraform & Ansible" },
+        { "id": "sk-11", "name": "Bancos de Dados Relacionais (PostgreSQL, MySQL)" },
+        { "id": "sk-12", "name": "NoSQL (MongoDB, Redis, Elasticsearch)" },
+        { "id": "sk-13", "name": "Design de Sistemas e APIs (REST, GraphQL, gRPC)" },
+        { "id": "sk-14", "name": "Testes (TDD, BDD, Testes de Carga)" },
+        { "id": "sk-15", "name": "Liderança Técnica & Mentoria" }
+      ]
+    },
+    {
+      "id": "sec-languages",
+      "type": "languages",
+      "title": "Idiomas",
+      "items": [
+        { "id": "lang-1", "language": "Português", "proficiency": "Nativo" },
+        { "id": "lang-2", "language": "Inglês", "proficiency": "Fluente (C2 - TOEFL 115)" },
+        { "id": "lang-3", "language": "Espanhol", "proficiency": "Avançado" },
+        { "id": "lang-4", "language": "Alemão", "proficiency": "Básico (A2)" }
+      ]
+    },
+    {
+      "id": "sec-certifications",
+      "type": "projects",
+      "title": "Certificações",
+      "items": [
+        { "id": "cert-1", "name": "AWS Certified Solutions Architect – Professional", "description": "Obtido em 2021. Foco em arquiteturas complexas, migração para a nuvem e otimização de custos e segurança." },
+        { "id": "cert-2", "name": "Certified Kubernetes Administrator (CKA)", "description": "Cloud Native Computing Foundation. Obtido em 2020." },
+        { "id": "cert-3", "name": "Oracle Certified Professional: Java SE 11 Developer", "description": "Obtido em 2019." }
+      ]
+    },
+    {
+      "id": "sec-publications",
+      "type": "projects",
+      "title": "Publicações & Palestras",
+      "items": [
+        { "id": "pub-1", "name": "Palestra: Escalando Microsserviços na Prática", "description": "Apresentação no QCon São Paulo (2022) para um público de mais de 500 desenvolvedores, demonstrando casos reais de falhas e recuperações em sistemas distribuídos." },
+        { "id": "pub-2", "name": "Artigo: O fim do Monolito - Quando (não) migrar para Microsserviços", "description": "Publicado no InfoQ Brasil. Análise profunda sobre os trade-offs arquiteturais na decisão de dividir sistemas." }
+      ]
+    }
+  ]
+}

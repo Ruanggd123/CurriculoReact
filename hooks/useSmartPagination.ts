@@ -13,68 +13,74 @@ import React, { useEffect } from 'react';
 export const useSmartPagination = (containerRef: React.RefObject<HTMLElement>, enabled: boolean = true) => {
     useEffect(() => {
         if (!enabled || !containerRef.current) return;
-
         const container = containerRef.current;
-        const PAGE_HEIGHT_PX = 1122; // Standard A4 height at 96 DPI
-        const PAGE_MARGIN_TOP_PX = 40; // Visual gap at top of next page (padding)
 
         const calculateLayout = () => {
-            // 1. Reset previous calculations to avoid compounding margins
-            const items = container.querySelectorAll('.break-inside-avoid');
-            items.forEach(item => {
-                (item as HTMLElement).style.marginTop = '';
-                (item as HTMLElement).classList.remove('pushed-to-next-page');
+            // Calcular dinamicamente a altura exata do A4 baseado na largura renderizada
+            const containerRect = container.getBoundingClientRect();
+            // Proporção matemática A4: 297 / 210 = ~1.41428
+            const PAGE_HEIGHT_PX = containerRect.width * (297 / 210); 
+            
+            const TOP_MARGIN = 70;    // Zona de segurança no topo da página (evita colar na borda)
+            const BOTTOM_MARGIN = 50; // Zona de segurança no final da página
+
+            // 1. Reset previous calculations
+            const items = Array.from(container.querySelectorAll('.break-inside-avoid')) as HTMLElement[];
+            items.forEach(el => {
+                el.style.marginTop = '';
+                el.classList.remove('pushed-to-next-page');
             });
 
-            // 2. Re-calculate positions
-            // We must re-query after reset because positions change
-            // Actually, we need to iterate in flow order.
-            const freshItems = container.querySelectorAll('.break-inside-avoid');
-
-            let currentPush = 0; // Track cumulative push to adjust subsequent items? 
-            // No, DOM flow handles subsequent items. We just need to check if *current* item crosses line.
-
-            freshItems.forEach((item) => {
-                const el = item as HTMLElement;
+            // 2. Re-calculate positions sequentially.
+            // Pushing an element down affects all subsequent elements.
+            // By calling getBoundingClientRect in the loop, we force synchronous layout reflow,
+            // ensuring the exact positions are read correctly step by step.
+            
+            for (let i = 0; i < items.length; i++) {
+                const el = items[i];
                 const rect = el.getBoundingClientRect();
                 const containerRect = container.getBoundingClientRect();
 
-                // Relative Top from container start
                 const relativeTop = rect.top - containerRect.top;
                 const height = rect.height;
                 const relativeBottom = relativeTop + height;
 
-                // Find which page this item STARTS on
-                const startPage = Math.floor(relativeTop / PAGE_HEIGHT_PX);
-
-                // Find which page this item ENDS on
-                const endPage = Math.floor(relativeBottom / PAGE_HEIGHT_PX);
-
-                // If it crosses a page boundary
-                if (startPage !== endPage) {
-                    // Check if it's too big for a single page (ignore huge items)
-                    if (height < PAGE_HEIGHT_PX) {
-                        // Push to next page start + Visual Gap offset
-                        // The separator is centered at the break. 
-                        // Break logic: Item crosses 'startPage * 1123'. 
-                        // We want to push it to '(startPage + 1) * 1123 + GAP'.
-
-                        const nextPageStart = (startPage + 1) * PAGE_HEIGHT_PX;
-                        // Add extra buffer so it visually clears the "Cut" bar (40px height + margins)
-                        const VISUAL_SEPARATOR_HEIGHT = 60;
-
-                        const pushNeeded = nextPageStart - relativeTop + VISUAL_SEPARATOR_HEIGHT;
-
-                        el.style.marginTop = `${pushNeeded}px`;
-                        el.classList.add('pushed-to-next-page');
-
-                        // Note: Pushing this item downwards affects all subsequent items immediately.
-                        // But for this simplified loop, getting clientRects inside the loop *might* work 
-                        // if browser recalculates layout synchronously (reflow).
-                        // Browsers usually batch, but accessing offsetTop forces reflow.
-                    }
+                if (height > PAGE_HEIGHT_PX - (TOP_MARGIN + BOTTOM_MARGIN)) {
+                    continue; // Elemento é maior que uma página inteira, ignora
                 }
-            });
+
+                const startPage = Math.floor(relativeTop / PAGE_HEIGHT_PX);
+                const endPage = Math.floor(relativeBottom / PAGE_HEIGHT_PX);
+                
+                const offsetInPageTop = relativeTop % PAGE_HEIGHT_PX;
+                const offsetInPageBottom = relativeBottom % PAGE_HEIGHT_PX;
+
+                let needsPush = false;
+                let targetTop = relativeTop;
+
+                // Se o elemento cruza a quebra de página OU se o pé dele invade a margem inferior
+                if (startPage !== endPage || offsetInPageBottom > (PAGE_HEIGHT_PX - BOTTOM_MARGIN)) {
+                    needsPush = true;
+                    // Joga o elemento para a PRÓXIMA página, respeitando a margem superior
+                    targetTop = (startPage + 1) * PAGE_HEIGHT_PX + TOP_MARGIN;
+                } 
+                // Se o elemento já está na página certa, mas a cabeça dele invade a margem superior
+                else if (offsetInPageTop < TOP_MARGIN) {
+                    needsPush = true;
+                    targetTop = startPage * PAGE_HEIGHT_PX + TOP_MARGIN;
+                }
+
+                if (needsPush) {
+                    // Descobrir a margem existente para somar e evitar colapso total (margin collapse)
+                    const currentStyle = window.getComputedStyle(el);
+                    const currentMarginTop = parseFloat(currentStyle.marginTop) || 0;
+                    
+                    const pushNeeded = targetTop - relativeTop;
+                    
+                    el.style.marginTop = `${pushNeeded + currentMarginTop}px`;
+                    el.classList.add('pushed-to-next-page');
+                }
+            }
         };
 
         // Debounce buffer

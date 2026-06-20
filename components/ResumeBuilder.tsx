@@ -10,8 +10,9 @@ import type { Resume, ResumeData, UiConfig, View } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { createPayment, getConfig, consumeUsage, checkPremiumStatus } from '../services/api';
 import { gerarPDFDemo, gerarPDFPremium } from '../utils/pdfGenerator';
-import { generateA4PDF } from '../utils/a4PdfGenerator';
+import { generateA4PDF, generateResumePDF } from '../utils/a4PdfGenerator';
 import { CodeEditor } from './CodeEditor';
+import { keysService, MASTER_KEY, KeyData } from '../services/keysService';
 
 interface ResumeBuilderProps {
     initialResume: Resume;
@@ -30,6 +31,17 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
     const [isNativePrinting, setIsNativePrinting] = useState(false);
     const [forceWatermark, setForceWatermark] = useState<boolean | null>(null);
+
+    // PDF Preview Modal
+    const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
+    const [pdfFilename, setPdfFilename] = useState<string>('curriculo.pdf');
+
+    // Key System States
+    const [showKeyModal, setShowKeyModal] = useState(false);
+    const [keyInput, setKeyInput] = useState('');
+    const [isAdminMode, setIsAdminMode] = useState(false);
+    const [isKeyProcessing, setIsKeyProcessing] = useState(false);
+    const [adminKeys, setAdminKeys] = useState<KeyData[]>([]);
 
     // Mobile specific state
     const [isMobile, setIsMobile] = useState(false);
@@ -140,46 +152,84 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
     };
 
     const handleDownloadClick = async () => {
-        // --- NATIVE PRINT STRATEGY (High Fidelity, No Server) ---
-        setForceWatermark(false);
-        setIsNativePrinting(true);
+        setIsGeneratingPdf(true);
+        addToast("Capturando layout em alta resolução...", "info");
 
-        setTimeout(() => {
-            const original = document.getElementById('resume-preview-container');
-            if (!original) {
-                addToast("Erro: Currículo não encontrado.", "error");
-                setIsNativePrinting(false);
-                return;
+        try {
+            const cleanName = resumeData.personal.name.replace(/[^a-zA-Z0-9]/g, '_') || 'curriculo';
+            const filename = `curriculo_${cleanName}.pdf`;
+            
+            // Chama o novo gerador nativo (que agora retorna o Blob)
+            const blob = await generateResumePDF('resume-preview-container');
+            const url = URL.createObjectURL(blob);
+            
+            setPdfPreviewUrl(url);
+            setPdfFilename(filename);
+            
+            addToast("Pré-visualização gerada com sucesso!", "success");
+        } catch (error) {
+            console.error("Erro ao capturar PDF:", error);
+            addToast("Erro ao gerar a visualização. Tente novamente.", "error");
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
+
+    const executeDownload = () => {
+        if (!pdfPreviewUrl) return;
+        const link = document.createElement('a');
+        link.href = pdfPreviewUrl;
+        link.download = pdfFilename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => { document.body.removeChild(link); }, 200);
+        addToast("Download iniciado!", "success");
+        setShowKeyModal(false);
+        setKeyInput('');
+        setIsAdminMode(false);
+    };
+
+    const handleKeySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!keyInput.trim()) return;
+
+        setIsKeyProcessing(true);
+        try {
+            if (keyInput.trim() === MASTER_KEY) {
+                // Admin Mode
+                setIsAdminMode(true);
+                const keys = await keysService.listKeys();
+                setAdminKeys(keys);
+                addToast("Modo Admin ativado!", "success");
+            } else {
+                // Validate Normal Key
+                const isValid = await keysService.validateAndUseKey(keyInput.trim());
+                if (isValid) {
+                    addToast("Key validada com sucesso!", "success");
+                    executeDownload();
+                } else {
+                    addToast("Key inválida ou já utilizada.", "error");
+                }
             }
+        } catch (error) {
+            addToast("Erro ao validar Key.", "error");
+        } finally {
+            setIsKeyProcessing(false);
+        }
+    };
 
-            let mount = document.getElementById('print-mount');
-            if (!mount) {
-                mount = document.createElement('div');
-                mount.id = 'print-mount';
-                document.body.appendChild(mount);
-            }
-            mount.innerHTML = '';
-
-            const clone = original.cloneNode(true) as HTMLElement;
-            clone.style.transform = 'none';
-            clone.style.margin = '0';
-            clone.style.padding = '0';
-            clone.style.position = 'absolute';
-            clone.style.left = '0';
-            clone.style.top = '0';
-            clone.style.width = '100%';
-            clone.style.boxShadow = 'none';
-            clone.style.border = 'none';
-
-            mount.appendChild(clone);
-            window.print();
-
-            setTimeout(() => {
-                mount!.innerHTML = '';
-                setIsNativePrinting(false);
-            }, 500);
-
-        }, 500);
+    const handleGenerateKey = async () => {
+        setIsKeyProcessing(true);
+        try {
+            await keysService.generateNewKey();
+            const keys = await keysService.listKeys();
+            setAdminKeys(keys);
+            addToast(`Nova Key gerada!`, "success");
+        } catch (error) {
+            addToast("Erro ao gerar nova Key.", "error");
+        } finally {
+            setIsKeyProcessing(false);
+        }
     };
 
     const handleFreeDownload = () => {
@@ -354,8 +404,11 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                             isMobile={true}
                         />
                     ) : (
-                        <div className="p-4 flex justify-center bg-gray-900/50 min-h-full">
-                            <div className="my-auto scale-[0.45] sm:scale-[0.6] origin-top transform-gpu">
+                        <div className="p-4 flex justify-center items-start bg-gray-900/50 min-h-full overflow-auto">
+                            <div
+                                className="origin-top transform-gpu mt-4"
+                                style={{ scale: '0.45' }}
+                            >
                                 <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
                             </div>
                         </div>
@@ -452,9 +505,18 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         </button>
                     </div>
                 </div>
-                <div className="flex-1 overflow-auto p-8 flex justify-center bg-[#0f172a] relative custom-scrollbar">
+                <div className="flex-1 overflow-auto p-8 flex justify-center items-start bg-[#0f172a] relative custom-scrollbar">
                     {viewMode === 'visual' ? (
-                        <div id="preview-wrapper" className="my-auto">
+                        <div
+                            id="preview-wrapper"
+                            className="origin-top transform-gpu"
+                            style={{
+                                /* Escala o preview A4 para caber na tela do editor sem scroll horizontal */
+                                /* Calcula proporcionalmente ao container disponível */
+                                scale: '0.75',
+                                marginBottom: '-12%'
+                            }}
+                        >
                             <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
                         </div>
                     ) : (
@@ -505,6 +567,130 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                     </div>
                 </div>
             </div>)}
+
+            {/* Modal de Pré-visualização do PDF */}
+            {pdfPreviewUrl && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md p-4 lg:p-10 animate-fade-in">
+                    <div className="bg-slate-800 rounded-2xl w-full max-w-6xl h-full max-h-[95vh] flex flex-col overflow-hidden shadow-2xl border border-slate-700/50">
+                        <div className="flex items-center justify-between p-4 border-b border-slate-700/50 bg-slate-800/80">
+                            <div>
+                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <DocumentTextIcon className="w-6 h-6 text-blue-400" /> 
+                                    Pré-visualização do PDF
+                                </h3>
+                                <p className="text-sm text-slate-400 mt-1">Verifique as margens e a resolução antes de baixar.</p>
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    URL.revokeObjectURL(pdfPreviewUrl);
+                                    setPdfPreviewUrl(null);
+                                }} 
+                                className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        
+                        <div className="flex-1 bg-slate-950 p-2 md:p-6 overflow-hidden">
+                            <iframe 
+                                src={`${pdfPreviewUrl}#toolbar=0`} 
+                                className="w-full h-full rounded-xl border border-slate-800 bg-white shadow-inner" 
+                                title="Visualização do Currículo"
+                            />
+                        </div>
+                        
+                        <div className="p-4 border-t border-slate-700/50 flex justify-end gap-4 bg-slate-800/80">
+                            <button 
+                                onClick={() => {
+                                    URL.revokeObjectURL(pdfPreviewUrl);
+                                    setPdfPreviewUrl(null);
+                                }} 
+                                className="px-5 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 font-medium transition-colors"
+                            >
+                                Voltar ao Editor
+                            </button>
+                                <button 
+                                onClick={() => setShowKeyModal(true)} 
+                                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white rounded-lg font-bold shadow-lg shadow-blue-900/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
+                            >
+                                <DownloadIcon className="w-5 h-5" /> Confirmar Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Validação de Key / Admin */}
+            {showKeyModal && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/90 backdrop-blur-md p-4 animate-fade-in">
+                    <div className="bg-slate-800 rounded-2xl w-full max-w-md flex flex-col overflow-hidden shadow-2xl border border-slate-700/50 p-6 relative">
+                        <button onClick={() => { setShowKeyModal(false); setIsAdminMode(false); setKeyInput(''); }} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                        
+                        {!isAdminMode ? (
+                            <form onSubmit={handleKeySubmit} className="space-y-6">
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-white">Chave de Acesso</h3>
+                                    <p className="text-slate-400 mt-2 text-sm">Insira sua Key única para liberar o download do currículo.</p>
+                                </div>
+                                <div>
+                                    <input 
+                                        type="text" 
+                                        value={keyInput} 
+                                        onChange={e => setKeyInput(e.target.value)} 
+                                        placeholder="EX: A1B2-C3D4-E5F6"
+                                        className="w-full bg-slate-900/50 border border-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-center text-lg tracking-widest font-mono uppercase"
+                                        autoFocus
+                                        required
+                                    />
+                                </div>
+                                <button 
+                                    type="submit" 
+                                    disabled={isKeyProcessing}
+                                    className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white py-3 rounded-lg font-bold shadow-lg shadow-blue-900/30 transition-all disabled:opacity-50 disabled:cursor-wait"
+                                >
+                                    {isKeyProcessing ? 'Validando...' : 'Liberar Download'}
+                                </button>
+                            </form>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-emerald-400">Painel Admin</h3>
+                                    <p className="text-slate-400 mt-2 text-sm">Gerenciador de Chaves de Acesso</p>
+                                </div>
+                                <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700 max-h-48 overflow-y-auto space-y-2">
+                                    {adminKeys.length === 0 ? (
+                                        <p className="text-slate-500 text-center text-sm">Nenhuma chave gerada ainda.</p>
+                                    ) : (
+                                        adminKeys.slice().reverse().map(k => (
+                                            <div key={k.id} className="flex items-center justify-between bg-slate-800 p-2 rounded border border-slate-700/50">
+                                                <span className="font-mono text-sm text-slate-300">{k.id}</span>
+                                                <span className={`text-xs px-2 py-1 rounded-full ${k.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                                    {k.status === 'active' ? 'Ativa' : 'Usada'}
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                                <button 
+                                    onClick={handleGenerateKey}
+                                    disabled={isKeyProcessing}
+                                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-lg font-bold shadow-lg shadow-emerald-900/30 transition-all disabled:opacity-50"
+                                >
+                                    {isKeyProcessing ? 'Gerando...' : 'Gerar Nova Key'}
+                                </button>
+                                <button 
+                                    onClick={executeDownload}
+                                    className="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-lg font-medium transition-all"
+                                >
+                                    Fazer Download como Admin
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

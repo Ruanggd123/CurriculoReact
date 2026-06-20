@@ -3,14 +3,14 @@ import { generateId } from './utils';
 
 export const initialResumeData: ResumeData = {
   personal: {
-    name: 'João Silva',
-    jobTitle: 'Engenheiro de Software Sênior | Tech Lead',
-    email: 'joao.silva@techmail.com',
-    phone: '(11) 99876-5432',
-    location: 'São Paulo, SP, Brasil',
-    linkedin: 'linkedin.com/in/joaosilva-dev',
-    github: 'github.com/joaosilva',
-    website: 'joaosilva.dev',
+    name: 'Ana Carolina Mendes',
+    jobTitle: 'Desenvolvedora Full Stack & UX Designer',
+    email: 'ana.mendes@dev.com.br',
+    phone: '(11) 98765-4321',
+    location: 'São Paulo, SP — Brasil',
+    linkedin: 'linkedin.com/in/ana-carolina-mendes',
+    github: 'github.com/anacarolmendes',
+    website: 'anacarol.dev',
   },
   sections: [
     {
@@ -20,7 +20,7 @@ export const initialResumeData: ResumeData = {
       items: [
         {
           id: generateId(),
-          text: 'Engenheiro de Software altamente qualificado com mais de 8 anos de experiência no ciclo completo de desenvolvimento de software, desde a arquitetura até a implantação. Especialista em sistemas distribuídos de alta escala, arquiteturas de microsserviços e soluções em nuvem (AWS/Azure). Atualmente liderando uma equipe de 10 desenvolvedores na modernização de uma plataforma legada para uma arquitetura baseada em eventos, resultando em uma melhoria de 300% na performance e redução de 40% nos custos operacionais. Apaixonado por código limpo, práticas de DevOps e mentoria técnica.'
+          text: 'Desenvolvedora Full Stack com 6 anos de experiência na criação de produtos digitais que unem código de qualidade com design centrado no usuário. Especialista em React, Node.js e Cloud AWS. Apaixonada por acessibilidade, performance e por transformar ideias complexas em experiências simples e bonitas. Contribuidora ativa em projetos open source e palestrante em meetups de tecnologia.'
         }
       ]
     },
@@ -31,52 +31,46 @@ export const initialResumeData: ResumeData = {
       items: [
         {
           id: generateId(),
-          company: 'TechFin Solutions',
-          role: 'Tech Lead',
-          startDate: '2021-03',
+          company: 'Nubank',
+          role: 'Desenvolvedora Full Stack Sênior',
+          startDate: '2022-03',
           endDate: 'Presente',
-          description: 'Liderança técnica de squads multidisciplinares focados em produtos financeiros. Responsável por decisões arquiteturais críticas, revisão de código e padronização de práticas de engenharia.\n\n• Arquitetei e liderei a migração de um monólito Java legado para microsserviços em Node.js e Go, reduzindo o tempo de deploy de 2 horas para 10 minutos.\n• Implementei pipelines de CI/CD automatizados usando GitHub Actions e Terraform, garantindo entregas contínuas e seguras.\n• Mentoria de desenvolvedores júnior e pleno, estruturando planos de carreira técnica que resultaram na promoção de 3 membros da equipe em 12 meses.'
+          description: 'Desenvolvimento de features de alto impacto para o app de crédito utilizado por +90 milhões de clientes.\n\n• Liderei a migração de componentes legados React Native para a nova design system proprietária, reduzindo o tempo de carregamento de telas em 40%.\n• Arquitetei e implementei uma API GraphQL em Node.js para o módulo de fatura, melhorando o DX do time de frontend.\n• Mentoria técnica de 4 desenvolvedoras júnior, conduzindo code reviews e sessões semanais de pair programming.'
         },
         {
           id: generateId(),
-          company: 'E-Commerce Giant',
-          role: 'Desenvolvedor Backend Sênior',
+          company: 'Hotmart',
+          role: 'Engenheira de Software Plena',
+          startDate: '2019-08',
+          endDate: '2022-02',
+          description: 'Desenvolvimento de plataformas SaaS de ensino digital com foco em performance e escalabilidade.\n\n• Implementei sistema de notificações em tempo real com WebSockets e Redis Pub/Sub, atendendo picos de 50k usuários simultâneos.\n• Refatorei o pipeline de CI/CD no GitLab, reduzindo o tempo de deploy de 45 para 12 minutos.\n• Colaborei diretamente com Product Design para criar e documentar os componentes da nova biblioteca UI compartilhada.'
+        },
+        {
+          id: generateId(),
+          company: 'Agência Digital Criativa',
+          role: 'Desenvolvedora Frontend & UI Designer',
           startDate: '2018-01',
-          endDate: '2021-02',
-          description: 'Desenvolvimento e manutenção de APIs RESTful de alto tráfego atendendo milhões de requisições diárias.\n\n• Otimizei consultas complexas em PostgreSQL e implementei estratégias de cache com Redis, melhorando o tempo de resposta da API de Busca em 50%.\n• Desenvolvi integração com gateways de pagamento (Stripe, PayPal, PIX) garantindo transações seguras e resilientes.\n• Liderei a iniciativa de observabilidade, implementando ELK Stack e Prometheus para monitoramento em tempo real.'
-        },
-        {
-          id: generateId(),
-          company: 'Innovation Labs',
-          role: 'Desenvolvedor Full Stack Pleno',
-          startDate: '2016-06',
-          endDate: '2017-12',
-          description: 'Atuação no desenvolvimento de MVPs para startups incubadas, utilizando React no frontend e Node.js no backend.\n\n• Criei interfaces de usuário responsivas e acessíveis seguindo princípios de Mobile-First.\n• Implementei APIs GraphQL para flexibilizar o consumo de dados pelo frontend.\n• Participei ativamente de rituais ágeis (Scrum), contribuindo para a melhoria contínua dos processos de desenvolvimento.'
-        },
-        {
-          id: generateId(),
-          company: 'Web Agency 360',
-          role: 'Desenvolvedor Júnior',
-          startDate: '2014-06',
-          endDate: '2016-05',
-          description: 'Desenvolvimento de sites institucionais e e-commerces utilizando Wordpress e PHP puro. Colaboração direta com designers para implementação fiel de layouts.\n\n• Manutenção de bases de dados MySQL e otimização de performance de sites.\n• Implementação de temas e plugins customizados para atender requisitos específicos dos clientes.'
+          endDate: '2019-07',
+          description: 'Criação de sites e landing pages de alto nível de conversão para clientes nos segmentos de saúde, educação e varejo.\n\n• Desenvolvi mais de 30 projetos usando Vue.js, garantindo entrega dentro do prazo em 100% dos casos.\n• Conduzi testes de usabilidade com usuários reais, aplicando melhorias que aumentaram a taxa de conversão média em 25%.'
         }
       ]
     },
     {
       id: "projects_section",
       type: 'projects',
-      title: 'Projetos Relevantes',
+      title: 'Projetos em Destaque',
       items: [
         {
           id: generateId(),
-          name: 'Plataforma de Pagamentos Real-Time',
-          description: 'Sistema de processamento de pagamentos capaz de lidar com 10k transações por segundo. Desenvolvido em Go, Kafka e Cassandra. Responsável por desenhar a arquitetura de tolerância a falhas.'
+          name: 'CodeFlow — Plataforma de Ensino de Programação',
+          link: 'github.com/anacarolmendes/codeflow',
+          description: 'Plataforma open source de aprendizado de código com editor online, execução em sandbox isolado (Docker) e trilhas de aprendizado gamificadas. +800 estrelas no GitHub.'
         },
         {
           id: generateId(),
-          name: 'Dashboard de Analytics IoT',
-          description: 'Aplicação Web para visualização de dados de sensores industriais em tempo real. Stack: React, D3.js, WebSockets e AWS IoT Core. Reduziu o tempo de detecção de falhas em maquinário em 85%.'
+          name: 'A11y Scanner — Ferramenta de Acessibilidade Web',
+          link: 'a11y-scanner.vercel.app',
+          description: 'Extensão de navegador que audita páginas em tempo real segundo as diretrizes WCAG 2.1, gerando relatórios com sugestões de correção. Apresentada na JSConf Brasil 2023.'
         }
       ]
     },
@@ -88,38 +82,38 @@ export const initialResumeData: ResumeData = {
         {
           id: generateId(),
           institution: 'Universidade de São Paulo (USP)',
-          degree: 'Mestrado em Ciência da Computação',
-          startDate: '2018-02',
-          endDate: '2020-12',
-          description: 'Foco em Inteligência Artificial e Sistemas Distribuídos. Dissertação sobre Otimização de Alocação de Recursos em Nuvem.'
+          degree: 'Bacharelado em Ciência da Computação',
+          startDate: '2014-02',
+          endDate: '2018-12',
+          description: 'Monitora de Estruturas de Dados e Algoritmos. Participação na equipe da Maratona de Programação ACM-ICPC. TCC focado em acessibilidade em aplicações web.'
         },
         {
           id: generateId(),
-          institution: 'Universidade Federal de Minas Gerais (UFMG)',
-          degree: 'Bacharelado em Engenharia de Sistemas',
-          startDate: '2013-02',
-          endDate: '2017-12',
-          description: 'Participação ativa em projetos de Iniciação Científica e Maratona de Programação. Ênfase em Algoritmos e Estruturas de Dados.'
+          institution: 'Interaction Design Foundation',
+          degree: 'Certificação em UX Design & User Research',
+          startDate: '2020-03',
+          endDate: '2020-09',
+          description: 'Curso intensivo cobrindo toda a metodologia de Design Centrado no Usuário: pesquisa qualitativa, prototipagem e testes de usabilidade.'
         }
       ]
     },
     {
       id: "skills_section",
       type: 'skills',
-      title: 'Competências Técnicas',
+      title: 'Habilidades Técnicas',
       items: [
-        { id: generateId(), name: 'JavaScript / TypeScript' },
-        { id: generateId(), name: 'React.js / Next.js' },
-        { id: generateId(), name: 'Node.js' },
-        { id: generateId(), name: 'Go (Golang)' },
+        { id: generateId(), name: 'React / Next.js' },
+        { id: generateId(), name: 'TypeScript' },
+        { id: generateId(), name: 'Node.js / Express' },
+        { id: generateId(), name: 'GraphQL' },
+        { id: generateId(), name: 'AWS (Lambda, S3, RDS)' },
         { id: generateId(), name: 'Docker & Kubernetes' },
-        { id: generateId(), name: 'AWS & Azure' },
-        { id: generateId(), name: 'SQL (PostgreSQL)' },
-        { id: generateId(), name: 'NoSQL (MongoDB, Redis)' },
-        { id: generateId(), name: 'CI/CD (GitHub Actions)' },
-        { id: generateId(), name: 'Microservices' },
-        { id: generateId(), name: 'System Design' },
-        { id: generateId(), name: 'Clean Architecture' },
+        { id: generateId(), name: 'PostgreSQL / MongoDB' },
+        { id: generateId(), name: 'Figma & Design Systems' },
+        { id: generateId(), name: 'Acessibilidade (WCAG)' },
+        { id: generateId(), name: 'CI/CD (GitLab, GitHub Actions)' },
+        { id: generateId(), name: 'Testes (Jest, Cypress, RTL)' },
+        { id: generateId(), name: 'Python (automações)' },
       ]
     },
     {
@@ -128,28 +122,28 @@ export const initialResumeData: ResumeData = {
       title: 'Idiomas',
       items: [
         { id: generateId(), language: 'Português', proficiency: 'Nativo' },
-        { id: generateId(), language: 'Inglês', proficiency: 'Fluente (C1)' },
-        { id: generateId(), language: 'Espanhol', proficiency: 'Intermediário (B1)' }
+        { id: generateId(), language: 'Inglês', proficiency: 'Avançado (C1)' },
+        { id: generateId(), language: 'Espanhol', proficiency: 'Básico (A2)' }
       ]
     }
   ]
 };
 
 export const initialUiConfig: UiConfig = {
-  template: 'tech', // Changed to tech to match the profile vibe
-  backgroundColor: '#111827', // Dark bg for tech theme
-  accentColor: '#4ade80', // Green accent
+  template: 'modern',
+  backgroundColor: '#ffffff',
+  accentColor: '#6366f1',
   photo: {
-    src: 'https://images.unsplash.com/photo-1556157382-97eda2d622ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    src: 'https://ui-avatars.com/api/?name=Ana+Carolina+Mendes&size=400&background=6366f1&color=ffffff&bold=true&format=svg',
     show: true,
-    style: 'square',
-    position: '50% 20%',
+    style: 'rounded-full',
+    position: '50% 50%',
     zoom: 100,
   },
   sectionSizes: {
-    name: 36,
-    jobTitle: 18,
-    sectionTitle: 24,
+    name: 32,
+    jobTitle: 17,
+    sectionTitle: 18,
     summary: 14,
     experience: 14,
     education: 14,

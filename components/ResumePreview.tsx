@@ -3,7 +3,7 @@ import type { ResumeData, UiConfig, ResumeSection, TemplateOption } from '../typ
 import {
     EmailIcon, PhoneIcon, LocationIcon, LinkedinIcon, WebsiteIcon, LinkIcon,
     StarIcon, TerminalIcon, ChartBarIcon, GlobeAmericasIcon, AcademicCapIcon, BriefcaseIcon,
-    UserIcon, LightBulbIcon, PaletteIcon, CameraIcon, HeartIcon, LeafIcon
+    UserIcon, LightBulbIcon, PaletteIcon, CameraIcon, HeartIcon, LeafIcon, GithubIcon
 } from './icons';
 import { useSmartPagination } from '../hooks/useSmartPagination';
 
@@ -149,13 +149,13 @@ const ContactItem: React.FC<{ icon: React.ReactNode, text: string, link?: string
         {link ? (
             <a
                 href={link}
-                className="truncate block max-w-[200px] align-middle transition-colors duration-200 hover:underline"
+                className="truncate block max-w-[260px] align-middle transition-colors duration-200 hover:underline"
                 style={{ textDecoration: 'none', color: darkTheme ? '#a5b4fc' : accentColor }}
             >
                 {text}
             </a>
         ) : (
-            <span className="truncate block max-w-[200px] align-middle">{text}</span>
+            <span className="truncate block max-w-[260px] align-middle">{text}</span>
         )}
     </div>
 );
@@ -265,8 +265,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
                         {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
                         {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={personal.linkedin} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.website && <ContactItem icon={<WebsiteIcon {...contactIconProps} />} text="Portfólio" link={personal.website} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
                     </div>
                 </div>
                 {photo && config.headerStyle !== 'centered' && <div className="ml-6">{photo}</div>}
@@ -462,8 +463,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
                         {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
                         {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={personal.linkedin} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.website && <ContactItem icon={<WebsiteIcon {...contactIconProps} />} text="Portfólio" link={personal.website} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                        {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
                     </div>
                     {effectiveSideSections.map(s => (
                         <section key={s.id} className="mb-8 resume-section break-inside-avoid">
@@ -487,8 +489,8 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     const isSidebarLayout = config.layout.includes('sidebar');
     const containerClasses = [
         isPrinting
-            ? `w-[210mm] min-h-[297mm] mx-auto relative overflow-visible ${config.bgClass} break-words whitespace-pre-wrap flex flex-col`
-            : `w-[210mm] min-h-[297mm] mx-auto relative overflow-hidden ${config.bgClass} shadow-2xl transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
+            ? `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} break-words whitespace-pre-wrap flex flex-col`
+            : `w-[210mm] mx-auto relative overflow-hidden ${config.bgClass} shadow-2xl transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
     ].join(' ');
 
     const [totalPages, setTotalPages] = React.useState(1);
@@ -497,7 +499,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
         const checkHeight = () => {
             if (containerRef.current) {
                 const heightPx = containerRef.current.scrollHeight;
-                const pageHeight = 1123;
+                const pageHeight = 1123; // A4 height at 96dpi
                 const pages = Math.ceil(heightPx / pageHeight);
                 setTotalPages(Math.max(pages, 1));
             }
@@ -514,24 +516,29 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
             id="resume-preview-container"
             ref={containerRef}
             className={containerClasses}
-            style={{ backgroundColor: activeBgColor, boxSizing: 'border-box' }}
+            style={{ 
+                backgroundColor: activeBgColor, 
+                boxSizing: 'border-box',
+                height: `${totalPages * 297}mm` // FORÇA A ALTURA PARA MÚLTIPLOS DE A4 (garante que o fundo estique até o final)
+            }}
         >
-            {/* Page Separators - Rendered ALWAYS but hidden in print via print:hidden */}
+            {/* Page Separators - Rendered ALWAYS but hidden in print via print:hidden and html2canvas-ignore */}
             {Array.from({ length: totalPages }).map((_, i) => {
                 if (i === 0) return null;
                 return (
                     <div
                         key={i}
-                        className="absolute w-full left-0 z-50 bg-[#0f172a] flex items-center justify-center opacity-100 shadow-inner print:hidden" // Added print:hidden
+                        data-html2canvas-ignore="true"
+                        className="absolute w-full left-0 z-50 bg-[#0f172a] flex items-center justify-center opacity-100 shadow-[0_0_15px_rgba(0,0,0,0.5)] print:hidden"
                         style={{
-                            top: `calc(${i} * 297mm - 10px)`,
+                            top: `calc(${i} * 297mm - 12px)`,
                             height: '24px',
-                            borderTop: '1px solid #334155',
-                            borderBottom: '1px solid #334155'
+                            borderTop: '1px solid #1e293b',
+                            borderBottom: '1px solid #1e293b'
                         }}
                     >
-                        <span className="text-[10px] text-slate-500 font-mono uppercase tracking-widest bg-[#0f172a] px-2 rounded-full">
-                            Fim da Página {i}
+                        <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest bg-[#0f172a] px-3 py-1 rounded-full border border-slate-700 shadow-sm">
+                            Folha {i + 1}
                         </span>
                     </div>
                 );
