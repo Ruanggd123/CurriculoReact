@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { ResumeData, UiConfig, Experience, Education, Skill, ResumeSection, Project, Language, SectionType, PhotoConfig, SummaryItem } from '../types';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon, XMarkIcon, GripVerticalIcon, PencilIcon, ArrowLeftIcon } from './icons';
 import { TemplateThumbnails } from './TemplateThumbnails';
@@ -63,6 +63,32 @@ const AppearanceForm: React.FC<Pick<FormPanelProps, 'uiConfig' | 'setUiConfig'>>
         }
     };
 
+    const [localBgColor, setLocalBgColor] = useState(uiConfig.backgroundColor);
+    const [localAccentColor, setLocalAccentColor] = useState(uiConfig.accentColor);
+    const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Atualiza estados locais se uiConfig mudar externamente
+    useEffect(() => {
+        setLocalBgColor(uiConfig.backgroundColor);
+    }, [uiConfig.backgroundColor]);
+
+    useEffect(() => {
+        setLocalAccentColor(uiConfig.accentColor);
+    }, [uiConfig.accentColor]);
+
+    const handleUiChangeDebounced = (key: keyof UiConfig, value: any) => {
+        if (key === 'backgroundColor') setLocalBgColor(value);
+        if (key === 'accentColor') setLocalAccentColor(value);
+
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+        }
+
+        debounceTimeoutRef.current = setTimeout(() => {
+            setUiConfig(prev => ({ ...prev, [key]: value }), true);
+        }, 80); // Pequeno debounce de 80ms para evitar re-renderizações e layout shift pesados do Preview
+    };
+
     const handleUiChange = (key: keyof UiConfig, value: any) => {
         setUiConfig(prev => ({ ...prev, [key]: value }), true);
     };
@@ -108,15 +134,25 @@ const AppearanceForm: React.FC<Pick<FormPanelProps, 'uiConfig' | 'setUiConfig'>>
                     <div>
                         <label className="block text-sm font-medium mb-1.5 text-gray-300">Cor de Fundo</label>
                         <div className="relative">
-                            <input type="color" value={uiConfig.backgroundColor} onChange={e => handleUiChange('backgroundColor', e.target.value)} className="w-full h-10 p-1 border border-gray-600 rounded-lg cursor-pointer bg-gray-700" />
-                            <span className="absolute top-1/2 left-3 -translate-y-1/2 uppercase text-xs font-mono text-gray-400 pointer-events-none">{uiConfig.backgroundColor}</span>
+                            <input 
+                                type="color" 
+                                value={localBgColor} 
+                                onChange={e => handleUiChangeDebounced('backgroundColor', e.target.value)} 
+                                className="w-full h-10 p-0 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 overflow-hidden" 
+                            />
+                            <span className="absolute top-1/2 left-3 -translate-y-1/2 uppercase text-xs font-mono text-gray-400 pointer-events-none mix-blend-difference">{localBgColor}</span>
                         </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1.5 text-gray-300">Cor de Destaque</label>
                         <div className="relative">
-                            <input type="color" value={uiConfig.accentColor} onChange={e => handleUiChange('accentColor', e.target.value)} className="w-full h-10 p-1 border border-gray-600 rounded-lg cursor-pointer bg-gray-700" />
-                            <span className="absolute top-1/2 left-3 -translate-y-1/2 uppercase text-xs font-mono text-gray-400 pointer-events-none">{uiConfig.accentColor}</span>
+                            <input 
+                                type="color" 
+                                value={localAccentColor} 
+                                onChange={e => handleUiChangeDebounced('accentColor', e.target.value)} 
+                                className="w-full h-10 p-0 border border-gray-600 rounded-lg cursor-pointer bg-gray-700 overflow-hidden" 
+                            />
+                            <span className="absolute top-1/2 left-3 -translate-y-1/2 uppercase text-xs font-mono text-gray-400 pointer-events-none mix-blend-difference">{localAccentColor}</span>
                         </div>
                     </div>
                 </div>
