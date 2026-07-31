@@ -544,14 +544,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 );
             })}
 
-            {/* Watermark moved logic */}
-            {showWatermark && (
-                <div className={`absolute bottom-8 right-8 opacity-50 z-10 pointer-events-none ${isDarkBg ? 'text-white' : 'text-slate-400'}`}>
-                    <div className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-                        <span>CurriculumPro Studio</span>
-                    </div>
-                </div>
-            )}
+
 
             {isSidebarLayout ? renderSidebarLayout(config.layout === 'sidebar-left' ? 'left' : 'right') : renderStandardLayout()}
         </div>

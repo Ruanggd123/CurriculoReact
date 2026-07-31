@@ -270,9 +270,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
     }
   };
 
-  const shouldShowWatermark = forceWatermark !== null 
-        ? forceWatermark 
-        : (user?.subscriptionStatus !== 'pro' && !hasPaidSession);
+  const shouldShowWatermark = false;
   
   const handleMobileNav = (view: 'edit' | 'design' | 'preview') => {
     if (view === 'edit') {

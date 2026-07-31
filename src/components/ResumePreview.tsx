@@ -504,18 +504,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
 
             {isSidebarLayout ? renderSidebarLayout(config.layout === 'sidebar-left' ? 'left' : 'right') : renderStandardLayout()}
             
-            {showWatermark && (
-                 <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center overflow-hidden no-print-export select-none">
-                     <div className={`transform -rotate-45 flex flex-col items-center justify-center bg-transparent backdrop-blur-[1px] ${watermarkBaseClasses} ${watermarkBorderColor}`}>
-                          <div className={`text-6xl md:text-[80px] font-black uppercase tracking-[0.2em] whitespace-nowrap leading-none ${watermarkTextColor}`}>
-                              VERSÃO GRATUITA
-                          </div>
-                          <div className={`text-xl md:text-2xl font-bold uppercase tracking-widest mt-4 ${watermarkTextColor}`}>
-                              CRIADO COM CURRICULUM PRO
-                          </div>
-                     </div>
-                 </div>
-            )}
+
         </div>
     );
 });
