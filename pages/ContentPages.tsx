@@ -545,11 +545,11 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                         Aprovado por +10.000 Profissionais
                     </div>
                     <div className="relative mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                        <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white leading-tight relative z-10">
+                        <h1 className="text-3xl sm:text-5xl md:text-8xl font-black tracking-tighter text-white leading-tight relative z-10">
                             Crie um Currículo <span className="text-blue-400">Vencedor</span>
                         </h1>
                     </div>
-                    <p className="text-xl md:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-900">
+                    <p className="text-base sm:text-xl md:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-900">
                         A plataforma que une <span className="text-white font-semibold">Design Premium</span> e <span className="text-white font-semibold">Facilidade</span> para você conquistar a vaga dos seus sonhos.
                     </p>
                     
