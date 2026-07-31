@@ -63,12 +63,13 @@ function wrapCapturedHtml(html: string, uiConfig: UiConfig, demo: boolean): stri
         .mb-8 { margin-bottom: 1.25rem !important; }
         .mb-10 { margin-bottom: 1.5rem !important; }
         
-        /* Remove margem do último elemento para evitar overflow */
-        section:last-of-type, .resume-section:last-of-type, .resume-item:last-of-type {
-            margin-bottom: 0 !important;
+        /* Garante espaçamento e alinhamento perfeito nos badges de habilidades no PDF */
+        .resume-section span {
+            box-sizing: border-box !important;
+            line-height: 1.5 !important;
+            display: inline-flex !important;
+            align-items: center !important;
         }
-
-    /* Estilos da Marca d'água REMOVIDOS */
 
     </style>
     `;

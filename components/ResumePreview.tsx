@@ -403,7 +403,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     {s.type === 'skills' ? (
                         <div className="flex flex-wrap gap-2 items-center">
                             {s.items.map((item: any) => (
-                                <span key={item.id} className={`px-2.5 py-1 text-sm rounded-md font-medium flex items-center justify-center ${config.id === 'tech' ? 'bg-gray-800 border border-green-900 font-mono text-xs text-green-400' : 'bg-slate-100 text-slate-700'}`}>
+                                <span key={item.id} className={`px-3 py-1.5 text-sm rounded-md font-medium inline-flex items-center max-w-full leading-relaxed break-words ${config.id === 'tech' ? 'bg-gray-800/90 border border-green-700/60 font-mono text-xs text-green-400 shadow-sm' : 'bg-slate-100 text-slate-700'}`}>
                                     {item.name}
                                 </span>
                             ))}
