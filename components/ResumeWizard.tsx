@@ -6,6 +6,7 @@ import {
     EmailIcon, PhoneIcon, LocationIcon, LinkedinIcon, GithubIcon
 } from './icons';
 import { generateId } from '../utils';
+import { TemplateThumbnails } from './TemplateThumbnails';
 
 interface ResumeWizardProps {
     onComplete: (data: ResumeData, ui: UiConfig) => void;
@@ -126,13 +127,6 @@ const CAREER_AREAS = [
     },
 ];
 
-const TEMPLATE_OPTIONS: { id: TemplateOption; name: string; tag: string; desc: string }[] = [
-    { id: 'modern', name: 'Moderno Tech', tag: 'Mais Escolhido', desc: 'Barra lateral de destaque com contraste premium, ideal para Tech e Inovação.' },
-    { id: 'executive', name: 'Executivo Luxo', tag: 'Alta Gestão', desc: 'Tipografia serifada imponente e layout clássico de liderança corporativa.' },
-    { id: 'tech', name: 'Dev & Dark Mode', tag: 'ATS 99%', desc: 'Estilo terminal elegante para programadores, dados e engenharia.' },
-    { id: 'creative', name: 'Criativo Studio', tag: 'Design & Criação', desc: 'Gradientes modernos e chips visuais para portfolios e marketing.' },
-    { id: 'classic', name: 'Clássico Tradicional', tag: 'Universal RH', desc: 'Formatação padrão global que passa sem atrito em qualquer sistema de triagem.' },
-];
 
 const ACCENT_COLORS = [
     { label: 'Azul Real', value: '#2563eb' },
@@ -1561,42 +1555,28 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                 </p>
                             </div>
 
-                            {/* Template Cards */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                                {TEMPLATE_OPTIONS.map(tpl => {
-                                    const isSelected = selectedTemplate === tpl.id;
-                                    return (
-                                        <button
-                                            key={tpl.id}
-                                            type="button"
-                                            onClick={() => setSelectedTemplate(tpl.id)}
-                                            className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between ${
-                                                isSelected 
-                                                    ? 'bg-blue-600/20 border-blue-500 ring-2 ring-blue-500/50 shadow-xl font-bold' 
-                                                    : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
-                                            }`}
-                                        >
-                                            <div>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <span className="text-sm font-bold text-white">{tpl.name}</span>
-                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                                                        {tpl.tag}
-                                                    </span>
-                                                </div>
-                                                <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                                                    {tpl.desc}
-                                                </p>
-                                            </div>
+                            {/* Template Thumbnails Gallery (All 35+ models with category filters and realistic visual previews) */}
+                            <div className="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
+                                    <div>
+                                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                                            <SparklesIcon className="w-4 h-4 text-blue-400" />
+                                            Galeria Completa de Modelos (35+ Modelos Otimizados)
+                                        </h3>
+                                        <p className="text-xs text-slate-400">
+                                            Selecione por área (TI, Executivo, Criativo, Saúde, Negócios...) e veja o layout em miniatura.
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2 self-start sm:self-auto bg-blue-950/60 border border-blue-800/50 px-3.5 py-1.5 rounded-xl">
+                                        <span className="text-xs text-slate-400 font-medium">Modelo atual:</span>
+                                        <span className="text-xs font-black text-blue-300 capitalize">{selectedTemplate}</span>
+                                    </div>
+                                </div>
 
-                                            <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold">
-                                                <span className={isSelected ? 'text-blue-400 font-bold' : 'text-slate-500'}>
-                                                    {isSelected ? '✓ Selecionado' : 'Selecionar'}
-                                                </span>
-                                                <div className="w-3.5 h-3.5 rounded-full shadow" style={{ backgroundColor: selectedColor }}></div>
-                                            </div>
-                                        </button>
-                                    );
-                                })}
+                                <TemplateThumbnails 
+                                    currentTemplate={selectedTemplate} 
+                                    onSelectTemplate={(tpl) => setSelectedTemplate(tpl)} 
+                                />
                             </div>
 
                             {/* Color Accent Selector */}

@@ -102,7 +102,7 @@ const AppContent: React.FC = () => {
         });
     }, []);
 
-    const handleApplyTemplate = (template: TemplateOption) => {
+    const handleApplyTemplate = (template: TemplateOption, targetView: View = 'builder') => {
         const targetId = activeResumeId || resumes[0]?.id;
 
         if (targetId) {
@@ -129,7 +129,7 @@ const AppContent: React.FC = () => {
             setActiveResumeId(newResume.id);
         }
 
-        setCurrentView('builder');
+        setCurrentView(targetView);
     };
 
     const handleWizardComplete = (data: ResumeData, ui: UiConfig) => {

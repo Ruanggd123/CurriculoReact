@@ -14,7 +14,7 @@ import { generateId } from '../utils';
 
 interface PageComponentProps {
   setCurrentView?: (view: View) => void;
-  onApplyTemplate?: (template: TemplateOption) => void;
+  onApplyTemplate?: (template: TemplateOption, targetView?: View) => void;
 }
 
 // ==================== SHARED COMPONENTS ====================
@@ -621,39 +621,84 @@ export const MyResumesPage: React.FC<MyResumesPageProps> = ({ setCurrentView, re
 
 export const TemplatesPage: React.FC<PageComponentProps> = ({ setCurrentView, onApplyTemplate }) => {
     const { user } = useAuth();
-    const [selectedTemplate, setSelectedTemplate] = useState<TemplateOption>('classic');
+    const [selectedTemplate, setSelectedTemplate] = useState<TemplateOption>('modern');
 
     const handleSelect = (template: TemplateOption) => {
         setSelectedTemplate(template);
     };
     
-    const handleConfirm = () => {
+    const handleUseWithWizard = () => {
         if (onApplyTemplate) {
-            onApplyTemplate(selectedTemplate);
+            onApplyTemplate(selectedTemplate, 'wizard');
         } else {
-            // Fallback
+            setCurrentView?.('wizard');
+        }
+    };
+
+    const handleUseWithBuilder = () => {
+        if (onApplyTemplate) {
+            onApplyTemplate(selectedTemplate, 'builder');
+        } else {
             setCurrentView?.('builder');
         }
-    }
+    };
     
     return (
-    <PageWrapper>
-        <PageHeader title="Todos os Modelos" subtitle="Uma galeria completa para cada etapa da sua carreira." />
-        <div className="glass p-8 rounded-3xl border border-white/10 shadow-2xl bg-slate-900/50">
-             <TemplateThumbnails currentTemplate={selectedTemplate} onSelectTemplate={handleSelect} />
-             <div className="mt-10 text-center">
-                <button 
-                    onClick={handleConfirm} 
-                    className="group px-10 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base rounded-2xl shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 inline-flex items-center justify-center gap-2.5"
+        <PageWrapper>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <button
+                    onClick={() => setCurrentView?.('home')}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all self-start"
                 >
-                    <SparklesIcon className="w-5 h-5 text-blue-200" />
-                    <span>Usar Este Modelo no Editor</span>
-                    <span className="text-blue-200 group-hover:translate-x-1 transition-transform">→</span>
+                    ← Voltar ao Início
                 </button>
-             </div>
-        </div>
-    </PageWrapper>
-)};
+                <div className="flex items-center gap-2 bg-blue-950/60 border border-blue-800/50 px-4 py-2 rounded-xl text-xs font-semibold text-blue-300 self-start sm:self-auto">
+                    <span>Modelo selecionado:</span>
+                    <strong className="text-white capitalize">{selectedTemplate}</strong>
+                </div>
+            </div>
+
+            <PageHeader 
+                title="Catálogo Geral de Modelos" 
+                subtitle="Explore todos os 35+ modelos profissionais otimizados para triagem ATS e desenhados para cada área de atuação." 
+            />
+            
+            <div className="p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl bg-slate-900/70 backdrop-blur-xl space-y-8">
+                <TemplateThumbnails currentTemplate={selectedTemplate} onSelectTemplate={handleSelect} />
+
+                {/* Bottom Actions Bar */}
+                <div className="pt-6 border-t border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-5">
+                    <div className="text-center lg:text-left">
+                        <div className="text-base font-bold text-white">
+                            Pronto para usar o modelo <span className="text-blue-400 capitalize">"{selectedTemplate}"</span>?
+                        </div>
+                        <div className="text-xs text-slate-400">
+                            Crie de forma guiada respondendo às perguntas do assistente ou abra diretamente a folha para editar como quiser.
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                        <button 
+                            onClick={handleUseWithWizard} 
+                            className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-blue-600/30 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <SparklesIcon className="w-4 h-4 text-blue-200 animate-pulse" />
+                            <span>Criar com Assistente Guiado (Recomendado)</span>
+                            <span>→</span>
+                        </button>
+
+                        <button 
+                            onClick={handleUseWithBuilder} 
+                            className="w-full sm:w-auto px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-sm rounded-2xl border border-slate-700 hover:border-slate-600 transition-all active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <span>Abrir Direto no Editor</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </PageWrapper>
+    );
+};
 
 export const PlansPage: React.FC<PageComponentProps> = ({ setCurrentView }) => {
     const { user, updateSubscription } = useAuth();
@@ -726,12 +771,14 @@ export const PlansPage: React.FC<PageComponentProps> = ({ setCurrentView }) => {
 
 export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView, onApplyTemplate }) => {
     const [showModeModal, setShowModeModal] = useState(false);
+    const [selectedModalTemplate, setSelectedModalTemplate] = useState<TemplateOption | null>(null);
 
     const handleAction = (template?: TemplateOption) => {
-        if (template && onApplyTemplate) {
-            onApplyTemplate(template);
-        } else {
+        if (template) {
+            setSelectedModalTemplate(template);
             setShowModeModal(true);
+        } else {
+            setCurrentView?.('templates');
         }
     };
     
@@ -832,10 +879,11 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                         </button>
                         
                         <button
-                            onClick={() => handleAction()}
-                            className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-600 hover:border-slate-500 shadow-lg flex items-center justify-center gap-2"
+                            onClick={() => setCurrentView?.('templates')}
+                            className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-600 hover:border-slate-500 shadow-lg flex items-center justify-center gap-2 group"
                         >
-                            <span>Ver Opções & Modelos</span>
+                            <span>Ver Todos os Modelos (35+)</span>
+                            <span className="text-slate-400 group-hover:text-white transition-colors">→</span>
                         </button>
                     </div>
 
@@ -1008,6 +1056,17 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                     </div>
 
                     <TemplateShowcaseCarousel onSelect={handleAction} />
+
+                    <div className="mt-12 text-center">
+                        <button
+                            onClick={() => setCurrentView?.('templates')}
+                            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950/50 to-slate-900 border-2 border-blue-500/40 hover:border-blue-400 text-white font-bold text-sm sm:text-base shadow-xl hover:shadow-blue-500/20 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 group"
+                        >
+                            <SparklesIcon className="w-5 h-5 text-blue-400 group-hover:scale-110 transition-transform" />
+                            <span>Ver Todos os 35+ Modelos em Galeria Completa por Área</span>
+                            <span className="text-blue-400 group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -1266,11 +1325,20 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                         </button>
 
                         <div className="space-y-2 text-left">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
-                                Iniciar Criação
-                            </span>
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                    Iniciar Criação
+                                </span>
+                                {selectedModalTemplate && (
+                                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                                        Modelo: {selectedModalTemplate}
+                                    </span>
+                                )}
+                            </div>
                             <h3 className="text-2xl font-black text-white tracking-tight">
-                                Como você prefere criar seu currículo?
+                                {selectedModalTemplate 
+                                    ? `Como deseja prosseguir com o modelo ${selectedModalTemplate}?` 
+                                    : 'Como você prefere criar seu currículo?'}
                             </h3>
                             <p className="text-sm text-slate-400">
                                 Escolha a experiência ideal para você. Você poderá alternar e personalizar tudo depois.
@@ -1282,7 +1350,11 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                             <button
                                 onClick={() => {
                                     setShowModeModal(false);
-                                    setCurrentView?.('wizard');
+                                    if (selectedModalTemplate && onApplyTemplate) {
+                                        onApplyTemplate(selectedModalTemplate, 'wizard');
+                                    } else {
+                                        setCurrentView?.('wizard');
+                                    }
                                 }}
                                 className="w-full text-left p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-indigo-950/40 to-slate-900 border-2 border-blue-500/70 hover:border-blue-400 transition-all duration-200 group shadow-lg shadow-blue-500/15 relative overflow-hidden"
                             >
@@ -1308,7 +1380,11 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                             <button
                                 onClick={() => {
                                     setShowModeModal(false);
-                                    setCurrentView?.('builder');
+                                    if (selectedModalTemplate && onApplyTemplate) {
+                                        onApplyTemplate(selectedModalTemplate, 'builder');
+                                    } else {
+                                        setCurrentView?.('builder');
+                                    }
                                 }}
                                 className="w-full text-left p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 hover:bg-slate-900 transition-all duration-200 group"
                             >
