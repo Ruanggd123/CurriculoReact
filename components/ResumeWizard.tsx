@@ -329,14 +329,6 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
         setExperiences(updated);
     };
 
-    const handleInsertBulletPoint = (text: string) => {
-        if (experiences.length === 0) return;
-        const currentDesc = experiences[editingExpIndex]?.description || '';
-        const bulletText = `• ${text}`;
-        const newDesc = currentDesc ? `${currentDesc}\n${bulletText}` : bulletText;
-        handleUpdateExperience('description', newDesc);
-    };
-
     // Education helpers
     const handleAddEducation = () => {
         const newEdu: Education = {
@@ -496,9 +488,8 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
         onComplete(compiledData, compiledUi);
     };
 
-    // Conquistas sugeridas para a área atual
+    // Área atual selecionada para sugestões de skills
     const currentAreaObj = CAREER_AREAS.find(a => a.id === selectedAreaId);
-    const currentSuggestions = currentAreaObj?.achievements || CAREER_AREAS[0].achievements;
 
     // ==================== LIVE MINI PREVIEW COMPONENT ====================
     const LiveMiniPreviewCard = () => (
@@ -1113,41 +1104,20 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                                 </div>
                                             </div>
 
-                                            {/* Quantified Achievements Suggestions */}
-                                            <div className="bg-slate-950/90 border border-slate-800/90 p-4 rounded-xl space-y-2.5">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-xs font-bold text-blue-300 flex items-center gap-1.5">
-                                                        <SparklesIcon className="w-4 h-4 text-blue-400" />
-                                                        Conquistas com Métricas (clique para adicionar à descrição):
-                                                    </span>
-                                                    <span className="text-[10px] text-slate-500">Padrão Google XYZ</span>
-                                                </div>
-                                                <div className="flex flex-col gap-1.5">
-                                                    {currentSuggestions.map((sug, i) => (
-                                                        <button
-                                                            key={i}
-                                                            type="button"
-                                                            onClick={() => handleInsertBulletPoint(sug)}
-                                                            className="text-left text-xs bg-slate-900 hover:bg-blue-600/20 border border-slate-800 hover:border-blue-500/50 p-2.5 rounded-lg text-slate-300 hover:text-white transition-all flex items-start gap-2 group"
-                                                        >
-                                                            <span className="text-blue-400 font-bold group-hover:scale-125 transition-transform shrink-0">+</span>
-                                                            <span className="leading-relaxed">{sug}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-
                                             {/* Description field */}
                                             <div>
-                                                <label className="block text-xs font-bold text-slate-300 mb-1">
-                                                    Descrição das Atividades e Conquistas:
-                                                </label>
+                                                <div className="flex justify-between items-baseline mb-1.5">
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                                        Descrição das Atividades / Conquistas: <span className="text-slate-500 font-normal">(Opcional)</span>
+                                                    </label>
+                                                    <span className="text-[11px] text-slate-500">Escreva em tópicos ou parágrafo livre</span>
+                                                </div>
                                                 <textarea
                                                     rows={4}
                                                     value={experiences[editingExpIndex].description}
                                                     onChange={(e) => handleUpdateExperience('description', e.target.value)}
-                                                    placeholder="Digite suas conquistas ou clique nas sugestões acima com métricas..."
-                                                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 outline-none leading-relaxed"
+                                                    placeholder="Descreva suas principais atividades, projetos realizados ou conquistas nesta empresa..."
+                                                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none leading-relaxed transition-all placeholder-slate-500 font-normal"
                                                 />
                                             </div>
                                         </div>
