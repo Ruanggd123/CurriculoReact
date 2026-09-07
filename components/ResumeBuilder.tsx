@@ -455,7 +455,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
     };
 
     const MobileBottomNav = () => (
-        <div className={`md:hidden fixed bottom-0 left-0 right-0 h-16 bg-gray-900/95 backdrop-blur-md border-t border-gray-700/60 flex justify-around items-center z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.3)] transition-transform duration-300 ${isKeyboardVisible ? 'translate-y-full' : 'translate-y-0'}`} data-tour="mobile-bottom-nav">
+        <div className={`md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/80 flex justify-around items-center z-30 shadow-[0_-5px_25px_rgba(0,0,0,0.5)] transition-transform duration-300 ${isKeyboardVisible ? 'translate-y-full' : 'translate-y-0'}`} data-tour="mobile-bottom-nav">
             {[
                 { view: 'edit', label: 'Preencher', icon: <PencilIcon className="w-5 h-5 mb-0.5" /> },
                 { view: 'design', label: 'Design', icon: <SwatchIcon className="w-5 h-5 mb-0.5" /> },
@@ -466,10 +466,10 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                     <button
                         key={item.view}
                         onClick={() => handleMobileNav(item.view as any)}
-                        className={`flex flex-col items-center justify-center transition-colors duration-200 py-1 px-4 rounded-lg ${isActive ? 'text-blue-400 font-bold' : 'text-gray-400 hover:text-white'}`}
+                        className={`flex flex-col items-center justify-center transition-all duration-200 py-1.5 px-5 rounded-2xl ${isActive ? 'text-blue-400 font-bold scale-105 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
                     >
                         {item.icon}
-                        <span className="text-[11px] font-semibold">{item.label}</span>
+                        <span className="text-[11px] font-semibold tracking-tight">{item.label}</span>
                     </button>
                 );
             })}
@@ -485,12 +485,12 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
             {isMobile ? (
                 /* Layout Mobile */
                 <div className="flex flex-col h-full bg-transparent text-white overflow-hidden">
-                    <div className="h-14 sm:h-16 border-b border-gray-700/80 flex items-center justify-between px-3 bg-gray-900/95 backdrop-blur-md z-20 flex-shrink-0 gap-2">
+                    <div className="h-14 sm:h-16 border-b border-slate-800/80 flex items-center justify-between px-3 bg-slate-900/95 backdrop-blur-xl z-20 flex-shrink-0 gap-2">
                         {/* Voltar para Meus CVs */}
                         <div className="flex items-center gap-2 min-w-0">
                             <button
                                 onClick={() => setCurrentView('meus-curriculos')}
-                                className="flex items-center gap-1 py-1.5 px-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors flex-shrink-0 text-xs font-semibold"
+                                className="flex items-center gap-1 py-1.5 px-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 active:bg-slate-700 transition-colors flex-shrink-0 text-xs font-semibold"
                                 title="Voltar para Meus Currículos"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -499,7 +499,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 <span>Início</span>
                             </button>
                             <div className="flex flex-col min-w-0">
-                                <span className="font-semibold text-xs text-gray-200 truncate max-w-[95px] sm:max-w-[140px]">
+                                <span className="font-bold text-xs text-slate-100 truncate max-w-[95px] sm:max-w-[140px]">
                                     {resumeData.personal.name || 'Meu Currículo'}
                                 </span>
                                 <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
@@ -514,7 +514,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                             <button
                                 onClick={() => undo()}
                                 disabled={!canUndo}
-                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors"
+                                className="p-2 text-slate-400 hover:text-white disabled:opacity-20 rounded-xl hover:bg-slate-800 active:bg-slate-700 transition-colors"
                                 title="Desfazer"
                             >
                                 <UndoIcon className="w-4 h-4" />
@@ -522,7 +522,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                             <button
                                 onClick={() => redo()}
                                 disabled={!canRedo}
-                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors"
+                                className="p-2 text-slate-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-slate-800 active:bg-slate-700 transition-colors"
                                 title="Refazer"
                             >
                                 <RedoIcon className="w-4 h-4" />
@@ -531,14 +531,14 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 <button
                                     onClick={handleDownloadClick}
                                     disabled={isGeneratingPdf}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-bold text-xs disabled:opacity-70 shadow-md shadow-emerald-900/30 transition-all active:scale-95 ml-1"
+                                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold text-xs disabled:opacity-70 shadow-lg shadow-emerald-900/30 transition-all active:scale-95 ml-1"
                                 >
                                     {isGeneratingPdf ? <span className="animate-pulse">Baixando...</span> : <> <DownloadIcon className="w-3.5 h-3.5" /> <span>Baixar PDF</span> </>}
                                 </button>
                             ) : (
                                 <button
                                     onClick={() => handleMobileNav('preview')}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-bold text-xs shadow-md shadow-blue-900/30 transition-all active:scale-95 ml-1"
+                                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-900/30 transition-all active:scale-95 ml-1"
                                 >
                                     <DocumentTextIcon className="w-3.5 h-3.5" />
                                     <span>Ver CV</span>
@@ -549,7 +549,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
 
                     {/* Mobile Section Pills Carousel */}
                     {mobileView === 'edit' && (
-                        <div className="bg-gray-900/90 border-b border-gray-800/80 px-2 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar z-10 flex-shrink-0">
+                        <div className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-2 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar z-10 flex-shrink-0">
                             {mobileSectionTabs.map(tab => {
                                 const isTabActive = (activeSection || 'personal') === tab.id;
                                 return (
@@ -557,10 +557,10 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                         key={tab.id}
                                         type="button"
                                         onClick={() => setActiveSection(tab.id)}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
+                                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
                                             isTabActive
-                                                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 scale-105'
-                                                : 'bg-gray-800/80 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700/60'
+                                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 scale-105'
+                                                : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-700/60'
                                         }`}
                                     >
                                         {tab.icon}
@@ -612,12 +612,12 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         ) : (
                             <div className="w-full min-h-full flex flex-col items-center pb-28">
                                 {/* Floating Zoom Controls */}
-                                <div className="sticky top-3 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md border border-gray-700/80 rounded-full shadow-2xl text-xs font-semibold text-gray-200 mt-2 mb-2">
+                                <div className="sticky top-3 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-full shadow-2xl text-xs font-semibold text-slate-200 mt-2 mb-2">
                                     <button
                                         type="button"
                                         onClick={() => setZoomFactor(prev => Math.max(0.5, Math.round((prev - 0.15) * 100) / 100))}
                                         disabled={zoomFactor <= 0.5}
-                                        className="p-1.5 text-gray-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-slate-700/60 active:bg-slate-600 transition-colors"
                                         title="Diminuir Zoom"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -631,18 +631,18 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                         type="button"
                                         onClick={() => setZoomFactor(prev => Math.min(2.0, Math.round((prev + 0.15) * 100) / 100))}
                                         disabled={zoomFactor >= 2.0}
-                                        className="p-1.5 text-gray-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        className="p-1.5 text-slate-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-slate-700/60 active:bg-slate-600 transition-colors"
                                         title="Aumentar Zoom"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                                         </svg>
                                     </button>
-                                    <div className="h-3 w-px bg-gray-700 mx-0.5" />
+                                    <div className="h-3 w-px bg-slate-700 mx-0.5" />
                                     <button
                                         type="button"
                                         onClick={() => setZoomFactor(1.0)}
-                                        className={`px-2 py-1 rounded-full text-[10px] transition-colors ${zoomFactor === 1.0 ? 'bg-blue-600/30 text-blue-300 border border-blue-500/40' : 'text-gray-400 hover:text-white'}`}
+                                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors ${zoomFactor === 1.0 ? 'bg-blue-600/30 text-blue-300 border border-blue-500/40' : 'text-slate-400 hover:text-white'}`}
                                     >
                                         Ajustar
                                     </button>
@@ -655,11 +655,11 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 </div>
 
                                 {/* Floating Action Dock in Preview */}
-                                <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-gray-900/95 backdrop-blur-xl border border-gray-700/80 p-1.5 rounded-full shadow-2xl">
+                                <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 p-1.5 rounded-full shadow-2xl">
                                     <button
                                         type="button"
                                         onClick={() => handleMobileNav('edit')}
-                                        className="flex items-center gap-1.5 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-full text-xs font-bold transition-all"
+                                        className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-full text-xs font-bold transition-all active:scale-95"
                                     >
                                         <PencilIcon className="w-4 h-4" />
                                         <span>Editar</span>
@@ -668,7 +668,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                         type="button"
                                         onClick={handleDownloadClick}
                                         disabled={isGeneratingPdf}
-                                        className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-xs font-bold shadow-lg shadow-blue-900/50 transition-all"
+                                        className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-full text-xs font-bold shadow-lg shadow-blue-900/50 transition-all active:scale-95"
                                     >
                                         <DownloadIcon className="w-4 h-4" />
                                         <span>Baixar PDF</span>
@@ -702,40 +702,46 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         </div>
                     )}
                     <div className="flex-1 flex flex-col relative bg-transparent overflow-hidden">
-                        <div className="h-16 border-b border-gray-700 flex items-center justify-between px-6 bg-gray-900/80 backdrop-blur-sm z-10">
-                            <div className="flex items-center gap-4">
-                                <button onClick={() => setCurrentView('meus-curriculos')} className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                                    <span className="hidden sm:inline">Voltar</span>
+                        <div className="h-16 border-b border-slate-800/80 flex items-center justify-between px-6 bg-slate-900/85 backdrop-blur-xl z-10 shadow-sm">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <button onClick={() => setCurrentView('meus-curriculos')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 active:bg-slate-700 transition-all text-sm font-semibold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                                    <span className="hidden sm:inline">Meus CVs</span>
                                 </button>
-                                <div className="h-6 w-px bg-gray-700"></div>
-                                <span className="font-medium truncate max-w-[300px]">{resumeData.personal.name || 'Meu Currículo'}</span>
+                                <div className="h-4 w-px bg-slate-800"></div>
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="font-bold text-sm text-slate-100 truncate max-w-[260px]">{resumeData.personal.name || 'Currículo Sem Título'}</span>
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        Salvo
+                                    </span>
+                                </div>
                             </div>
                             <div className="flex items-center gap-3">
                                 {/* View Toggle */}
-                                <div className="flex bg-gray-800 rounded-lg p-1 mr-2 border border-gray-700">
+                                <div className="flex bg-slate-800/80 rounded-xl p-1 border border-slate-700/60 shadow-inner">
                                     <button
                                         onClick={() => setViewMode('visual')}
-                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'visual' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'visual' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-900/30' : 'text-slate-400 hover:text-white'}`}
                                     >
                                         Visual
                                     </button>
                                     <button
                                         onClick={() => setViewMode('code')}
-                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'code' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === 'code' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-900/30' : 'text-slate-400 hover:text-white'}`}
                                     >
-                                        Código (JSON)
+                                        JSON
                                     </button>
                                 </div>
 
-                                <button onClick={() => undo()} disabled={!canUndo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><UndoIcon className="w-5 h-5" /></button>
-                                <button onClick={() => redo()} disabled={!canRedo} className="p-2 text-gray-400 hover:text-white disabled:opacity-30 transition-colors rounded-lg hover:bg-gray-800"><RedoIcon className="w-5 h-5" /></button>
-                                <button onClick={handleDownloadClick} disabled={isGeneratingPdf} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-900/20 font-bold disabled:opacity-70 transform hover:-translate-y-px">
+                                <button onClick={() => undo()} disabled={!canUndo} title="Desfazer (Ctrl+Z)" className="p-2 text-slate-400 hover:text-white disabled:opacity-20 transition-all rounded-xl hover:bg-slate-800 active:scale-95"><UndoIcon className="w-5 h-5" /></button>
+                                <button onClick={() => redo()} disabled={!canRedo} title="Refazer (Ctrl+Y)" className="p-2 text-slate-400 hover:text-white disabled:opacity-20 transition-all rounded-xl hover:bg-slate-800 active:scale-95"><RedoIcon className="w-5 h-5" /></button>
+                                <button onClick={handleDownloadClick} disabled={isGeneratingPdf} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-600/30 transition-all active:scale-95 transform hover:-translate-y-0.5 disabled:opacity-60">
                                     {isGeneratingPdf ? <span className="animate-pulse">Processando...</span> : <> <DownloadIcon className="w-5 h-5" /> <span>Baixar PDF</span> </>}
                                 </button>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-auto flex justify-center items-start bg-[#0f172a] relative custom-scrollbar py-8">
+                        <div className="flex-1 overflow-auto flex justify-center items-start bg-[#0b0f19] relative custom-scrollbar py-10 px-4" style={{ backgroundImage: 'radial-gradient(circle at 50% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 65%)' }}>
                             {viewMode === 'visual' ? (
                                 <ScaledPreview>
                                     <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />

@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import type { ResumeData, SectionType } from '../types';
 import {
     UserIcon, BriefcaseIcon, AcademicCapIcon, CodeBracketIcon, SparklesIcon,
-    LanguageIcon as LanguageIconComponent, DocumentTextIcon, PlusIcon, PaintBrushIcon, GripVerticalIcon
+    LanguageIcon as LanguageIconComponent, DocumentTextIcon, PlusIcon, PaintBrushIcon, GripVerticalIcon, TrashIcon
 } from './icons';
 import { generateId } from '../utils';
 
@@ -113,12 +113,12 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
     }, []);
 
     const navClasses = isMobile 
-        ? "w-full h-full flex flex-col items-center py-6 space-y-2 bg-[#1e293b]"
-        : "w-24 bg-gray-900/95 backdrop-blur-md border-r border-gray-700 flex flex-col items-center py-6 pb-12 space-y-2 relative z-30 shadow-xl";
+        ? "w-full h-full flex flex-col items-center py-6 space-y-2 bg-slate-900/95"
+        : "w-24 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col items-center py-6 pb-12 space-y-2 relative z-30 shadow-2xl";
     
     const buttonClasses = (id: string) => isMobile 
-        ? `w-full flex items-center justify-start text-left p-4 rounded-xl transition-all duration-200 text-base gap-3 border ${activeSection === id ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-semibold' : 'bg-gray-800/40 border-gray-700/60 text-gray-300 hover:bg-gray-800'}`
-        : `p-3 w-full flex flex-col items-center justify-center rounded-xl transition-all duration-300 group gap-2 ${activeSection === id ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] scale-105' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`;
+        ? `w-full flex items-center justify-start text-left p-4 rounded-2xl transition-all duration-200 text-base gap-3 border ${activeSection === id ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-bold shadow-md shadow-blue-900/20' : 'bg-slate-800/40 border-slate-700/60 text-slate-300 hover:bg-slate-800'}`
+        : `p-3 w-full flex flex-col items-center justify-center rounded-2xl transition-all duration-300 group gap-1.5 ${activeSection === id ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] scale-105' : 'text-slate-400 hover:bg-slate-800/70 hover:text-white'}`;
     
     const dragWrapperClasses = isMobile ? "flex flex-col w-full" : "flex items-center w-full justify-center group relative";
 
@@ -135,7 +135,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
                 </button>
             </div>
             
-            <div className={`w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-2 ${isMobile ? 'px-4' : 'w-16'}`}></div>
+            <div className={`w-full h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent my-2 ${isMobile ? 'px-4' : 'w-16'}`}></div>
 
             <div className={`flex-1 flex flex-col items-center w-full overflow-y-auto no-scrollbar ${isMobile ? 'space-y-2 px-4' : 'space-y-2 px-2'}`} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onDragLeave={handleDragLeave}>
                 {resumeData.sections.map((section, index) => {
@@ -145,21 +145,21 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
                             {dragOverIndex === index && <div className={`h-1 bg-blue-500 rounded-full transition-all animate-pulse ${isMobile ? 'w-full' : 'w-16'}`} />}
                             <div draggable={!isMobile} onDragStart={(e) => handleDragStart(e, index)} onDragEnter={(e) => handleDragEnter(e, index)} className={dragWrapperClasses}>
                                 {isMobile ? (
-                                    <div className={`w-full flex items-center rounded-xl border transition-all duration-200 pr-1.5 overflow-hidden ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-sm' : 'bg-gray-800/40 border-gray-700/60'}`}>
+                                    <div className={`w-full flex items-center rounded-2xl border transition-all duration-200 pr-1.5 overflow-hidden ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-sm' : 'bg-slate-800/40 border-slate-700/60'}`}>
                                         <button onClick={() => handleSectionClick(section.id)} className="flex-1 flex items-center p-3.5 text-left text-base gap-3 min-w-0" aria-label={section.title} title={section.title}>
                                             {getSectionIcon(section.type)}
-                                            <span className={`font-medium truncate ${isSelected ? 'text-blue-400 font-semibold' : 'text-gray-200'}`}>{section.title}</span>
+                                            <span className={`font-medium truncate ${isSelected ? 'text-blue-400 font-semibold' : 'text-slate-200'}`}>{section.title}</span>
                                         </button>
                                         <div className="flex items-center gap-1 flex-shrink-0">
                                             <button
                                                 type="button"
                                                 onClick={(e) => { e.stopPropagation(); moveSection(index, 'up'); }}
                                                 disabled={index === 0}
-                                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700 active:bg-gray-600 transition-colors"
+                                                className="p-2 text-slate-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-slate-700 active:bg-slate-600 transition-colors"
                                                 title="Mover para cima"
                                                 aria-label="Mover para cima"
                                             >
-                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
                                                 </svg>
                                             </button>
@@ -167,13 +167,30 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
                                                 type="button"
                                                 onClick={(e) => { e.stopPropagation(); moveSection(index, 'down'); }}
                                                 disabled={index === resumeData.sections.length - 1}
-                                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700 active:bg-gray-600 transition-colors"
+                                                className="p-2 text-slate-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-slate-700 active:bg-slate-600 transition-colors"
                                                 title="Mover para baixo"
                                                 aria-label="Mover para baixo"
                                             >
-                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                                                 </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (confirm(`Tem certeza que deseja remover a seção "${section.title}"?`)) {
+                                                        setResumeData(prev => ({
+                                                            ...prev,
+                                                            sections: prev.sections.filter(s => s.id !== section.id)
+                                                        }));
+                                                    }
+                                                }}
+                                                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 active:bg-rose-500/20 rounded-lg transition-colors"
+                                                title="Excluir Seção"
+                                                aria-label="Excluir Seção"
+                                            >
+                                                <TrashIcon className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
@@ -183,7 +200,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
                                             {getSectionIcon(section.type)}
                                             <span className="font-bold text-xs block opacity-90 truncate w-full px-1 text-center">{section.title}</span>
                                         </button>
-                                        <div className="cursor-grab text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-gray-300 absolute -left-1 top-1/2 -translate-y-1/2">
+                                        <div className="cursor-grab text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-slate-300 absolute -left-1 top-1/2 -translate-y-1/2">
                                             <GripVerticalIcon className="w-5 h-5"/>
                                         </div>
                                     </>
@@ -197,11 +214,11 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
 
             <div className={`relative mt-auto ${isMobile ? 'w-full px-4' : 'w-full px-2'}`} ref={addMenuRef} data-tour="sidebar-add">
                  {isAddMenuOpen && (
-                    <div className={`absolute w-64 bg-[#1e293b] glass-hover backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-600/50 p-3 z-50 animate-in fade-in duration-200 ${isMobile ? 'bottom-full mb-4 left-0' : 'left-full bottom-0 ml-4 slide-in-from-left-5'}`}>
-                        <p className="text-xs font-bold text-gray-400 px-3 pb-3 pt-1 border-b border-gray-700/50 mb-2 tracking-wider uppercase">Adicionar Seção</p>
+                    <div className={`absolute w-64 bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/70 p-3 z-50 animate-in fade-in duration-200 ${isMobile ? 'bottom-full mb-4 left-0' : 'left-full bottom-0 ml-4 slide-in-from-left-5'}`}>
+                        <p className="text-xs font-bold text-slate-400 px-3 pb-3 pt-1 border-b border-slate-700/50 mb-2 tracking-wider uppercase">Adicionar Seção</p>
                         <div className="grid grid-cols-1 gap-1">
                             {availableSections.map(s => (
-                                <button key={s.type} onClick={() => handleAddSection(s.type)} className="flex items-center text-left px-3 py-2.5 text-sm text-gray-300 hover:bg-blue-600 hover:text-white rounded-xl transition-all duration-200 group">
+                                <button key={s.type} onClick={() => handleAddSection(s.type)} className="flex items-center text-left px-3 py-2.5 text-sm text-slate-300 hover:bg-blue-600 hover:text-white rounded-xl transition-all duration-200 group">
                                     <span className="group-hover:scale-110 transition-transform duration-200">{s.icon}</span>
                                     <span className="font-medium">{s.label}</span>
                                 </button>
@@ -209,9 +226,9 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
                         </div>
                     </div>
                 )}
-                <button onClick={() => setIsAddMenuOpen(prev => !prev)} className={`flex flex-col items-center justify-center rounded-xl transition-all duration-200 border-2 border-dashed gap-2 ${isAddMenuOpen ? 'border-blue-500 bg-blue-500/10 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.4)]' : 'border-gray-600 text-gray-400 hover:border-blue-500 hover:text-blue-400'} ${isMobile ? 'w-full h-16 text-lg flex-row' : 'p-3 w-full'}`} aria-label="Adicionar Seção" title="Adicionar Seção">
-                    <PlusIcon className={`w-8 h-8 transition-transform duration-300 ${isAddMenuOpen ? 'rotate-45' : ''}`} />
-                    {isMobile ? <span className="font-bold">Adicionar Seção</span> : <span className="font-bold text-xs block opacity-90">Adicionar</span>}
+                <button onClick={() => setIsAddMenuOpen(prev => !prev)} className={`flex flex-col items-center justify-center rounded-2xl transition-all duration-200 border-2 border-dashed gap-1.5 ${isAddMenuOpen ? 'border-blue-500 bg-blue-500/10 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'border-slate-700 text-slate-400 hover:border-blue-500 hover:text-blue-400'} ${isMobile ? 'w-full h-14 text-base flex-row gap-2' : 'p-3 w-full'}`} aria-label="Adicionar Seção" title="Adicionar Seção">
+                    <PlusIcon className={`w-6 h-6 transition-transform duration-300 ${isAddMenuOpen ? 'rotate-45' : ''}`} />
+                    {isMobile ? <span className="font-bold">Adicionar Seção</span> : <span className="font-bold text-[11px] block opacity-90">Adicionar</span>}
                 </button>
             </div>
         </nav>

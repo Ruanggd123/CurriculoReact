@@ -209,10 +209,59 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
             config.bgPattern === 'paper' ? 'bg-texture-paper' :
                 config.bgPattern === 'noise' ? 'bg-texture-noise' : '';
 
-    const mainSections = sections.filter(s => ['summary', 'experience', 'projects'].includes(s.type));
-    const sideSections = sections.filter(s => ['skills', 'languages', 'education'].includes(s.type));
-    const effectiveMainSections = config.layout.includes('sidebar') ? mainSections : sections;
+    const hasSectionContent = (s: ResumeSection): boolean => {
+        if (!s || !s.items || s.items.length === 0) return false;
+        switch (s.type) {
+            case 'summary':
+                return s.items.some((item: any) => item.text && item.text.trim().length > 0);
+            case 'skills':
+                return s.items.some((item: any) => item.name && item.name.trim().length > 0);
+            case 'languages':
+                return s.items.some((item: any) => item.language && item.language.trim().length > 0);
+            case 'experience':
+                return s.items.some((item: any) =>
+                    (item.company && item.company.trim().length > 0) ||
+                    (item.role && item.role.trim().length > 0) ||
+                    (item.description && item.description.trim().length > 0)
+                );
+            case 'education':
+                return s.items.some((item: any) =>
+                    (item.institution && item.institution.trim().length > 0) ||
+                    (item.degree && item.degree.trim().length > 0) ||
+                    (item.description && item.description.trim().length > 0)
+                );
+            case 'projects':
+                return s.items.some((item: any) =>
+                    (item.name && item.name.trim().length > 0) ||
+                    (item.description && item.description.trim().length > 0) ||
+                    (item.link && item.link.trim().length > 0)
+                );
+            default:
+                return s.items.some((item: any) =>
+                    Object.entries(item).some(([k, val]) => k !== 'id' && typeof val === 'string' && val.trim().length > 0)
+                );
+        }
+    };
+
+    const isItemValid = (item: any, type: string): boolean => {
+        if (!item) return false;
+        if (type === 'summary') return Boolean(item.text && item.text.trim());
+        if (type === 'skills') return Boolean(item.name && item.name.trim());
+        if (type === 'languages') return Boolean(item.language && item.language.trim());
+        if (type === 'experience') return Boolean((item.company && item.company.trim()) || (item.role && item.role.trim()) || (item.description && item.description.trim()));
+        if (type === 'education') return Boolean((item.institution && item.institution.trim()) || (item.degree && item.degree.trim()) || (item.description && item.description.trim()));
+        if (type === 'projects') return Boolean((item.name && item.name.trim()) || (item.description && item.description.trim()) || (item.link && item.link.trim()));
+        return true;
+    };
+
+    // Filtra apenas seções que possuem conteúdo preenchido pelo usuário
+    const activeSections = sections.filter(hasSectionContent);
+    const mainSections = activeSections.filter(s => ['summary', 'experience', 'projects'].includes(s.type));
+    const sideSections = activeSections.filter(s => ['skills', 'languages', 'education'].includes(s.type));
+    const effectiveMainSections = config.layout.includes('sidebar') ? mainSections : activeSections;
     const effectiveSideSections = config.layout.includes('sidebar') ? sideSections : [];
+
+    const hasAnyContact = Boolean(personal.email || personal.phone || personal.location || personal.linkedin || personal.github || personal.website);
 
     // Configurações de Ícone para Impressão: Mais espessos para melhor definição
     const contactIconProps = { width: "14", height: "14", strokeWidth: 2 };
@@ -259,16 +308,20 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     >
                         {config.id === 'tech' ? '> ' : ''}{personal.name}{techCursor}
                     </h1>
-                    <p className={`font-medium opacity-90 tracking-wide ${config.headerStyle === 'centered' ? 'mb-4' : ''} ${headerSubTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
+                    {personal.jobTitle && (
+                        <p className={`font-medium opacity-90 tracking-wide ${config.headerStyle === 'centered' ? 'mb-4' : ''} ${headerSubTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
+                    )}
 
-                    <div className={`flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm overflow-visible ${config.headerStyle === 'centered' ? 'justify-center' : ''} ${isPrinting ? 'pb-1' : ''}`}>
-                        {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
-                    </div>
+                    {hasAnyContact && (
+                        <div className={`flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm overflow-visible ${config.headerStyle === 'centered' ? 'justify-center' : ''} ${isPrinting ? 'pb-1' : ''}`}>
+                            {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
+                        </div>
+                    )}
                 </div>
                 {photo && config.headerStyle !== 'centered' && <div className="ml-6">{photo}</div>}
             </header>
@@ -344,9 +397,11 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
         const dateColor = isContextDark ? 'text-white/50' : 'text-slate-500';
         const companyColor = isSidebar ? 'inherit' : (isContextDark ? '#fff' : accentColor);
 
+        const validItems = section.items.filter(item => isItemValid(item, section.type));
+
         return (
             <div className="">
-                {section.items.map((item: any) => (
+                {validItems.map((item: any) => (
                     <div key={item.id} className={`resume-item mb-8 ${config.layout === 'timeline' ? 'relative pl-6 border-l-2' : ''} break-inside-avoid`} style={{ borderColor: config.layout === 'timeline' ? '#e5e7eb' : undefined }}>
                         {config.layout === 'timeline' && (
                             <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full border-2 border-white" style={{ backgroundColor: accentColor }}></div>
@@ -403,7 +458,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     {renderSectionTitle(s.title, s.type)}
                     {s.type === 'skills' ? (
                         <div className="flex flex-wrap gap-2 items-center">
-                            {s.items.map((item: any) => (
+                            {s.items.filter((item: any) => item.name && item.name.trim()).map((item: any) => (
                                 <span key={item.id} className={`px-3 py-1.5 text-sm rounded-md font-medium inline-flex items-center max-w-full leading-relaxed break-words ${config.id === 'tech' ? 'bg-gray-800/90 border border-green-700/60 font-mono text-xs text-green-400 shadow-sm' : 'bg-slate-100 text-slate-700'}`}>
                                     {item.name}
                                 </span>
@@ -435,7 +490,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     {config.headerStyle !== 'banner' && (
                         <div className={`resume-header mb-10 border-b-2 ${isDarkBg ? 'border-white/20' : 'border-gray-100'} pb-6 overflow-visible`}>
                             <h1 className={`font-black uppercase leading-none tracking-tight ${mainTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.name ? `${uiConfig.sectionSizes.name}px` : undefined, color: config.useAccentForName ? accentColor : undefined }}>{personal.name}</h1>
-                            <p className={`mt-2 font-medium tracking-widest uppercase ${subTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
+                            {personal.jobTitle && (
+                                <p className={`mt-2 font-medium tracking-widest uppercase ${subTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
+                            )}
                         </div>
                     )}
                     {effectiveMainSections.map(s => (
@@ -455,25 +512,29 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         {config.layout.includes('sidebar') && side === 'left' && config.headerStyle === 'banner' && (
                             <div className="resume-header overflow-visible">
                                 <h2 className="font-bold leading-tight mb-1" style={{ fontSize: uiConfig?.sectionSizes?.name ? `${Math.min(uiConfig.sectionSizes.name, 28)}px` : undefined }}>{personal.name}</h2>
-                                <p className="opacity-80 uppercase tracking-widest" style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${Math.min(uiConfig.sectionSizes.jobTitle, 14)}px` : undefined }}>{personal.jobTitle}</p>
+                                {personal.jobTitle && (
+                                    <p className="opacity-80 uppercase tracking-widest" style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${Math.min(uiConfig.sectionSizes.jobTitle, 14)}px` : undefined }}>{personal.jobTitle}</p>
+                                )}
                             </div>
                         )}
                     </div>
-                    <div className="space-y-3 mb-10 text-sm overflow-visible">
-                        <div className="border-b border-white/20 pb-1 mb-3 font-bold uppercase tracking-wider opacity-90">Contato</div>
-                        {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                        {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
-                    </div>
+                    {hasAnyContact && (
+                        <div className="space-y-3 mb-10 text-sm overflow-visible">
+                            <div className="border-b border-white/20 pb-1 mb-3 font-bold uppercase tracking-wider opacity-90">Contato</div>
+                            {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.phone && <ContactItem icon={<PhoneIcon {...contactIconProps} />} text={personal.phone} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.location && <ContactItem icon={<LocationIcon {...contactIconProps} />} text={personal.location} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.linkedin && <ContactItem icon={<LinkedinIcon {...contactIconProps} />} text="LinkedIn" link={`https://${personal.linkedin.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.github && <ContactItem icon={<GithubIcon {...contactIconProps} />} text="GitHub" link={`https://${personal.github.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                            {personal.website && <ContactItem icon={<LinkIcon {...contactIconProps} />} text="Portfólio" link={`https://${personal.website.replace(/^https?:\/\//, '')}`} darkTheme={config.useAccentBackground} accentColor={accentColor} isPrinting={isPrinting} />}
+                        </div>
+                    )}
                     {effectiveSideSections.map(s => (
                         <section key={s.id} className="mb-8 resume-section break-inside-avoid">
                             {renderSectionTitle(s.title, s.type, true)}
                             {s.type === 'skills' ? (
                                 <div className="flex flex-wrap gap-2 items-center">
-                                    {s.items.map((item: any) => (
+                                    {s.items.filter((item: any) => item.name && item.name.trim()).map((item: any) => (
                                         <span key={item.id} className={`text-xs px-2 py-1 rounded font-semibold flex items-center justify-center ${config.useAccentBackground ? 'bg-white/20 text-white' : 'bg-white border border-gray-200 text-slate-600'}`}>
                                             {item.name}
                                         </span>
@@ -491,7 +552,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     const containerClasses = [
         isPrinting
             ? `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} break-words whitespace-pre-wrap flex flex-col`
-            : `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} shadow-2xl transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
+            : `w-[210mm] mx-auto relative overflow-visible ${config.bgClass} shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.08)] rounded-sm transition-all duration-300 ease-in-out break-words whitespace-pre-wrap flex flex-col`
     ].join(' ');
 
     const [totalPages, setTotalPages] = React.useState(1);
@@ -530,15 +591,14 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     <div
                         key={i}
                         data-html2canvas-ignore="true"
-                        className="absolute w-full left-0 z-50 bg-[#0f172a] flex items-center justify-center opacity-100 shadow-[0_0_15px_rgba(0,0,0,0.5)] print:hidden"
+                        className="absolute w-full left-0 z-50 flex items-center justify-center pointer-events-none print:hidden select-none"
                         style={{
                             top: `calc(${i} * 297mm - 12px)`,
                             height: '24px',
-                            borderTop: '1px solid #1e293b',
-                            borderBottom: '1px solid #1e293b'
                         }}
                     >
-                        <span className="text-[10px] text-slate-400 font-mono uppercase tracking-widest bg-[#0f172a] px-3 py-1 rounded-full border border-slate-700 shadow-sm">
+                        <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-600/60 to-transparent absolute" />
+                        <span className="relative z-10 text-[10px] text-slate-300 font-mono font-bold tracking-widest uppercase bg-slate-900/90 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-slate-700/80 shadow-lg">
                             Folha {i + 1}
                         </span>
                     </div>
