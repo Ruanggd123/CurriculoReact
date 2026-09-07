@@ -419,14 +419,35 @@ const SectionForm: React.FC<SectionFormProps> = ({ section, resumeData, setResum
             </div>
             {section.type === 'skills' ? (
                 <>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {(section.items as Skill[]).map(skill => (
-                            <div key={skill.id} className="flex items-center bg-gray-700/80 p-1 border border-gray-600 rounded-md">
-                                <input type="text" value={skill.name} onChange={e => handleItemChange(skill.id, e)} className="w-full bg-transparent focus:outline-none text-sm p-1" name="name" />
-                                <button onClick={() => removeItem(skill.id)} className="p-1 text-red-400 hover:text-red-500" aria-label="Remover habilidade"><TrashIcon className="w-4 h-4" /></button>
+                            <div key={skill.id} className="flex items-center bg-gray-700/80 p-1.5 border border-gray-600 rounded-md focus-within:border-blue-500 transition-colors">
+                                <input
+                                    type="text"
+                                    value={skill.name}
+                                    onChange={e => handleItemChange(skill.id, e)}
+                                    onKeyDown={e => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            addItem();
+                                        }
+                                    }}
+                                    placeholder="Ex: React, Python..."
+                                    className="w-full bg-transparent focus:outline-none text-sm px-1.5 py-0.5 placeholder-gray-500"
+                                    name="name"
+                                />
+                                <button onClick={() => removeItem(skill.id)} className="p-1 text-red-400 hover:text-red-500 hover:bg-red-900/20 rounded transition-colors" aria-label="Remover habilidade"><TrashIcon className="w-4 h-4" /></button>
                             </div>
                         ))}
                     </div>
+                    <button
+                        type="button"
+                        onClick={addItem}
+                        className="mt-3 w-full py-2.5 border-2 border-dashed border-gray-600 hover:border-blue-500 hover:bg-blue-500/5 rounded-lg text-sm text-gray-400 hover:text-blue-400 transition-colors flex items-center justify-center gap-1.5 font-medium"
+                    >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                        Adicionar Habilidade
+                    </button>
                 </>
             ) : section.type === 'summary' ? (
                 <div>{renderItemContent(section.items[0])}</div>

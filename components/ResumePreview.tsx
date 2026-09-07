@@ -259,7 +259,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                     >
                         {config.id === 'tech' ? '> ' : ''}{personal.name}{techCursor}
                     </h1>
-                    <p className={`text-xl font-medium opacity-90 tracking-wide ${config.headerStyle === 'centered' ? 'mb-4' : ''} ${headerSubTextColor}`}>{personal.jobTitle}</p>
+                    <p className={`font-medium opacity-90 tracking-wide ${config.headerStyle === 'centered' ? 'mb-4' : ''} ${headerSubTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
 
                     <div className={`flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm overflow-visible ${config.headerStyle === 'centered' ? 'justify-center' : ''} ${isPrinting ? 'pb-1' : ''}`}>
                         {personal.email && <ContactItem icon={<EmailIcon {...contactIconProps} />} text={personal.email} darkTheme={isHeaderBg || isDarkBg} accentColor={accentColor} isPrinting={isPrinting} />}
@@ -319,14 +319,15 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
         if (style === 'bracket') content = <span className="flex items-center text-slate-400 mx-1"><span className="text-slate-300">[</span> <span style={{ color: titleColor }} className="mx-2">{title}</span> <span className="text-slate-300">]</span></span>;
         if (style === 'terminal') content = <span className="flex items-center text-green-500 mr-2">// {title}</span>;
 
-        const baseClass = "resume-section-title font-bold mb-4 text-lg flex items-center overflow-visible";
+        const sectionTitleSize = uiConfig?.sectionSizes?.sectionTitle ? `${uiConfig.sectionSizes.sectionTitle}px` : undefined;
+        const baseClass = "resume-section-title font-bold mb-4 flex items-center overflow-visible";
 
-        if (style === 'boxed') return <h3 className={`${baseClass} px-3 py-1.5 rounded-md inline-flex ${!isPrinting && 'shadow-sm'} break-inside-avoid break-after-avoid`} style={{ backgroundColor: accentColor, color: 'white' }}>{content}</h3>;
-        if (style === 'underlined') return <h3 className={`${baseClass} border-b-2 pb-1 w-full break-inside-avoid break-after-avoid`} style={{ color: titleColor, borderColor: accentColor }}>{content}</h3>;
-        if (style === 'sidebar-header') return <h3 className={`${baseClass} border-b border-white/20 pb-1 mb-3 uppercase tracking-wider text-sm break-inside-avoid break-after-avoid`} style={{ color: titleColor, borderColor: isContextDark ? 'rgba(255,255,255,0.2)' : '#cbd5e1' }}>{content}</h3>;
-        if (style === 'minimal') return <h3 className={`${baseClass} uppercase tracking-widest text-sm break-inside-avoid break-after-avoid`} style={{ color: titleColor }}>{content}</h3>;
+        if (style === 'boxed') return <h3 className={`${baseClass} px-3 py-1.5 rounded-md inline-flex ${!isPrinting && 'shadow-sm'} break-inside-avoid break-after-avoid`} style={{ backgroundColor: accentColor, color: 'white', fontSize: sectionTitleSize }}>{content}</h3>;
+        if (style === 'underlined') return <h3 className={`${baseClass} border-b-2 pb-1 w-full break-inside-avoid break-after-avoid`} style={{ color: titleColor, borderColor: accentColor, fontSize: sectionTitleSize }}>{content}</h3>;
+        if (style === 'sidebar-header') return <h3 className={`${baseClass} border-b border-white/20 pb-1 mb-3 uppercase tracking-wider text-sm break-inside-avoid break-after-avoid`} style={{ color: titleColor, borderColor: isContextDark ? 'rgba(255,255,255,0.2)' : '#cbd5e1', fontSize: sectionTitleSize }}>{content}</h3>;
+        if (style === 'minimal') return <h3 className={`${baseClass} uppercase tracking-widest text-sm break-inside-avoid break-after-avoid`} style={{ color: titleColor, fontSize: sectionTitleSize }}>{content}</h3>;
 
-        return <h3 className={`${baseClass} break-inside-avoid break-after-avoid`} style={{ color: titleColor }}>{content}</h3>;
+        return <h3 className={`${baseClass} break-inside-avoid break-after-avoid`} style={{ color: titleColor, fontSize: sectionTitleSize }}>{content}</h3>;
     };
 
     const renderItems = (section: ResumeSection, isSidebar: boolean = false) => {
@@ -433,8 +434,8 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <div className="flex-1 px-8 py-16">
                     {config.headerStyle !== 'banner' && (
                         <div className={`resume-header mb-10 border-b-2 ${isDarkBg ? 'border-white/20' : 'border-gray-100'} pb-6 overflow-visible`}>
-                            <h1 className={`text-4xl font-black uppercase leading-none tracking-tight ${mainTextColor}`} style={{ color: config.useAccentForName ? accentColor : undefined }}>{personal.name}</h1>
-                            <p className={`text-lg mt-2 font-medium tracking-widest uppercase ${subTextColor}`}>{personal.jobTitle}</p>
+                            <h1 className={`font-black uppercase leading-none tracking-tight ${mainTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.name ? `${uiConfig.sectionSizes.name}px` : undefined, color: config.useAccentForName ? accentColor : undefined }}>{personal.name}</h1>
+                            <p className={`mt-2 font-medium tracking-widest uppercase ${subTextColor}`} style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${uiConfig.sectionSizes.jobTitle}px` : undefined }}>{personal.jobTitle}</p>
                         </div>
                     )}
                     {effectiveMainSections.map(s => (
@@ -453,8 +454,8 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                         )}
                         {config.layout.includes('sidebar') && side === 'left' && config.headerStyle === 'banner' && (
                             <div className="resume-header overflow-visible">
-                                <h2 className="font-bold text-xl leading-tight mb-1">{personal.name}</h2>
-                                <p className="text-xs opacity-80 uppercase tracking-widest">{personal.jobTitle}</p>
+                                <h2 className="font-bold leading-tight mb-1" style={{ fontSize: uiConfig?.sectionSizes?.name ? `${Math.min(uiConfig.sectionSizes.name, 28)}px` : undefined }}>{personal.name}</h2>
+                                <p className="opacity-80 uppercase tracking-widest" style={{ fontSize: uiConfig?.sectionSizes?.jobTitle ? `${Math.min(uiConfig.sectionSizes.jobTitle, 14)}px` : undefined }}>{personal.jobTitle}</p>
                             </div>
                         )}
                     </div>
