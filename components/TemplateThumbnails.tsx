@@ -231,13 +231,13 @@ export const TemplateThumbnails: React.FC<TemplateThumbnailsProps> = ({ currentT
   return (
     <div className="space-y-6">
         {/* Category Filter */}
-        <div className="flex flex-wrap gap-2 pb-2 border-b border-gray-700/50">
+        <div className="flex overflow-x-auto no-scrollbar gap-2 pb-2 pt-1 border-b border-gray-700/50 -mx-1 px-1">
             {categories.map(cat => (
                 <button 
                     key={cat}
                     type="button"
                     onClick={() => setActiveCategory(cat)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
+                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
                         activeCategory === cat 
                         ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50 scale-105' 
                         : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'

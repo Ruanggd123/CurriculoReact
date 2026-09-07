@@ -83,6 +83,16 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
         setDragOverIndex(null);
     };
 
+    const moveSection = (index: number, direction: 'up' | 'down') => {
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= resumeData.sections.length) return;
+        const newSections = [...resumeData.sections];
+        const temp = newSections[index];
+        newSections[index] = newSections[targetIndex];
+        newSections[targetIndex] = temp;
+        setResumeData(prev => ({ ...prev, sections: newSections }));
+    };
+
     const handleAddSection = (type: SectionType) => {
         const defaultTitles: Record<SectionType, string> = {
             summary: 'Resumo', experience: 'Experiência Profissional', education: 'Formação Acadêmica',
@@ -107,7 +117,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
         : "w-24 bg-gray-900/95 backdrop-blur-md border-r border-gray-700 flex flex-col items-center py-6 pb-12 space-y-2 relative z-30 shadow-xl";
     
     const buttonClasses = (id: string) => isMobile 
-        ? `w-full flex items-center justify-start text-left p-4 rounded-lg transition-all duration-200 text-lg gap-4 ${activeSection === id ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`
+        ? `w-full flex items-center justify-start text-left p-4 rounded-xl transition-all duration-200 text-base gap-3 border ${activeSection === id ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-semibold' : 'bg-gray-800/40 border-gray-700/60 text-gray-300 hover:bg-gray-800'}`
         : `p-3 w-full flex flex-col items-center justify-center rounded-xl transition-all duration-300 group gap-2 ${activeSection === id ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] scale-105' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`;
     
     const dragWrapperClasses = isMobile ? "flex flex-col w-full" : "flex items-center w-full justify-center group relative";
@@ -128,21 +138,61 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSection, setActi
             <div className={`w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-2 ${isMobile ? 'px-4' : 'w-16'}`}></div>
 
             <div className={`flex-1 flex flex-col items-center w-full overflow-y-auto no-scrollbar ${isMobile ? 'space-y-2 px-4' : 'space-y-2 px-2'}`} onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onDragLeave={handleDragLeave}>
-                {resumeData.sections.map((section, index) => (
-                    <React.Fragment key={section.id}>
-                        {dragOverIndex === index && <div className={`h-1 bg-blue-500 rounded-full transition-all animate-pulse ${isMobile ? 'w-full' : 'w-16'}`} />}
-                        <div draggable onDragStart={(e) => handleDragStart(e, index)} onDragEnter={(e) => handleDragEnter(e, index)} className={dragWrapperClasses}>
-                             <button onClick={() => handleSectionClick(section.id)} className={buttonClasses(section.id)} aria-label={section.title} title={section.title}>
-                                {getSectionIcon(section.type)}
-                                {isMobile ? <span className="font-medium">{section.title}</span> : <span className="font-bold text-xs block opacity-90 truncate w-full px-1 text-center">{section.title}</span>}
-                            </button>
-                            <div className={`cursor-grab text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-gray-300 ${isMobile ? 'ml-auto' : 'absolute -left-1 top-1/2 -translate-y-1/2'}`}>
-                                <GripVerticalIcon className="w-5 h-5"/>
+                {resumeData.sections.map((section, index) => {
+                    const isSelected = activeSection === section.id;
+                    return (
+                        <React.Fragment key={section.id}>
+                            {dragOverIndex === index && <div className={`h-1 bg-blue-500 rounded-full transition-all animate-pulse ${isMobile ? 'w-full' : 'w-16'}`} />}
+                            <div draggable={!isMobile} onDragStart={(e) => handleDragStart(e, index)} onDragEnter={(e) => handleDragEnter(e, index)} className={dragWrapperClasses}>
+                                {isMobile ? (
+                                    <div className={`w-full flex items-center rounded-xl border transition-all duration-200 pr-1.5 overflow-hidden ${isSelected ? 'bg-blue-600/20 border-blue-500 shadow-sm' : 'bg-gray-800/40 border-gray-700/60'}`}>
+                                        <button onClick={() => handleSectionClick(section.id)} className="flex-1 flex items-center p-3.5 text-left text-base gap-3 min-w-0" aria-label={section.title} title={section.title}>
+                                            {getSectionIcon(section.type)}
+                                            <span className={`font-medium truncate ${isSelected ? 'text-blue-400 font-semibold' : 'text-gray-200'}`}>{section.title}</span>
+                                        </button>
+                                        <div className="flex items-center gap-1 flex-shrink-0">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); moveSection(index, 'up'); }}
+                                                disabled={index === 0}
+                                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700 active:bg-gray-600 transition-colors"
+                                                title="Mover para cima"
+                                                aria-label="Mover para cima"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); moveSection(index, 'down'); }}
+                                                disabled={index === resumeData.sections.length - 1}
+                                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700 active:bg-gray-600 transition-colors"
+                                                title="Mover para baixo"
+                                                aria-label="Mover para baixo"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <button onClick={() => handleSectionClick(section.id)} className={buttonClasses(section.id)} aria-label={section.title} title={section.title}>
+                                            {getSectionIcon(section.type)}
+                                            <span className="font-bold text-xs block opacity-90 truncate w-full px-1 text-center">{section.title}</span>
+                                        </button>
+                                        <div className="cursor-grab text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-gray-300 absolute -left-1 top-1/2 -translate-y-1/2">
+                                            <GripVerticalIcon className="w-5 h-5"/>
+                                        </div>
+                                    </>
+                                )}
                             </div>
-                        </div>
-                    </React.Fragment>
-                ))}
-                 {dragOverIndex === resumeData.sections.length && <div className={`h-1 bg-blue-500 rounded-full transition-all animate-pulse ${isMobile ? 'w-full' : 'w-16'}`} />}
+                        </React.Fragment>
+                    );
+                })}
+                {dragOverIndex === resumeData.sections.length && <div className={`h-1 bg-blue-500 rounded-full transition-all animate-pulse ${isMobile ? 'w-full' : 'w-16'}`} />}
             </div>
 
             <div className={`relative mt-auto ${isMobile ? 'w-full px-4' : 'w-full px-2'}`} ref={addMenuRef} data-tour="sidebar-add">

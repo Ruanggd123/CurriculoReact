@@ -20,14 +20,14 @@ interface FormPanelProps {
 const InputField: React.FC<{ label: string; name: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; type?: string; }> = ({ label, name, value, onChange, placeholder, type = 'text' }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium mb-1.5 text-gray-300">{label}</label>
-        <input type={type} id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} className="w-full px-3 py-2 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700/50 text-gray-100 transition-all duration-200" />
+        <input type={type} id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} className="w-full px-3 py-2 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm bg-gray-700/50 text-gray-100 transition-all duration-200" />
     </div>
 );
 
 const TextAreaField: React.FC<{ label: string; name: string; value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; placeholder?: string; rows?: number; }> = ({ label, name, value, onChange, placeholder, rows = 4 }) => (
     <div className="mb-4">
         <label htmlFor={name} className="block text-sm font-medium mb-1.5 text-gray-300">{label}</label>
-        <textarea id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} rows={rows} className="w-full px-3 py-2 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-y bg-gray-700/50 text-gray-100 transition-all duration-200" />
+        <textarea id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} rows={rows} className="w-full px-3 py-2 border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm resize-y bg-gray-700/50 text-gray-100 transition-all duration-200" />
     </div>
 );
 
@@ -157,6 +157,33 @@ const AppearanceForm: React.FC<Pick<FormPanelProps, 'uiConfig' | 'setUiConfig'>>
                     </div>
                 </div>
 
+                <div className="bg-gray-800/40 p-3 rounded-xl border border-gray-700/60">
+                    <span className="block text-xs font-bold text-gray-300 mb-2 uppercase tracking-wider">Paletas Rápidas</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {[
+                            { name: 'Navy Executivo', bg: '#ffffff', accent: '#1e3a8a' },
+                            { name: 'Cyber Green', bg: '#ffffff', accent: '#10b981' },
+                            { name: 'Modern Indigo', bg: '#ffffff', accent: '#6366f1' },
+                            { name: 'Vinho Nobre', bg: '#ffffff', accent: '#881337' },
+                            { name: 'Slate Minimal', bg: '#ffffff', accent: '#475569' },
+                            { name: 'Sunset Âmbar', bg: '#ffffff', accent: '#d97706' },
+                        ].map(preset => (
+                            <button
+                                key={preset.name}
+                                type="button"
+                                onClick={() => {
+                                    handleUiChangeDebounced('accentColor', preset.accent);
+                                    handleUiChangeDebounced('backgroundColor', preset.bg);
+                                }}
+                                className="flex items-center gap-2 p-2 bg-gray-700/50 hover:bg-gray-700 active:bg-gray-600 border border-gray-600 rounded-lg text-xs font-medium text-gray-200 transition-all hover:border-blue-500"
+                            >
+                                <span className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-sm flex-shrink-0" style={{ backgroundColor: preset.accent }} />
+                                <span className="truncate">{preset.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 <div>
                     <h3 className="text-lg font-semibold text-gray-100 mb-4">Foto de Perfil</h3>
                     <div>
@@ -241,15 +268,29 @@ const PersonalInfoForm: React.FC<Pick<FormPanelProps, 'resumeData' | 'setResumeD
 interface SectionFormProps extends Pick<FormPanelProps, 'resumeData' | 'setResumeData'> {
     section: ResumeSection;
     onDeleteSection: () => void;
+    isMobile?: boolean;
 }
 
-const SectionForm: React.FC<SectionFormProps> = ({ section, resumeData, setResumeData, onDeleteSection }) => {
+const SectionForm: React.FC<SectionFormProps> = ({ section, resumeData, setResumeData, onDeleteSection, isMobile }) => {
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
     const dragItem = useRef<number | null>(null);
     const dragOverItem = useRef<number | null>(null);
 
     const toggleCollapse = (itemId: string) => {
         setCollapsedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
+    };
+
+    const moveItem = (index: number, direction: 'up' | 'down') => {
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= section.items.length) return;
+        const newItems = [...section.items];
+        const temp = newItems[index];
+        newItems[index] = newItems[targetIndex];
+        newItems[targetIndex] = temp;
+        setResumeData(prev => ({
+            ...prev,
+            sections: prev.sections.map(s => s.id === section.id ? { ...s, items: newItems } : s)
+        }));
     };
 
     // Generic Handlers
@@ -456,20 +497,62 @@ const SectionForm: React.FC<SectionFormProps> = ({ section, resumeData, setResum
                     {section.items.map((item: any, index) => (
                         <div
                             key={item.id}
-                            draggable
+                            draggable={!isMobile}
                             onDragStart={(e) => handleDragStart(e, index)}
                             onDragEnter={(e) => handleDragEnter(e, index)}
-                            className="p-4 border border-gray-700 rounded-xl mb-4 bg-gray-800/30 relative group"
+                            className="p-3.5 border border-gray-700 rounded-xl mb-4 bg-gray-800/40 relative group transition-all"
                         >
-                            <div className="absolute top-2 right-2 flex items-center gap-1">
-                                <button onClick={() => removeItem(item.id)} className="p-1 text-red-500 hover:text-red-600 hover:bg-red-900/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Remover"><TrashIcon className="w-5 h-5" /></button>
-                                <div className="cursor-grab p-1 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Reordenar"><GripVerticalIcon className="w-5 h-5" /></div>
+                            <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-gray-700/50">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleCollapse(item.id)}
+                                    className="flex-1 flex items-center justify-between text-left font-semibold text-gray-200 py-1 rounded-lg hover:text-blue-400 transition-colors min-w-0"
+                                >
+                                    <span className="truncate pr-2">{getItemTitle(item)}</span>
+                                    {collapsedItems[item.id] ? <ChevronDownIcon className="w-5 h-5 flex-shrink-0 text-gray-400" /> : <ChevronUpIcon className="w-5 h-5 flex-shrink-0 text-gray-400" />}
+                                </button>
+                                <div className="flex items-center gap-1 flex-shrink-0">
+                                    <button
+                                        type="button"
+                                        onClick={() => moveItem(index, 'up')}
+                                        disabled={index === 0}
+                                        className="p-1.5 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        title="Mover para cima"
+                                        aria-label="Mover para cima"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => moveItem(index, 'down')}
+                                        disabled={index === section.items.length - 1}
+                                        className="p-1.5 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        title="Mover para baixo"
+                                        aria-label="Mover para baixo"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeItem(item.id)}
+                                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-900/40 rounded-lg transition-colors"
+                                        aria-label="Remover item"
+                                        title="Remover item"
+                                    >
+                                        <TrashIcon className="w-4 h-4" />
+                                    </button>
+                                    {!isMobile && (
+                                        <div className="cursor-grab p-1 text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Reordenar">
+                                            <GripVerticalIcon className="w-4 h-4" />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <button onClick={() => toggleCollapse(item.id)} className="w-full flex justify-between items-center text-left font-semibold text-gray-200 p-2 -m-2 rounded-lg hover:bg-gray-700/50 transition-colors">
-                                {getItemTitle(item)}
-                                {collapsedItems[item.id] ? <ChevronDownIcon className="w-5 h-5" /> : <ChevronUpIcon className="w-5 h-5" />}
-                            </button>
-                            {!collapsedItems[item.id] && <div className="mt-4">{renderItemContent(item)}</div>}
+                            {!collapsedItems[item.id] && <div className="mt-2">{renderItemContent(item)}</div>}
                         </div>
                     ))}
                 </div>
@@ -508,6 +591,7 @@ export const FormPanel: React.FC<FormPanelProps> = ({ activeSection, resumeData,
                 resumeData={resumeData}
                 setResumeData={setResumeData}
                 onDeleteSection={() => handleDeleteSection(activeSection)}
+                isMobile={isMobile}
             />;
         }
 

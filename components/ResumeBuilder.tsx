@@ -96,6 +96,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
     const [isMobile, setIsMobile] = useState(false);
     const [mobileView, setMobileView] = useState<'edit' | 'design' | 'preview'>('edit');
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+    const [zoomFactor, setZoomFactor] = useState<number>(1.0);
 
     // Payment States
     const [hasPaidSession, setHasPaidSession] = useState(() => {
@@ -432,16 +433,67 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
             {isMobile ? (
                 /* Layout Mobile */
                 <div className="flex flex-col h-full bg-transparent text-white overflow-hidden">
-                    <div className="h-16 border-b border-gray-700 flex items-center justify-between px-4 bg-gray-900/80 backdrop-blur-sm z-10 flex-shrink-0">
-                        <button onClick={() => setCurrentView('meus-curriculos')} className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                            <span>Voltar</span>
-                        </button>
-                        <button onClick={handleDownloadClick} disabled={isGeneratingPdf} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-bold text-sm disabled:opacity-70 shadow-md shadow-blue-900/30">
-                            {isGeneratingPdf ? 'Gerando...' : 'Baixar PDF'}
-                        </button>
+                    <div className="h-16 border-b border-gray-700/80 flex items-center justify-between px-3 bg-gray-900/95 backdrop-blur-md z-20 flex-shrink-0 gap-2">
+                        {/* Voltar & Resume Title */}
+                        <div className="flex items-center gap-2 min-w-0">
+                            <button
+                                onClick={() => setCurrentView('meus-curriculos')}
+                                className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors flex-shrink-0"
+                                title="Voltar para Meus Currículos"
+                                aria-label="Voltar"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                                </svg>
+                            </button>
+                            <div className="flex flex-col min-w-0">
+                                <span className="font-semibold text-xs text-gray-200 truncate max-w-[110px] sm:max-w-[160px]">
+                                    {resumeData.personal.name || 'Meu Currículo'}
+                                </span>
+                                <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    Salvo
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Quick Undo/Redo & Download PDF */}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                            <button
+                                onClick={() => undo()}
+                                disabled={!canUndo}
+                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors"
+                                title="Desfazer"
+                                aria-label="Desfazer"
+                            >
+                                <UndoIcon className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => redo()}
+                                disabled={!canRedo}
+                                className="p-2 text-gray-400 hover:text-white disabled:opacity-20 rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors"
+                                title="Refazer"
+                                aria-label="Refazer"
+                            >
+                                <RedoIcon className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={handleDownloadClick}
+                                disabled={isGeneratingPdf}
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-bold text-xs disabled:opacity-70 shadow-md shadow-blue-900/30 transition-all active:scale-95 ml-1"
+                            >
+                                {isGeneratingPdf ? (
+                                    <span className="animate-pulse">Gerando...</span>
+                                ) : (
+                                    <>
+                                        <DownloadIcon className="w-3.5 h-3.5" />
+                                        <span>Baixar</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
-                    <main className="flex-1 overflow-y-auto pb-24 bg-[#0f172a]">
+                    <main className="flex-1 overflow-y-auto pb-24 bg-[#0f172a] relative">
                         {(mobileView === 'edit' && activeSection) || mobileView === 'design' ? (
                             <FormPanel
                                 activeSection={activeSection || 'appearance'}
@@ -460,10 +512,52 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 isMobile={true}
                             />
                         ) : (
-                            <div className="p-4 flex justify-center items-start min-h-full overflow-auto">
-                                <ScaledPreview scale={mobileScale}>
-                                    <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
-                                </ScaledPreview>
+                            <div className="w-full min-h-full flex flex-col items-center">
+                                {/* Floating Zoom Controls */}
+                                <div className="sticky top-3 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md border border-gray-700/80 rounded-full shadow-2xl text-xs font-semibold text-gray-200 mt-2 mb-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setZoomFactor(prev => Math.max(0.5, Math.round((prev - 0.15) * 100) / 100))}
+                                        disabled={zoomFactor <= 0.5}
+                                        className="p-1.5 text-gray-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        title="Diminuir Zoom"
+                                        aria-label="Diminuir Zoom"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
+                                        </svg>
+                                    </button>
+                                    <span className="min-w-[42px] text-center font-mono text-[11px] text-blue-400 font-bold select-none">
+                                        {Math.round(zoomFactor * 100)}%
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setZoomFactor(prev => Math.min(2.0, Math.round((prev + 0.15) * 100) / 100))}
+                                        disabled={zoomFactor >= 2.0}
+                                        className="p-1.5 text-gray-300 hover:text-white disabled:opacity-30 rounded-full hover:bg-gray-700/60 active:bg-gray-600 transition-colors"
+                                        title="Aumentar Zoom"
+                                        aria-label="Aumentar Zoom"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </button>
+                                    <div className="h-3 w-px bg-gray-700 mx-0.5" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setZoomFactor(1.0)}
+                                        className={`px-2 py-1 rounded-full text-[10px] transition-colors ${zoomFactor === 1.0 ? 'bg-blue-600/30 text-blue-300 border border-blue-500/40' : 'text-gray-400 hover:text-white'}`}
+                                        title="Ajustar à tela"
+                                    >
+                                        Ajustar
+                                    </button>
+                                </div>
+
+                                <div className="p-4 flex justify-center items-start w-full min-h-full overflow-auto">
+                                    <ScaledPreview scale={mobileScale * zoomFactor}>
+                                        <ResumePreview resumeData={resumeData} uiConfig={uiConfig} showWatermark={shouldShowWatermark} isPrinting={isNativePrinting} />
+                                    </ScaledPreview>
+                                </div>
                             </div>
                         )}
                     </main>
