@@ -161,6 +161,7 @@ export type View =
   | 'dados-lgpd'
   | 'perfil'
   | 'assinatura'
+  | 'wizard'
   | 'a4-editor';
 
 export interface User {

@@ -36,6 +36,11 @@ export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) =
     const PublicNavLinks: React.FC<{ onSelect?: () => void }> = ({ onSelect }) => (
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-1.5 md:gap-2 text-sm font-medium w-full md:w-auto">
             <NavLink view='home' onClickExtra={onSelect}>Início</NavLink>
+            <NavLink view='wizard' onClickExtra={onSelect}>
+                <span className="inline-flex items-center gap-1 text-blue-300 font-bold">
+                    <span>🪄</span> Assistente Guiado
+                </span>
+            </NavLink>
             <NavLink view='templates' onClickExtra={onSelect}>Modelos</NavLink>
             <NavLink view='meus-curriculos' onClickExtra={onSelect}>Meus CVs</NavLink>
             <NavLink view='faq' onClickExtra={onSelect}>Dúvidas</NavLink>
@@ -83,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) =
                         </button>
 
                         <button 
-                            onClick={() => { setCurrentView('builder'); setIsMobileMenuOpen(false); }} 
+                            onClick={() => { setCurrentView('wizard'); setIsMobileMenuOpen(false); }} 
                             className="group relative inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95"
                         >
                             <SparklesIcon className="w-4 h-4 text-blue-200 animate-pulse" />

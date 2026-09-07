@@ -4,7 +4,7 @@ import { TemplateThumbnails } from '../components/TemplateThumbnails';
 import { 
     PencilIcon, TrashIcon, DuplicateIcon, PlusIcon, CheckIcon,
     ChevronDownIcon, ChevronUpIcon, SparklesIcon, DocumentTextIcon, DownloadIcon, UserIcon, BriefcaseIcon, QuoteIcon,
-    StarIcon, ShieldCheckIcon, BookOpenIcon, LifebuoyIcon
+    StarIcon, ShieldCheckIcon, BookOpenIcon, LifebuoyIcon, XMarkIcon
 } from '../components/icons';
 import type { View, Resume, TemplateOption } from '../types';
 import { initialResumeData, initialUiConfig } from '../initialData';
@@ -725,11 +725,13 @@ export const PlansPage: React.FC<PageComponentProps> = ({ setCurrentView }) => {
 };
 
 export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView, onApplyTemplate }) => {
+    const [showModeModal, setShowModeModal] = useState(false);
+
     const handleAction = (template?: TemplateOption) => {
         if (template && onApplyTemplate) {
             onApplyTemplate(template);
         } else {
-            setCurrentView?.('builder');
+            setShowModeModal(true);
         }
     };
     
@@ -821,19 +823,19 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                     {/* CTAs */}
                     <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-900">
                         <button 
-                            onClick={() => handleAction()} 
+                            onClick={() => setCurrentView?.('wizard')} 
                             className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
                         >
                             <SparklesIcon className="w-5 h-5 text-blue-200 animate-pulse" />
-                            <span>Criar Meu Currículo Grátis</span>
+                            <span>Criar com Assistente Guiado</span>
                             <span className="text-blue-200 group-hover:translate-x-1 transition-transform">→</span>
                         </button>
                         
                         <button
-                            onClick={() => setCurrentView?.('templates')}
+                            onClick={() => handleAction()}
                             className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-600 hover:border-slate-500 shadow-lg flex items-center justify-center gap-2"
                         >
-                            <span>Ver Todos os Modelos</span>
+                            <span>Ver Opções & Modelos</span>
                         </button>
                     </div>
 
@@ -1250,6 +1252,88 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                     </div>
                 </div>
             </section>
+
+            {/* ==================== MODAL DE ESCOLHA: ASSISTENTE VS EDITOR ==================== */}
+            {showModeModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                    <div className="bg-slate-950 border border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl shadow-blue-500/10 space-y-6 relative animate-in zoom-in-95 duration-200">
+                        {/* Close button */}
+                        <button
+                            onClick={() => setShowModeModal(false)}
+                            className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
+                        >
+                            <XMarkIcon className="w-5 h-5" />
+                        </button>
+
+                        <div className="space-y-2 text-left">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                Iniciar Criação
+                            </span>
+                            <h3 className="text-2xl font-black text-white tracking-tight">
+                                Como você prefere criar seu currículo?
+                            </h3>
+                            <p className="text-sm text-slate-400">
+                                Escolha a experiência ideal para você. Você poderá alternar e personalizar tudo depois.
+                            </p>
+                        </div>
+
+                        <div className="space-y-3.5">
+                            {/* Option 1: Assistente Passo a Passo (Recomendado) */}
+                            <button
+                                onClick={() => {
+                                    setShowModeModal(false);
+                                    setCurrentView?.('wizard');
+                                }}
+                                className="w-full text-left p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-indigo-950/40 to-slate-900 border-2 border-blue-500/70 hover:border-blue-400 transition-all duration-200 group shadow-lg shadow-blue-500/15 relative overflow-hidden"
+                            >
+                                <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[10px] font-extrabold uppercase tracking-wide">
+                                    ✨ Recomendado
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                                        <SparklesIcon className="w-6 h-6 animate-pulse" />
+                                    </div>
+                                    <div className="space-y-1 pr-16">
+                                        <h4 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                                            Assistente Passo a Passo (Entrevista Guiada)
+                                        </h4>
+                                        <p className="text-xs text-slate-300 leading-relaxed">
+                                            Responda perguntas simples (cargo, contato, conquistas sugeridas e habilidades) e deixe o assistente gerar o currículo pronto.
+                                        </p>
+                                    </div>
+                                </div>
+                            </button>
+
+                            {/* Option 2: Editor Direto */}
+                            <button
+                                onClick={() => {
+                                    setShowModeModal(false);
+                                    setCurrentView?.('builder');
+                                }}
+                                className="w-full text-left p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 hover:bg-slate-900 transition-all duration-200 group"
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center shrink-0 group-hover:text-white">
+                                        <DocumentTextIcon className="w-6 h-6" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h4 className="text-base font-bold text-white group-hover:text-slate-200 transition-colors">
+                                            Editor Completo em Tela Cheia
+                                        </h4>
+                                        <p className="text-xs text-slate-400 leading-relaxed">
+                                            Acesse diretamente a folha A4 com todos os blocos livres para preenchimento manual, drag & drop e controle total.
+                                        </p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div className="pt-2 text-center text-xs text-slate-500">
+                            🔒 100% Gratuito • Sem necessidade de cadastro para testar
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

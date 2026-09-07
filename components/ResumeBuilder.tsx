@@ -512,6 +512,13 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                         {/* Undo/Redo & Quick Preview / Download */}
                         <div className="flex items-center gap-1 flex-shrink-0">
                             <button
+                                onClick={() => setCurrentView('wizard')}
+                                className="p-1.5 text-blue-300 hover:text-white rounded-xl hover:bg-slate-800 transition-colors text-xs font-bold flex items-center gap-1 bg-blue-500/15 border border-blue-500/30"
+                                title="Abrir Assistente com Perguntas Guiadas"
+                            >
+                                <span>🪄</span>
+                            </button>
+                            <button
                                 onClick={() => undo()}
                                 disabled={!canUndo}
                                 className="p-2 text-slate-400 hover:text-white disabled:opacity-20 rounded-xl hover:bg-slate-800 active:bg-slate-700 transition-colors"
@@ -718,6 +725,16 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, sav
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
+                                {/* Wizard Switcher */}
+                                <button
+                                    onClick={() => setCurrentView('wizard')}
+                                    className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-blue-300 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 transition-all active:scale-95 shadow-sm"
+                                    title="Abrir Assistente com Perguntas Guiadas"
+                                >
+                                    <span>🪄</span>
+                                    <span>Assistente Guiado</span>
+                                </button>
+
                                 {/* View Toggle */}
                                 <div className="flex bg-slate-800/80 rounded-xl p-1 border border-slate-700/60 shadow-inner">
                                     <button

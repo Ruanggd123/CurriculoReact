@@ -19,6 +19,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { SubscriptionPage } from './pages/SubscriptionPage';
 import { Footer } from './components/Footer';
 import PageManager from './components/PageManager';
+import { ResumeWizard } from './components/ResumeWizard';
 
 const AppContent: React.FC = () => {
     const { user, loading } = useAuth();
@@ -131,6 +132,20 @@ const AppContent: React.FC = () => {
         setCurrentView('builder');
     };
 
+    const handleWizardComplete = (data: ResumeData, ui: UiConfig) => {
+        const newResume: Resume = {
+            id: generateId(),
+            title: data.personal.name ? `Currículo - ${data.personal.name}` : 'Meu Currículo',
+            lastModified: new Date().toISOString(),
+            data,
+            ui
+        };
+        setResumes(prev => [newResume, ...prev]);
+        setActiveResumeId(newResume.id);
+        setCurrentView('builder');
+        addToast('🎉 Currículo gerado com sucesso! Agora você pode personalizar cada detalhe no editor.', 'success');
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-[100dvh] bg-[#0f172a] text-white">
@@ -148,6 +163,15 @@ const AppContent: React.FC = () => {
         switch (currentView) {
             case 'home': return <CreateResumePage setCurrentView={setCurrentView} onApplyTemplate={handleApplyTemplate} />;
             case 'auth': return <Auth />;
+            case 'wizard': return (
+                <ResumeWizard 
+                    key={activeResumeId || 'new-wizard'} 
+                    onComplete={handleWizardComplete} 
+                    onCancel={() => setCurrentView('home')} 
+                    initialData={activeResume?.data}
+                    initialUi={activeResume?.ui}
+                />
+            );
             case 'builder': return <ResumeBuilder key={activeResume?.id || 'new'} initialResume={activeResume} saveResume={handleSaveResume} setCurrentView={setCurrentView} />;
             case 'meus-curriculos': return <MyResumesPage setCurrentView={setCurrentView} resumes={resumes} setResumes={setResumes} setActiveResumeId={setActiveResumeId} />;
             case 'perfil': return <ProfilePage setCurrentView={setCurrentView} />;
@@ -172,7 +196,7 @@ const AppContent: React.FC = () => {
         }
     };
 
-    const isBuilder = currentView === 'builder';
+    const isFullscreen = currentView === 'builder' || currentView === 'wizard';
     const isAuth = currentView === 'auth';
 
     if (isAuth) {
@@ -191,15 +215,15 @@ const AppContent: React.FC = () => {
 
     return (
         <div className="flex flex-col h-[100dvh] text-white bg-[#090d16] overflow-hidden">
-            {!isBuilder && <Header setCurrentView={setCurrentView} currentView={currentView} />}
+            {!isFullscreen && <Header setCurrentView={setCurrentView} currentView={currentView} />}
 
-            <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full bg-[#090d16]`}>
+            <main className={`flex-1 ${isFullscreen ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full bg-[#090d16]`}>
                 <div className="fixed inset-0 -z-10 bg-[#090d16]">
                     <div className="absolute inset-0 gradient-overlay-tr opacity-70"></div>
                     <div className="absolute inset-0 gradient-overlay-bl opacity-70"></div>
                 </div>
                 {renderPage()}
-                {!isBuilder && <Footer setCurrentView={setCurrentView} />}
+                {!isFullscreen && <Footer setCurrentView={setCurrentView} />}
             </main>
         </div>
     );
