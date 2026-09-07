@@ -66,12 +66,8 @@ const AppContent: React.FC = () => {
     // Initialize theme
     useEffect(() => {
         try {
-            const storedTheme = localStorage.getItem('theme');
-            if (storedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
         } catch (e) {
             document.documentElement.classList.add('dark');
         }
@@ -181,32 +177,32 @@ const AppContent: React.FC = () => {
 
     if (isAuth) {
         return (
-            <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300">
-                <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
-                    <div className="absolute inset-0 gradient-overlay-tr"></div>
+            <div className="flex flex-col h-[100dvh] text-white bg-[#090d16]">
+                <div className="fixed inset-0 -z-10 bg-[#090d16]">
+                    <div className="absolute inset-0 gradient-overlay-tr opacity-70"></div>
                 </div>
                 <Header setCurrentView={setCurrentView} currentView={currentView} />
                 <main className="flex-1 flex items-center justify-center overflow-auto">
                     <Auth />
                 </main>
             </div>
-        )
+        );
     }
 
     return (
-        <div className="flex flex-col h-[100dvh] text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden">
+        <div className="flex flex-col h-[100dvh] text-white bg-[#090d16] overflow-hidden">
             {!isBuilder && <Header setCurrentView={setCurrentView} currentView={currentView} />}
 
-            <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full`}>
-                <div className="fixed inset-0 -z-10 bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300">
-                    <div className="absolute inset-0 gradient-overlay-tr"></div>
-                    <div className="absolute inset-0 gradient-overlay-bl"></div>
+            <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full bg-[#090d16]`}>
+                <div className="fixed inset-0 -z-10 bg-[#090d16]">
+                    <div className="absolute inset-0 gradient-overlay-tr opacity-70"></div>
+                    <div className="absolute inset-0 gradient-overlay-bl opacity-70"></div>
                 </div>
                 {renderPage()}
                 {!isBuilder && <Footer setCurrentView={setCurrentView} />}
             </main>
         </div>
-    )
+    );
 }
 
 const App: React.FC = () => (

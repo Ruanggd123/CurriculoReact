@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+html, body, #root {
+  background-color: #090d16;
+  color: #f8fafc;
+}
+
 @layer base {
   @media print {
 

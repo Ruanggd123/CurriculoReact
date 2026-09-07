@@ -784,19 +784,19 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
     ];
 
     return (
-        <div className="flex flex-col items-center w-full overflow-x-hidden text-slate-100 selection:bg-blue-600 selection:text-white">
-            {/* Ambient Background Lights */}
-            <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent blur-[140px] rounded-full"></div>
-                <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 blur-[130px] rounded-full"></div>
-                <div className="absolute top-[70%] left-[-10%] w-[600px] h-[600px] bg-cyan-600/10 blur-[140px] rounded-full"></div>
+        <div className="flex flex-col items-center w-full min-h-screen overflow-x-hidden bg-[#090d16] text-slate-100 selection:bg-blue-600 selection:text-white relative">
+            {/* Ambient Background Lights on Dark Base */}
+            <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#090d16]">
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/20 via-indigo-600/15 to-transparent blur-[140px] rounded-full"></div>
+                <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-purple-600/15 blur-[130px] rounded-full"></div>
+                <div className="absolute top-[70%] left-[-10%] w-[600px] h-[600px] bg-cyan-600/15 blur-[140px] rounded-full"></div>
             </div>
 
             {/* ==================== HERO SECTION ==================== */}
             <section className="w-full flex flex-col items-center justify-center pt-16 sm:pt-24 pb-20 px-4 text-center relative z-10">
                 <div className="max-w-5xl mx-auto flex flex-col items-center">
                     {/* Announcement Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/90 border border-blue-500/30 text-blue-300 text-xs sm:text-sm font-semibold mb-8 shadow-xl shadow-blue-500/5 backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-500 hover:border-blue-400/50 transition-colors">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/95 border border-blue-500/40 text-blue-300 text-xs sm:text-sm font-semibold mb-8 shadow-xl shadow-blue-500/10 backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-500 hover:border-blue-400 transition-colors">
                         <span className="flex h-2 w-2 relative">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -806,15 +806,15 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                     </div>
 
                     {/* Main Headline */}
-                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-4xl animate-in fade-in slide-in-from-bottom-5 duration-700">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-4xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-5 duration-700">
                         O currículo que te coloca na{' '}
-                        <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(59,130,246,0.35)]">
                             frente de 98% dos candidatos.
                         </span>
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="mt-6 text-base sm:text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed font-light animate-in fade-in slide-in-from-bottom-6 duration-800">
+                    <p className="mt-6 text-base sm:text-xl md:text-2xl text-slate-200 max-w-3xl leading-relaxed font-normal animate-in fade-in slide-in-from-bottom-6 duration-800 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
                         Crie em minutos um currículo executivo e moderno. Formatação automática validada por recrutadores, prévia visual em tempo real e exportação em PDF vetorial impecável.
                     </p>
 
@@ -822,7 +822,7 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                     <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-900">
                         <button 
                             onClick={() => handleAction()} 
-                            className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-2xl shadow-blue-600/40 hover:shadow-blue-600/60 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
+                            className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
                         >
                             <SparklesIcon className="w-5 h-5 text-blue-200 animate-pulse" />
                             <span>Criar Meu Currículo Grátis</span>
@@ -831,14 +831,14 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
                         
                         <button
                             onClick={() => setCurrentView?.('templates')}
-                            className="w-full sm:w-auto px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-700/80 hover:border-slate-600 backdrop-blur-md flex items-center justify-center gap-2"
+                            className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-600 hover:border-slate-500 shadow-lg flex items-center justify-center gap-2"
                         >
                             <span>Ver Todos os Modelos</span>
                         </button>
                     </div>
 
                     {/* Trust Indicators */}
-                    <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs text-slate-400 font-medium">
+                    <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs text-slate-300 font-medium">
                         <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> Sem cadastro prévio</span>
                         <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> 100% Grátis para criar</span>
                         <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> Dados seguros no seu navegador</span>
