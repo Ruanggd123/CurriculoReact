@@ -196,14 +196,15 @@ const AppContent: React.FC = () => {
         }
     };
 
-    const isFullscreen = currentView === 'builder' || currentView === 'wizard';
+    const isBuilder = currentView === 'builder';
+    const hideGlobalNav = currentView === 'builder' || currentView === 'wizard';
     const isAuth = currentView === 'auth';
 
     if (isAuth) {
         return (
             <div className="flex flex-col h-[100dvh] text-white bg-[#090d16]">
-                <div className="fixed inset-0 -z-10 bg-[#090d16]">
-                    <div className="absolute inset-0 gradient-overlay-tr opacity-70"></div>
+                <div className="fixed inset-0 -z-10 pointer-events-none bg-[#090d16]">
+                    <div className="absolute inset-0 gradient-overlay-tr opacity-70 pointer-events-none"></div>
                 </div>
                 <Header setCurrentView={setCurrentView} currentView={currentView} />
                 <main className="flex-1 flex items-center justify-center overflow-auto">
@@ -215,15 +216,15 @@ const AppContent: React.FC = () => {
 
     return (
         <div className="flex flex-col h-[100dvh] text-white bg-[#090d16] overflow-hidden">
-            {!isFullscreen && <Header setCurrentView={setCurrentView} currentView={currentView} />}
+            {!hideGlobalNav && <Header setCurrentView={setCurrentView} currentView={currentView} />}
 
-            <main className={`flex-1 ${isFullscreen ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'} relative w-full bg-[#090d16]`}>
-                <div className="fixed inset-0 -z-10 bg-[#090d16]">
-                    <div className="absolute inset-0 gradient-overlay-tr opacity-70"></div>
-                    <div className="absolute inset-0 gradient-overlay-bl opacity-70"></div>
+            <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden scroll-smooth'} relative w-full bg-[#090d16]`}>
+                <div className="fixed inset-0 -z-10 pointer-events-none bg-[#090d16]">
+                    <div className="absolute inset-0 gradient-overlay-tr opacity-70 pointer-events-none"></div>
+                    <div className="absolute inset-0 gradient-overlay-bl opacity-70 pointer-events-none"></div>
                 </div>
                 {renderPage()}
-                {!isFullscreen && <Footer setCurrentView={setCurrentView} />}
+                {!hideGlobalNav && <Footer setCurrentView={setCurrentView} />}
             </main>
         </div>
     );

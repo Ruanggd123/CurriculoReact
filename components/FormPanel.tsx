@@ -147,6 +147,7 @@ const AppearanceForm: React.FC<Pick<FormPanelProps, 'uiConfig' | 'setUiConfig'>>
                     <TemplateThumbnails
                         currentTemplate={uiConfig.template}
                         onSelectTemplate={(template) => handleUiChange('template', template)}
+                        maxHeightClass="max-h-[480px] overflow-y-auto"
                     />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

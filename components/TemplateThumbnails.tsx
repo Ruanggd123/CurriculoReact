@@ -6,6 +6,7 @@ import { CheckIcon } from './icons';
 interface TemplateThumbnailsProps {
   currentTemplate: TemplateOption;
   onSelectTemplate: (template: TemplateOption) => void;
+  maxHeightClass?: string;
 }
 
 type TemplateTag = 'Novo' | 'Popular' | 'Pro' | 'Clássico';
@@ -221,7 +222,11 @@ const ThumbnailVisual: React.FC<{ id: TemplateOption }> = ({ id }) => {
     }
 }
 
-export const TemplateThumbnails: React.FC<TemplateThumbnailsProps> = ({ currentTemplate, onSelectTemplate }) => {
+export const TemplateThumbnails: React.FC<TemplateThumbnailsProps> = ({ 
+  currentTemplate, 
+  onSelectTemplate,
+  maxHeightClass = "" 
+}) => {
   const [activeCategory, setActiveCategory] = React.useState<string>('Todos');
 
   const filteredTemplates = activeCategory === 'Todos' 
@@ -249,7 +254,7 @@ export const TemplateThumbnails: React.FC<TemplateThumbnailsProps> = ({ currentT
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar pb-4">
+        <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pr-2 custom-scrollbar pb-4 ${maxHeightClass}`}>
             {filteredTemplates.map(template => {
                 const isSelected = currentTemplate === template.id;
                 

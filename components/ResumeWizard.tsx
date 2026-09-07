@@ -579,7 +579,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
     );
 
     return (
-        <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col justify-between selection:bg-blue-600 selection:text-white relative">
+        <div className="min-h-full bg-[#090d16] text-slate-100 flex flex-col justify-between selection:bg-blue-600 selection:text-white relative">
             {/* Ambient Background Glows */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10 bg-[#090d16]">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent blur-[140px] rounded-full"></div>
@@ -682,7 +682,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
             </div>
 
             {/* ==================== MAIN DUAL-PANE LAYOUT ==================== */}
-            <div className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex items-start gap-8">
+            <div className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 pb-36 flex items-start gap-8">
                 
                 {/* LEFT PANE: QUESTIONS & CONTROLS */}
                 <main className="flex-1 w-full space-y-6">
