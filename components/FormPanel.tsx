@@ -14,6 +14,9 @@ interface FormPanelProps {
     setUiConfig: (value: UiConfig | ((prevState: UiConfig) => UiConfig), skipHistory?: boolean) => void;
     onClose: () => void;
     isMobile?: boolean;
+    onNavigateSection?: (sectionId: string) => void;
+    nextSection?: { id: string; label: string } | null;
+    prevSection?: { id: string; label: string } | null;
 }
 
 // Re-usable form components
@@ -561,7 +564,18 @@ const SectionForm: React.FC<SectionFormProps> = ({ section, resumeData, setResum
     );
 };
 
-export const FormPanel: React.FC<FormPanelProps> = ({ activeSection, resumeData, setResumeData, uiConfig, setUiConfig, onClose, isMobile }) => {
+export const FormPanel: React.FC<FormPanelProps> = ({
+    activeSection,
+    resumeData,
+    setResumeData,
+    uiConfig,
+    setUiConfig,
+    onClose,
+    isMobile,
+    onNavigateSection,
+    nextSection,
+    prevSection
+}) => {
 
     const handleDeleteSection = (sectionId: string) => {
         if (confirm('Tem certeza que deseja excluir esta seção inteira?')) {
@@ -600,25 +614,46 @@ export const FormPanel: React.FC<FormPanelProps> = ({ activeSection, resumeData,
 
     return (
         <div className="h-full flex flex-col bg-[#1e293b] border-r border-gray-700 shadow-xl relative" data-tour="form-panel">
-            <div className="flex justify-between items-center px-6 pt-6 pb-2 flex-shrink-0 z-10">
-                {isMobile ? (
-                    <button onClick={onClose} className="flex items-center gap-2 p-2 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors">
-                        <ArrowLeftIcon className="w-5 h-5" />
-                        <span className="font-bold">Voltar</span>
+            {!isMobile && (
+                <div className="flex justify-between items-center px-6 pt-6 pb-2 flex-shrink-0 z-10">
+                    <div></div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-full text-gray-400 hover:bg-gray-700 transition-colors"
+                        aria-label="Fechar painel"
+                    >
+                        <XMarkIcon className="w-6 h-6" />
                     </button>
-                ) : (
-                    <div></div> // Placeholder to keep the X button on the right
-                )}
-                <button
-                    onClick={onClose}
-                    className={`p-2 rounded-full text-gray-400 hover:bg-gray-700 transition-colors ${isMobile ? 'hidden' : 'block'}`}
-                    aria-label="Fechar painel"
-                >
-                    <XMarkIcon className="w-6 h-6" />
-                </button>
-            </div>
-            <div className="flex-1 overflow-y-auto px-6 pb-24 md:pb-6 custom-scrollbar w-full">
+                </div>
+            )}
+            <div className={`flex-1 overflow-y-auto px-4 sm:px-6 custom-scrollbar w-full ${isMobile ? 'pt-4 pb-28' : 'pb-6'}`}>
                 {renderContent()}
+
+                {isMobile && onNavigateSection && (
+                    <div className="mt-8 pt-4 pb-4 border-t border-gray-700/60 flex items-center justify-between gap-3">
+                        {prevSection ? (
+                            <button
+                                type="button"
+                                onClick={() => onNavigateSection(prevSection.id)}
+                                className="flex items-center gap-1.5 px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-gray-300 rounded-xl text-xs font-semibold transition-colors shadow-sm"
+                            >
+                                <span>←</span>
+                                <span className="truncate max-w-[110px]">{prevSection.label}</span>
+                            </button>
+                        ) : <div />}
+
+                        {nextSection && (
+                            <button
+                                type="button"
+                                onClick={() => onNavigateSection(nextSection.id)}
+                                className="flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-900/40 transition-all active:scale-95 ml-auto"
+                            >
+                                <span className="truncate max-w-[140px]">Avançar: {nextSection.label}</span>
+                                <span>→</span>
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
