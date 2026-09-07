@@ -292,7 +292,7 @@ export const TemplateThumbnails: React.FC<TemplateThumbnailsProps> = ({
         </div>
 
         {/* Grid */}
-        <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 pr-2 custom-scrollbar pb-4 ${maxHeightClass}`}>
+        <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 pr-1 sm:pr-2 custom-scrollbar pb-4 ${maxHeightClass}`}>
             {filteredTemplates.map(template => {
                 const isSelected = currentTemplate === template.id;
                 

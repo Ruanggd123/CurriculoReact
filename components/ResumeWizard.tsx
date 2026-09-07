@@ -587,36 +587,37 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
             </div>
 
             {/* ==================== WIZARD TOP HEADER ==================== */}
-            <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-2xl sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-2xl sticky top-0 z-40 px-3 sm:px-8 py-3 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                     <button 
                         onClick={onCancel}
-                        className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-xl transition-colors"
+                        className="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-xl transition-colors shrink-0"
                         title="Sair do Assistente"
                     >
                         <ArrowLeftIcon className="w-5 h-5" />
                     </button>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent font-black text-sm tracking-tight sm:text-base">
-                                Assistente do Currículo Vencedor
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
+                            <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent font-black text-xs sm:text-base tracking-tight truncate">
+                                <span className="hidden sm:inline">Assistente do Currículo Vencedor</span>
+                                <span className="sm:hidden">Assistente</span>
                             </span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30 hidden sm:inline-flex">
-                                ATS 2025
+                            <span className="px-1.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30 hidden xs:inline-flex shrink-0">
+                                ATS
                             </span>
                         </div>
-                        <p className="text-xs text-slate-400 hidden sm:block">
+                        <p className="text-xs text-slate-400 hidden sm:block truncate">
                             Perguntas estratégicas com liberdade total de marcar, desmarcar ou pular.
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     {/* Direct Model Picker Button */}
                     <button
                         type="button"
                         onClick={() => setStep(8)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 shadow-sm border ${
+                        className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 active:scale-95 shadow-sm border shrink-0 ${
                             step === 8 
                                 ? 'bg-blue-600 text-white border-blue-400' 
                                 : 'bg-blue-950/60 hover:bg-blue-900/60 text-blue-300 border-blue-700/50'
@@ -625,31 +626,33 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                     >
                         <span>🎨</span>
                         <span className="hidden sm:inline">Modelo:</span>
-                        <span className="text-white capitalize">{selectedTemplate}</span>
+                        <span className="text-white capitalize truncate max-w-[60px] sm:max-w-none">{selectedTemplate}</span>
                     </button>
 
                     {/* Mobile Toggle Preview Button */}
                     <button
                         onClick={() => setShowMobilePreview(!showMobilePreview)}
-                        className="lg:hidden px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-700 text-blue-300 flex items-center gap-1.5 shadow-sm"
+                        className="lg:hidden px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-700 text-blue-300 flex items-center gap-1 shadow-sm shrink-0"
                     >
                         <span>👁️</span>
-                        <span>{showMobilePreview ? 'Ocultar' : 'Ver Prévia'}</span>
+                        <span className="hidden sm:inline">{showMobilePreview ? 'Ocultar' : 'Ver Prévia'}</span>
+                        <span className="sm:hidden">{showMobilePreview ? 'Fechar' : 'Prévia'}</span>
                     </button>
 
                     <button
                         onClick={handleFinish}
-                        className="text-xs text-slate-300 hover:text-white transition-colors font-semibold px-3 py-1.5 rounded-xl border border-slate-700/80 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800/60"
+                        className="text-xs text-slate-300 hover:text-white transition-colors font-semibold px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700/80 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800/60 whitespace-nowrap shrink-0"
                         title="Pular direto para o editor completo com o que foi preenchido"
                     >
-                        Abrir no Editor Completo →
+                        <span className="hidden sm:inline">Abrir no Editor Completo →</span>
+                        <span className="sm:hidden">Editor →</span>
                     </button>
                 </div>
             </header>
 
             {/* ==================== PROGRESS BAR ==================== */}
-            <div className="w-full bg-slate-900/90 border-b border-slate-800/80 px-4 sm:px-8 py-3">
-                <div className="max-w-6xl mx-auto flex flex-col gap-2.5">
+            <div className="w-full bg-slate-900/90 border-b border-slate-800/80 px-3 sm:px-8 py-2.5 sm:py-3">
+                <div className="max-w-6xl mx-auto flex flex-col gap-2">
                     <div className="flex items-center justify-between text-xs font-semibold">
                         <span className="text-slate-300 flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[11px] font-bold shadow-md shadow-blue-600/50">
@@ -660,15 +663,15 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                         <span className="text-blue-400 font-mono font-bold">{progressPercent}% Concluído</span>
                     </div>
 
-                    <div className="w-full h-2 bg-slate-800/80 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 sm:h-2 bg-slate-800/80 rounded-full overflow-hidden">
                         <div 
                             className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 transition-all duration-500 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.6)]"
                             style={{ width: `${progressPercent}%` }}
                         ></div>
                     </div>
 
-                    {/* Step Navigation Tabs (Clickable on all screen sizes) */}
-                    <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400 overflow-x-auto no-scrollbar gap-1.5 pb-0.5">
+                    {/* Step Navigation Tabs (Clickable on all screen sizes with horizontal scroll) */}
+                    <div className="flex items-center justify-start sm:justify-between pt-1 text-[11px] text-slate-400 overflow-x-auto no-scrollbar gap-1.5 pb-1">
                         {[
                             { s: 1, label: '1. Foco' },
                             { s: 2, label: '2. Contato' },
@@ -683,7 +686,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                 key={item.s}
                                 type="button"
                                 onClick={() => setStep(item.s)}
-                                className={`transition-all font-semibold py-1 px-2.5 rounded-lg whitespace-nowrap text-[11px] sm:text-xs ${
+                                className={`transition-all font-semibold py-1 px-2.5 rounded-lg whitespace-nowrap text-[11px] sm:text-xs shrink-0 ${
                                     step === item.s 
                                         ? 'text-white font-bold bg-blue-600 shadow-md shadow-blue-900/50 ring-1 ring-blue-400/40' 
                                         : step > item.s 
@@ -985,11 +988,11 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                             </div>
 
                             {/* Toggle Has Experience */}
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setHasExperience(true)}
-                                    className={`flex-1 p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                                         hasExperience 
                                             ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-md' 
                                             : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:bg-slate-800/50'
@@ -1001,7 +1004,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                 <button
                                     type="button"
                                     onClick={() => setHasExperience(false)}
-                                    className={`flex-1 p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                                         !hasExperience 
                                             ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-md' 
                                             : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:bg-slate-800/50'
@@ -1376,11 +1379,11 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                             </div>
 
                             {/* Toggle Include Languages */}
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setIncludeLanguages(true)}
-                                    className={`flex-1 p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                                         includeLanguages 
                                             ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-md' 
                                             : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:bg-slate-800/50'
@@ -1391,7 +1394,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                 <button
                                     type="button"
                                     onClick={() => setIncludeLanguages(false)}
-                                    className={`flex-1 p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                                         !includeLanguages 
                                             ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-md' 
                                             : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:bg-slate-800/50'
@@ -1491,14 +1494,14 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                             </div>
 
                             {/* Choice to include summary or not */}
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setIncludeSummary(true)}
-                                    className={`flex-1 p-3 rounded-xl border text-xs font-bold transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
                                         includeSummary 
-                                            ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-1 ring-blue-500/40' 
-                                            : 'bg-slate-900 border-slate-800 text-slate-400'
+                                            ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-1 ring-blue-500/40 shadow-md' 
+                                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800/50'
                                     }`}
                                 >
                                     ✓ Incluir Resumo Profissional
@@ -1506,10 +1509,10 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                                 <button
                                     type="button"
                                     onClick={() => setIncludeSummary(false)}
-                                    className={`flex-1 p-3 rounded-xl border text-xs font-bold transition-all ${
+                                    className={`flex-1 p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition-all ${
                                         !includeSummary 
-                                            ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-1 ring-blue-500/40' 
-                                            : 'bg-slate-900 border-slate-800 text-slate-400'
+                                            ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-1 ring-blue-500/40 shadow-md' 
+                                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800/50'
                                     }`}
                                 >
                                     Não incluir resumo por enquanto
@@ -1677,14 +1680,14 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
             )}
 
             {/* ==================== WIZARD FOOTER NAVIGATION ==================== */}
-            <footer className="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl px-4 sm:px-8 py-4 sticky bottom-0 z-40">
-                <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+            <footer className="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-xl px-3 sm:px-8 py-3.5 sm:py-4 sticky bottom-0 z-40">
+                <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
                     {/* Back Button */}
                     <button
                         type="button"
                         onClick={() => setStep(Math.max(1, step - 1))}
                         disabled={step === 1}
-                        className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border transition-all flex items-center gap-1.5 ${
+                        className={`px-3.5 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border transition-all flex items-center gap-1.5 ${
                             step === 1 
                                 ? 'opacity-30 border-transparent text-slate-600 cursor-not-allowed' 
                                 : 'border-slate-700 bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800'
@@ -1704,7 +1707,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                             <button
                                 type="button"
                                 onClick={() => setStep(Math.min(totalSteps, step + 1))}
-                                className="px-6 sm:px-8 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 flex items-center gap-2 active:scale-95"
+                                className="px-5 sm:px-8 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-600/30 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 active:scale-95"
                             >
                                 <span>Avançar</span>
                                 <span>→</span>
@@ -1713,9 +1716,10 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                             <button
                                 type="button"
                                 onClick={handleFinish}
-                                className="px-6 sm:px-8 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/30 transition-all duration-200 flex items-center gap-2 active:scale-95"
+                                className="px-4 sm:px-8 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/30 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 active:scale-95 whitespace-nowrap"
                             >
-                                <span>Concluir & Abrir Editor</span>
+                                <span className="hidden sm:inline">Concluir & Abrir Editor</span>
+                                <span className="sm:hidden">Concluir Editor</span>
                                 <span>🚀</span>
                             </button>
                         )}
