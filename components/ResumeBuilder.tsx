@@ -4,6 +4,8 @@ import { ResumePreview } from './ResumePreview';
 import { LeftSidebar } from './LeftSidebar';
 import { FormPanel } from './FormPanel';
 import { OnboardingTour } from './OnboardingTour';
+import { useHistoryState } from '../hooks/useHistoryState';
+import type { Resume, ResumeData, UiConfig, View } from '../types';
 import {
     DownloadIcon, UndoIcon, RedoIcon, CheckIcon, CreditCardIcon, PixIcon, PencilIcon, SwatchIcon, DocumentTextIcon,
     UserIcon, BriefcaseIcon, AcademicCapIcon, SparklesIcon, CodeBracketIcon, LanguageIcon as LanguageIconComponent, GripVerticalIcon
