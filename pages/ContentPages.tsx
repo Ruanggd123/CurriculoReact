@@ -34,89 +34,291 @@ const PageHeader: React.FC<{ title: string; subtitle: string; centered?: boolean
 
 // ==================== HELPER COMPONENTS FOR CAROUSEL ====================
 
-const MiniResumeVisual: React.FC<{ type: 'creative' | 'executive' | 'modern' | 'classic' }> = ({ type }) => {
-    // Visual representations of filled resumes
+// ==================== HELPER COMPONENTS FOR CAROUSEL ====================
+
+const MiniResumeVisual: React.FC<{ type: 'creative' | 'executive' | 'modern' | 'classic' | 'tech' }> = ({ type }) => {
+    // High-fidelity realistic mini document preview
     if (type === 'creative') {
         return (
-            <div className="w-full h-full bg-white flex flex-col overflow-hidden text-[4px] text-gray-800 relative">
-                <div className="h-1/4 bg-purple-600 p-2 flex flex-col justify-center text-white relative">
-                    <div className="font-bold text-[8px] leading-tight">MARIA SILVA</div>
-                    <div className="opacity-80 tracking-widest mt-0.5">UX DESIGNER</div>
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/20 rounded-full"></div>
-                </div>
-                <div className="flex-1 flex p-2 gap-2">
-                    <div className="flex-1 space-y-1.5">
-                        <div className="w-4 h-1 bg-purple-200 rounded"></div>
-                        <div className="space-y-0.5">
-                            <div className="w-full h-0.5 bg-gray-200"></div>
-                            <div className="w-full h-0.5 bg-gray-200"></div>
-                            <div className="w-3/4 h-0.5 bg-gray-200"></div>
+            <div className="w-full h-full bg-white flex flex-col text-slate-800 select-none overflow-hidden font-sans">
+                {/* Header Banner */}
+                <div className="bg-gradient-to-r from-purple-700 via-indigo-600 to-violet-600 p-2.5 text-white relative">
+                    <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-white/20 border border-white/40 flex items-center justify-center font-bold text-[8px] text-white">
+                            MS
                         </div>
-                        <div className="w-4 h-1 bg-purple-200 rounded mt-2"></div>
-                         <div className="space-y-0.5">
-                            <div className="w-full h-0.5 bg-gray-200"></div>
-                            <div className="w-2/3 h-0.5 bg-gray-200"></div>
+                        <div>
+                            <div className="font-extrabold text-[9px] tracking-tight leading-none">MARIA SILVA</div>
+                            <div className="text-[5.5px] font-medium text-purple-200 tracking-wider uppercase mt-0.5">Senior UX / Product Designer</div>
                         </div>
                     </div>
-                    <div className="w-1/3 space-y-2">
-                         <div className="w-full h-1 bg-gray-100 rounded"></div>
-                         <div className="flex flex-wrap gap-0.5">
-                             {[1,2,3,4].map(i => <div key={i} className="w-3 h-1 bg-purple-100 rounded-sm"></div>)}
-                         </div>
+                    <div className="mt-1.5 flex gap-2 text-[4.5px] text-purple-200">
+                        <span>São Paulo, SP</span>
+                        <span>•</span>
+                        <span>maria.design@email.com</span>
+                        <span>•</span>
+                        <span>linkedin.com/in/mariaux</span>
+                    </div>
+                </div>
+
+                {/* Body */}
+                <div className="flex-1 p-2.5 flex gap-2.5 bg-slate-50/50">
+                    <div className="flex-1 space-y-2">
+                        <div>
+                            <div className="text-[6px] font-bold uppercase text-purple-800 tracking-wider mb-1 border-b border-purple-200 pb-0.5">
+                                Experiência Profissional
+                            </div>
+                            <div className="space-y-1.5">
+                                <div>
+                                    <div className="flex justify-between items-baseline">
+                                        <span className="text-[6px] font-bold text-slate-900">Lead Product Designer • FinTech</span>
+                                        <span className="text-[4.5px] text-slate-500 font-medium">2022 - Atual</span>
+                                    </div>
+                                    <div className="text-[5px] text-slate-600 leading-tight mt-0.5">
+                                        Liderança do Design System com +120 componentes. Redesenho de onboarding aumentando conversão em +32%.
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between items-baseline">
+                                        <span className="text-[6px] font-bold text-slate-900">Product Designer • E-commerce</span>
+                                        <span className="text-[4.5px] text-slate-500 font-medium">2020 - 2022</span>
+                                    </div>
+                                    <div className="text-[5px] text-slate-600 leading-tight mt-0.5">
+                                        Pesquisa de usabilidade com 50+ usuários e testes A/B no checkout mobile.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className="text-[6px] font-bold uppercase text-purple-800 tracking-wider mb-1 border-b border-purple-200 pb-0.5">
+                                Formação Acadêmica
+                            </div>
+                            <div className="text-[5.5px] font-semibold text-slate-900">Bacharelado em Design Digital</div>
+                            <div className="text-[4.5px] text-slate-500">Universidade de São Paulo (USP) • 2016 - 2020</div>
+                        </div>
+                    </div>
+
+                    <div className="w-[35%] space-y-2 border-l border-slate-200 pl-2">
+                        <div>
+                            <div className="text-[6px] font-bold uppercase text-purple-800 tracking-wider mb-1">
+                                Habilidades
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                                {['Figma', 'Design System', 'UX Research', 'Prototipagem', 'Design Ops', 'User Testing'].map(s => (
+                                    <span key={s} className="px-1 py-0.5 rounded bg-purple-100/80 text-purple-800 text-[4px] font-bold">
+                                        {s}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className="text-[6px] font-bold uppercase text-purple-800 tracking-wider mb-1">
+                                Idiomas
+                            </div>
+                            <div className="text-[4.5px] text-slate-700 space-y-0.5">
+                                <div className="flex justify-between"><span>Português</span><span className="font-bold">Nativo</span></div>
+                                <div className="flex justify-between"><span>Inglês</span><span className="font-bold">Fluente (C1)</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         );
     }
+
     if (type === 'modern') {
         return (
-             <div className="w-full h-full bg-white flex text-[4px] text-gray-800 overflow-hidden">
-                <div className="w-1/3 bg-slate-800 text-gray-300 p-2 space-y-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-600 mx-auto"></div>
-                    <div className="w-full h-0.5 bg-slate-700"></div>
-                    <div className="w-full h-0.5 bg-slate-700"></div>
-                    <div className="mt-4 w-full h-1 bg-slate-700 rounded"></div>
-                    <div className="w-full h-0.5 bg-slate-700"></div>
+            <div className="w-full h-full bg-white flex text-slate-800 select-none overflow-hidden font-sans">
+                {/* Dark Sidebar */}
+                <div className="w-[34%] bg-slate-900 text-slate-200 p-2.5 flex flex-col justify-between">
+                    <div className="space-y-2.5">
+                        <div className="text-center">
+                            <div className="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-400/40 text-blue-300 mx-auto flex items-center justify-center font-bold text-[8px] mb-1">
+                                JS
+                            </div>
+                            <div className="text-[8px] font-bold text-white tracking-tight leading-none">JOÃO SOUZA</div>
+                            <div className="text-[4.5px] text-blue-400 uppercase tracking-widest mt-0.5 font-medium">Tech Lead / Full Stack</div>
+                        </div>
+
+                        <div className="space-y-1 text-[4.5px] text-slate-400 border-t border-slate-800 pt-1.5">
+                            <div>📍 São Paulo - Brasil</div>
+                            <div>✉️ joao.dev@email.com</div>
+                            <div>🔗 github.com/joaosouza</div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <div className="text-[5.5px] font-bold text-blue-400 uppercase tracking-wider">Stack Técnica</div>
+                            <div className="flex flex-wrap gap-0.5">
+                                {['React', 'TypeScript', 'Node.js', 'Go', 'AWS', 'Docker', 'Postgres'].map(t => (
+                                    <span key={t} className="bg-slate-800 border border-slate-700 text-slate-300 text-[4px] px-1 py-0.5 rounded">
+                                        {t}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-[4px] text-slate-500 border-t border-slate-800 pt-1">
+                        ATS Optimized • Gupy & Workday
+                    </div>
                 </div>
-                <div className="flex-1 p-2 space-y-2">
-                     <div className="text-[8px] font-bold text-slate-800">JOÃO SOUZA</div>
-                     <div className="text-[5px] text-slate-500 uppercase">Desenvolvedor Fullstack</div>
-                     <div className="w-full h-px bg-gray-200 my-1"></div>
-                     <div className="space-y-1">
-                         <div className="w-6 h-1 bg-blue-200 rounded"></div>
-                         <div className="w-full h-0.5 bg-gray-200"></div>
-                         <div className="w-full h-0.5 bg-gray-200"></div>
-                     </div>
-                     <div className="space-y-1">
-                         <div className="w-6 h-1 bg-blue-200 rounded"></div>
-                         <div className="w-full h-0.5 bg-gray-200"></div>
-                         <div className="w-full h-0.5 bg-gray-200"></div>
-                     </div>
+
+                {/* Main Content */}
+                <div className="flex-1 p-2.5 space-y-2 bg-white">
+                    <div>
+                        <div className="text-[6.5px] font-bold uppercase text-slate-900 tracking-wider mb-1 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>
+                            Experiência Profissional
+                        </div>
+                        <div className="space-y-1.5 pl-2 border-l border-blue-200">
+                            <div>
+                                <div className="flex justify-between items-baseline">
+                                    <span className="text-[6px] font-bold text-slate-900">Tech Lead • Banco Digital</span>
+                                    <span className="text-[4.5px] text-blue-600 font-bold">2022 - Atual</span>
+                                </div>
+                                <div className="text-[5px] text-slate-600 leading-tight mt-0.5">
+                                    Arquitetura de microsserviços suportando 4M transações diárias com 99.99% disponibilidade.
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex justify-between items-baseline">
+                                    <span className="text-[6px] font-bold text-slate-900">Engenheiro Sênior • SaaS Global</span>
+                                    <span className="text-[4.5px] text-slate-500 font-bold">2019 - 2022</span>
+                                </div>
+                                <div className="text-[5px] text-slate-600 leading-tight mt-0.5">
+                                    Redução de latência de API em 45% e liderança de mentoria técnica para 6 devs.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="text-[6.5px] font-bold uppercase text-slate-900 tracking-wider mb-1 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block"></span>
+                            Formação & Certificações
+                        </div>
+                        <div className="pl-2 border-l border-blue-200 space-y-0.5">
+                            <div className="text-[5.5px] font-bold text-slate-900">Ciência da Computação — UNICAMP</div>
+                            <div className="text-[4.5px] text-slate-500">AWS Certified Solutions Architect (2023)</div>
+                        </div>
+                    </div>
                 </div>
-             </div>
-        )
+            </div>
+        );
     }
-    // Default / Executive / Classic
+
+    if (type === 'tech') {
+        return (
+            <div className="w-full h-full bg-[#0b1120] text-slate-200 flex flex-col text-[4.5px] select-none overflow-hidden font-mono p-2.5">
+                <div className="border-b border-emerald-500/30 pb-1.5 mb-1.5 flex justify-between items-end">
+                    <div>
+                        <div className="text-[8px] font-black text-emerald-400 leading-none">RAFAEL LIMA</div>
+                        <div className="text-[5px] text-slate-400 mt-0.5">Senior DevOps & Cloud Architect</div>
+                    </div>
+                    <div className="text-[4px] text-emerald-400/80 bg-emerald-950/60 px-1 py-0.5 rounded border border-emerald-500/20">
+                        {`>_ ATS 99.4%`}
+                    </div>
+                </div>
+
+                <div className="space-y-1.5 flex-1">
+                    <div>
+                        <div className="text-emerald-400 font-bold text-[5.5px] mb-0.5">## Experiência Recente</div>
+                        <div className="space-y-1 pl-1.5 border-l border-emerald-500/40">
+                            <div>
+                                <div className="text-slate-100 font-bold text-[5.5px]">Cloud Architect @ Nubank (2021 - Presente)</div>
+                                <div className="text-slate-400 text-[4.5px]">Migração multi-cloud Kubernetes, reduzindo custos de infra em 38%.</div>
+                            </div>
+                            <div>
+                                <div className="text-slate-100 font-bold text-[5.5px]">DevOps Engineer @ Stone (2018 - 2021)</div>
+                                <div className="text-slate-400 text-[4.5px]">Implementação de CI/CD automatizado reduzindo tempo de release em 80%.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="text-emerald-400 font-bold text-[5.5px] mb-0.5">## Tecnologias</div>
+                        <div className="flex flex-wrap gap-1">
+                            {['Terraform', 'Kubernetes', 'AWS', 'GCP', 'Docker', 'Linux', 'Go', 'Prometheus'].map(i => (
+                                <span key={i} className="px-1 py-0.2 rounded bg-slate-800 text-cyan-300 border border-slate-700 text-[4px]">
+                                    {i}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Default: Executive / Classic Luxury
     return (
-         <div className="w-full h-full bg-white p-3 flex flex-col text-[4px] text-gray-800 overflow-hidden relative">
-            {type === 'executive' && <div className="absolute top-0 left-0 w-full h-2 bg-blue-900"></div>}
-            <div className="text-center mb-2 mt-1">
-                 <div className="font-serif text-[8px] font-bold">CARLOS MENDES</div>
-                 <div className="text-gray-500 mt-0.5">GERENTE DE PROJETOS</div>
+        <div className="w-full h-full bg-white p-3 flex flex-col text-slate-900 select-none overflow-hidden relative font-serif">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900"></div>
+            
+            <div className="text-center mb-2 mt-1 border-b border-slate-300 pb-1.5">
+                <div className="text-[8.5px] font-black tracking-wide text-slate-900 uppercase">CARLOS MENDES</div>
+                <div className="text-[5px] text-blue-900 font-sans font-bold tracking-widest uppercase mt-0.5">
+                    DIRETOR DE OPERAÇÕES & SCALE-UPS
+                </div>
+                <div className="text-[4px] text-slate-500 font-sans mt-0.5 flex justify-center gap-2">
+                    <span>São Paulo, Brasil</span>
+                    <span>•</span>
+                    <span>carlos.mendes@exec.com</span>
+                    <span>•</span>
+                    <span>+55 11 99887-6655</span>
+                </div>
             </div>
-            <div className="space-y-2">
-                 <div className="w-full border-b border-gray-300 pb-0.5 font-bold text-[5px] uppercase text-blue-900">Resumo</div>
-                 <div className="w-full h-0.5 bg-gray-200"></div>
-                 <div className="w-full h-0.5 bg-gray-200"></div>
-                 
-                 <div className="w-full border-b border-gray-300 pb-0.5 font-bold text-[5px] uppercase text-blue-900 mt-1">Experiência</div>
-                 <div className="flex justify-between font-bold"><span className="w-10 h-1 bg-gray-300"></span><span>2020-2023</span></div>
-                 <div className="w-full h-0.5 bg-gray-200 mt-0.5"></div>
-                 <div className="w-3/4 h-0.5 bg-gray-200"></div>
+
+            <div className="space-y-2 flex-1 font-sans">
+                <div>
+                    <div className="font-serif font-bold text-[5.5px] uppercase tracking-wider text-blue-950 border-b border-blue-900/30 pb-0.5 mb-1">
+                        Resumo Executivo
+                    </div>
+                    <p className="text-[4.8px] text-slate-700 leading-relaxed">
+                        Líder sênior com 12+ anos em expansão operacional, governança corporativa e gestão de P&L de R$ 120M+. Histórico comprovado de estruturação de equipes de alta performance.
+                    </p>
+                </div>
+
+                <div>
+                    <div className="font-serif font-bold text-[5.5px] uppercase tracking-wider text-blue-950 border-b border-blue-900/30 pb-0.5 mb-1">
+                        Histórico Profissional
+                    </div>
+                    <div className="space-y-1">
+                        <div>
+                            <div className="flex justify-between items-baseline font-bold text-[5.5px] text-slate-900">
+                                <span>Chief Operating Officer (COO) — LogTech Brasil</span>
+                                <span className="text-[4.5px] text-slate-500 font-medium">2021 - Presente</span>
+                            </div>
+                            <div className="text-[4.8px] text-slate-600 leading-tight mt-0.5">
+                                Expansão para 18 capitais brasileiras, crescendo receita anual em +140% e liderando equipe de 240 pessoas.
+                            </div>
+                        </div>
+                        <div>
+                            <div className="flex justify-between items-baseline font-bold text-[5.5px] text-slate-900">
+                                <span>Diretor de Operações — Retail Tech</span>
+                                <span className="text-[4.5px] text-slate-500 font-medium">2017 - 2021</span>
+                            </div>
+                            <div className="text-[4.8px] text-slate-600 leading-tight mt-0.5">
+                                Redução de custos logísticos em 24% e implementação de metodologias ágeis em toda a organização.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div className="font-serif font-bold text-[5.5px] uppercase tracking-wider text-blue-950 border-b border-blue-900/30 pb-0.5 mb-1">
+                        Formação Acadêmica & Board
+                    </div>
+                    <div className="text-[5px] text-slate-800">
+                        <span className="font-bold">MBA Executivo Global</span> — FGV & Insead (2018)
+                    </div>
+                </div>
             </div>
-         </div>
-    )
-}
+        </div>
+    );
+};
 
 const TemplateShowcaseCarousel: React.FC<{ onSelect: (t: TemplateOption) => void }> = ({ onSelect }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -128,84 +330,135 @@ const TemplateShowcaseCarousel: React.FC<{ onSelect: (t: TemplateOption) => void
         }
     };
 
-    const templates: { id: TemplateOption; name: string; tag: string; desc: string; component: React.ReactNode }[] = [
-        { id: 'creative', name: 'Criativo', tag: 'PRO', desc: 'Ideal para Design, Marketing e Tech.', component: <MiniResumeVisual type="creative" /> },
-        { id: 'modern', name: 'Moderno', tag: 'Recomendado', desc: 'Equilíbrio perfeito para todas as áreas.', component: <MiniResumeVisual type="modern" /> },
-        { id: 'executive', name: 'Executivo', tag: 'PRO', desc: 'Sóbrio e direto para alta gestão.', component: <MiniResumeVisual type="executive" /> },
-        { id: 'classic', name: 'Clássico', tag: 'Grátis', desc: 'O padrão aceito globalmente.', component: <MiniResumeVisual type="classic" /> },
-        { id: 'compact', name: 'Compacto', tag: 'Grátis', desc: 'Para currículos de uma página.', component: <MiniResumeVisual type="classic" /> },
+    const templates: { id: TemplateOption; name: string; tag: string; tagColor: string; desc: string; component: React.ReactNode }[] = [
+        { 
+            id: 'modern', 
+            name: 'Moderno Tech', 
+            tag: 'Mais Usado', 
+            tagColor: 'from-blue-500 to-cyan-500', 
+            desc: 'Barra lateral de destaque, ideal para Tech, Produto e Inovação.', 
+            component: <MiniResumeVisual type="modern" /> 
+        },
+        { 
+            id: 'executive', 
+            name: 'Executivo Luxo', 
+            tag: 'Alta Gestão', 
+            tagColor: 'from-amber-500 to-yellow-500', 
+            desc: 'Serifa refinada e estrutura imponente para gerentes, diretores e C-level.', 
+            component: <MiniResumeVisual type="executive" /> 
+        },
+        { 
+            id: 'tech', 
+            name: 'Dev & Dark Mode', 
+            tag: 'ATS 99%', 
+            tagColor: 'from-emerald-500 to-teal-500', 
+            desc: 'Visual terminal moderno para programadores, DevOps e cientistas de dados.', 
+            component: <MiniResumeVisual type="tech" /> 
+        },
+        { 
+            id: 'creative', 
+            name: 'Criativo Studio', 
+            tag: 'Design & Mkt', 
+            tagColor: 'from-purple-500 to-pink-500', 
+            desc: 'Gradientes modernos e chips de skills para quem quer brilhar visualmente.', 
+            component: <MiniResumeVisual type="creative" /> 
+        },
+        { 
+            id: 'classic', 
+            name: 'Clássico Tradicional', 
+            tag: 'Universal', 
+            tagColor: 'from-slate-600 to-slate-700', 
+            desc: 'Formatação padrão global que passa sem atrito em qualquer sistema de RH.', 
+            component: <MiniResumeVisual type="classic" /> 
+        },
     ];
 
     return (
-        <div className="relative w-full max-w-7xl mx-auto px-4">
-             {/* Controls */}
-             <button onClick={() => scroll('left')} className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-800/90 text-white rounded-full hover:bg-blue-600 hover:scale-110 transition-all hidden md:flex border border-slate-600 shadow-lg shadow-black/50">
-                 <ChevronDownIcon className="w-6 h-6 rotate-90" />
-             </button>
-             <button onClick={() => scroll('right')} className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-slate-800/90 text-white rounded-full hover:bg-blue-600 hover:scale-110 transition-all hidden md:flex border border-slate-600 shadow-lg shadow-black/50">
-                 <ChevronDownIcon className="w-6 h-6 -rotate-90" />
-             </button>
+        <div className="relative w-full max-w-7xl mx-auto px-2 sm:px-4">
+            {/* Scroll Navigation Arrows */}
+            <button 
+                onClick={() => scroll('left')} 
+                className="absolute -left-2 sm:left-2 top-1/2 -translate-y-1/2 z-30 p-3 bg-slate-900/90 text-white rounded-full hover:bg-blue-600 hover:scale-110 transition-all hidden md:flex border border-slate-700 shadow-2xl backdrop-blur-md"
+                aria-label="Anterior"
+            >
+                <ChevronDownIcon className="w-5 h-5 rotate-90" />
+            </button>
+            <button 
+                onClick={() => scroll('right')} 
+                className="absolute -right-2 sm:right-2 top-1/2 -translate-y-1/2 z-30 p-3 bg-slate-900/90 text-white rounded-full hover:bg-blue-600 hover:scale-110 transition-all hidden md:flex border border-slate-700 shadow-2xl backdrop-blur-md"
+                aria-label="Próximo"
+            >
+                <ChevronDownIcon className="w-5 h-5 -rotate-90" />
+            </button>
 
             <div 
                 ref={scrollRef}
-                className="flex gap-10 overflow-x-auto snap-x snap-mandatory py-12 px-4 md:px-12 hide-scrollbar"
-                style={{ scrollPaddingLeft: '20px' }}
+                className="flex gap-6 sm:gap-8 overflow-x-auto snap-x snap-mandatory py-8 px-2 sm:px-6 hide-scrollbar"
+                style={{ scrollPaddingLeft: '16px' }}
             >
                 {templates.map((t) => (
-                    <div key={t.id} className="snap-center shrink-0 w-[280px] md:w-[320px] group relative select-none perspective-1000">
-                        
-                        {/* The Glowing Border Layer (Outside the card content) */}
-                        <div className="absolute -inset-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-100 blur-md transition duration-500 group-hover:duration-200 animate-gradient-xy"></div>
-                        
+                    <div key={t.id} className="snap-center shrink-0 w-[270px] sm:w-[310px] group relative select-none">
+                        {/* Glow on hover */}
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-2xl opacity-0 group-hover:opacity-100 blur-lg transition duration-500"></div>
+
                         {/* Card Container */}
                         <div 
-                            className="relative bg-white rounded-xl shadow-2xl aspect-[210/297] transform transition-all duration-300 ease-out group-hover:scale-[1.03] group-hover:-translate-y-1 z-10 cursor-pointer overflow-hidden"
+                            className="relative bg-white rounded-2xl shadow-2xl aspect-[210/297] transform transition-all duration-300 ease-out group-hover:scale-[1.02] group-hover:-translate-y-1.5 z-10 cursor-pointer overflow-hidden border border-slate-700/40"
                             onClick={() => onSelect(t.id)}
                         >
-                            {/* Visual Content */}
+                            {/* The Real Visual Content */}
                             <div className="absolute inset-0 pointer-events-none">
                                 {t.component}
                             </div>
                             
-                            {/* Hover Overlay (Darken + Button) */}
-                            <div className="absolute inset-0 bg-slate-900/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6 text-center backdrop-blur-[2px]">
-                                <h3 className="text-2xl font-bold text-white mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{t.name}</h3>
-                                <p className="text-sm text-gray-300 mb-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">{t.desc}</p>
-                                <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/50 transform scale-90 group-hover:scale-100 transition-all duration-300 delay-100 flex items-center gap-2">
-                                    <SparklesIcon className="w-4 h-4" />
-                                    Usar Modelo
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-slate-950/85 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase text-white bg-gradient-to-r ${t.tagColor} mb-2`}>
+                                    {t.tag}
+                                </span>
+                                <h3 className="text-xl font-bold text-white mb-2">{t.name}</h3>
+                                <p className="text-xs text-slate-300 mb-6 leading-relaxed">{t.desc}</p>
+                                <button className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/40 flex items-center gap-2 transform group-hover:scale-105 transition-transform">
+                                    <SparklesIcon className="w-4 h-4 text-blue-200" />
+                                    <span>Usar este Modelo</span>
                                 </button>
                             </div>
                         </div>
 
-                        {/* Badges (Floating above everything, z-20) */}
-                        <div className="absolute top-4 right-4 z-20 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-                            {t.tag === 'PRO' ? (
-                                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-xl border border-white/20">PRO</span>
-                            ) : t.tag === 'Recomendado' ? (
-                                <span className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-xl border border-white/20">HOT</span>
-                            ) : (
-                                    <span className="bg-slate-800 text-gray-200 text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl border border-white/20">GRÁTIS</span>
-                            )}
+                        {/* Floating Pill Tag */}
+                        <div className="absolute top-3 right-3 z-20">
+                            <span className={`bg-gradient-to-r ${t.tagColor} text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-xl border border-white/20 uppercase tracking-wider`}>
+                                {t.tag}
+                            </span>
                         </div>
-                        
-                        {/* Shadow/Reflection below */}
-                        <div className="absolute -bottom-8 left-8 right-8 h-4 bg-black/50 blur-xl rounded-[100%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
+
+                        {/* Footer Card Info */}
+                        <div className="mt-3 flex items-center justify-between px-1">
+                            <div>
+                                <h4 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{t.name}</h4>
+                                <p className="text-[11px] text-slate-400">100% Otimizado para ATS</p>
+                            </div>
+                            <button 
+                                onClick={() => onSelect(t.id)}
+                                className="text-xs font-bold text-blue-400 group-hover:text-white flex items-center gap-1 transition-colors"
+                            >
+                                <span>Escolher</span>
+                                <span>→</span>
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            {/* Pricing Hook */}
+            {/* Quick Status Line */}
             <div className="mt-4 text-center">
-                 <p className="text-slate-400 mb-4">Alguns modelos são exclusivos para membros Pro.</p>
-                 <div className="flex flex-col sm:flex-row justify-center gap-4 text-sm">
-                     <div className="flex items-center justify-center text-gray-300"><div className="w-2 h-2 bg-gray-500 rounded-full mr-2"></div>Grátis: Clássico e Compacto</div>
-                     <div className="flex items-center justify-center text-white font-bold"><div className="w-2 h-2 bg-purple-500 rounded-full mr-2 shadow-[0_0_10px_#a855f7]"></div>Pro: Criativo e Executivo</div>
-                 </div>
+                <p className="text-xs sm:text-sm text-slate-400">
+                    💡 <span className="text-slate-300 font-semibold">Dica de Recrutador:</span> Todos os modelos são formatados semanticamente para passar nos robôs da <span className="text-white font-bold">Gupy, Workday, Kenoby e Taleo</span> sem distorção.
+                </p>
             </div>
         </div>
-    )
-}
+    );
+};
 
 // ==================== PAGE IMPLEMENTATIONS ====================
 
@@ -388,9 +641,14 @@ export const TemplatesPage: React.FC<PageComponentProps> = ({ setCurrentView, on
         <PageHeader title="Todos os Modelos" subtitle="Uma galeria completa para cada etapa da sua carreira." />
         <div className="glass p-8 rounded-3xl border border-white/10 shadow-2xl bg-slate-900/50">
              <TemplateThumbnails currentTemplate={selectedTemplate} onSelectTemplate={handleSelect} />
-             <div className="mt-8 text-center">
-                <button onClick={handleConfirm} className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors">
-                    Usar Modelo
+             <div className="mt-10 text-center">
+                <button 
+                    onClick={handleConfirm} 
+                    className="group px-10 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base rounded-2xl shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 inline-flex items-center justify-center gap-2.5"
+                >
+                    <SparklesIcon className="w-5 h-5 text-blue-200" />
+                    <span>Usar Este Modelo no Editor</span>
+                    <span className="text-blue-200 group-hover:translate-x-1 transition-transform">→</span>
                 </button>
              </div>
         </div>
@@ -494,152 +752,503 @@ export const CreateResumePage: React.FC<PageComponentProps> = ({ setCurrentView,
         return () => sections.forEach((section) => observer.unobserve(section));
     }, []);
 
-    const features = [
+    const testimonials = [
         {
-            icon: <SparklesIcon className="w-8 h-8 text-purple-400" />,
-            title: "Modelos Vencedores",
-            desc: "Designs aprovados por recrutadores que passam fácil pelos sistemas de triagem (ATS)."
+            name: "Juliana Silveira",
+            role: "Senior Product Designer",
+            company: "Contratada no Nubank",
+            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+            quote: "Depois de meses enviando currículos feitos no Word sem resposta, refiz o meu no CurriculumPro. Em 12 dias recebi 3 convites de entrevista e fui contratada como Senior.",
+            stars: 5,
         },
         {
-            icon: <PencilIcon className="w-8 h-8 text-blue-400" />,
-            title: "Edição Intuitiva",
-            desc: "Altere qualquer informação e veja a mágica acontecer em tempo real na sua tela."
+            name: "Ricardo Mendonça",
+            role: "Tech Lead & Full Stack",
+            company: "Aprovado na Stone",
+            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+            quote: "O modelo 'Dev & Dark Mode' é simplesmente impecável. Ele destaca o stack de tecnologias e métricas sem poluição visual. Passou direto na triagem da Gupy.",
+            stars: 5,
         },
         {
-            icon: <DownloadIcon className="w-8 h-8 text-green-400" />,
-            title: "PDF Perfeito",
-            desc: "Exporte seu currículo em alta resolução com links clicáveis, pronto para enviar."
+            name: "Fernanda Lemos",
+            role: "Gerente de Operações",
+            company: "Contratada no Mercado Livre",
+            avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+            quote: "A facilidade de omitir campos vazios automaticamente e arrastar seções é genial. O PDF final gerado é de qualidade de agência de design.",
+            stars: 5,
         }
     ];
 
-    const testimonials = [
-        {
-            name: "Juliana S.",
-            role: "Designer de Produto",
-            quote: "A ferramenta é incrível! Consegui criar um currículo visualmente impressionante em 15 minutos. Fui chamada para 3 entrevistas na mesma semana.",
-            stars: 5,
-        },
-        {
-            name: "Ricardo M.",
-            role: "Engenheiro de Software",
-            quote: "O modelo 'Tech' é perfeito. Minimalista, direto ao ponto e passa uma imagem super profissional. O PDF gerado é impecável.",
-            stars: 5,
-        },
-        {
-            name: "Fernanda L.",
-            role: "Recém-formada em Adm.",
-            quote: "Estava perdida sem saber como montar meu primeiro currículo. O CurriculumPro me guiou passo a passo e o resultado ficou melhor do que eu imaginava.",
-            stars: 5,
-        }
+    const topCompanies = [
+        "Nubank", "Google", "Itaú", "Mercado Livre", "Amazon", "Embraer", "Stone", "Accenture"
     ];
-    
+
     return (
-        <div className="flex flex-col items-center w-full overflow-x-hidden">
-            <div className="absolute inset-0 -z-10 animated-gradient-bg"></div>
-            
-            {/* Hero Section */}
-            <section className="w-full flex items-center justify-center min-h-[90vh] text-center px-4 pt-20">
-                <div className="relative z-10 max-w-4xl mx-auto">
-                    <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm font-bold mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <SparklesIcon className="w-4 h-4 mr-2" />
-                        Aprovado por +10.000 Profissionais
+        <div className="flex flex-col items-center w-full overflow-x-hidden text-slate-100 selection:bg-blue-600 selection:text-white">
+            {/* Ambient Background Lights */}
+            <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent blur-[140px] rounded-full"></div>
+                <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 blur-[130px] rounded-full"></div>
+                <div className="absolute top-[70%] left-[-10%] w-[600px] h-[600px] bg-cyan-600/10 blur-[140px] rounded-full"></div>
+            </div>
+
+            {/* ==================== HERO SECTION ==================== */}
+            <section className="w-full flex flex-col items-center justify-center pt-16 sm:pt-24 pb-20 px-4 text-center relative z-10">
+                <div className="max-w-5xl mx-auto flex flex-col items-center">
+                    {/* Announcement Badge */}
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/90 border border-blue-500/30 text-blue-300 text-xs sm:text-sm font-semibold mb-8 shadow-xl shadow-blue-500/5 backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-500 hover:border-blue-400/50 transition-colors">
+                        <span className="flex h-2 w-2 relative">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                        </span>
+                        <span>Motor ATS 2025: 100% Otimizado para Gupy, Workday & Taleo</span>
+                        <span className="text-blue-400 font-bold ml-1">→</span>
                     </div>
-                    <div className="relative mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                        <h1 className="text-3xl sm:text-5xl md:text-8xl font-black tracking-tighter text-white leading-tight relative z-10">
-                            Crie um Currículo <span className="text-blue-400">Vencedor</span>
-                        </h1>
-                    </div>
-                    <p className="text-base sm:text-xl md:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-900">
-                        A plataforma que une <span className="text-white font-semibold">Design Premium</span> e <span className="text-white font-semibold">Facilidade</span> para você conquistar a vaga dos seus sonhos.
+
+                    {/* Main Headline */}
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-4xl animate-in fade-in slide-in-from-bottom-5 duration-700">
+                        O currículo que te coloca na{' '}
+                        <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+                            frente de 98% dos candidatos.
+                        </span>
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p className="mt-6 text-base sm:text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed font-light animate-in fade-in slide-in-from-bottom-6 duration-800">
+                        Crie em minutos um currículo executivo e moderno. Formatação automática validada por recrutadores, prévia visual em tempo real e exportação em PDF vetorial impecável.
                     </p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-10 duration-1000">
+
+                    {/* CTAs */}
+                    <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-7 duration-900">
                         <button 
                             onClick={() => handleAction()} 
-                            className="px-8 py-4 bg-white text-slate-900 font-black text-lg rounded-full hover:bg-slate-200 transition-all shadow-[0_0_50px_-10px_rgba(255,255,255,0.4)] hover:shadow-[0_0_80px_-10px_rgba(59,130,246,0.6)] hover:scale-105 active:scale-95"
+                            className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-2xl shadow-blue-600/40 hover:shadow-blue-600/60 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
                         >
-                            Começar Gratuitamente
+                            <SparklesIcon className="w-5 h-5 text-blue-200 animate-pulse" />
+                            <span>Criar Meu Currículo Grátis</span>
+                            <span className="text-blue-200 group-hover:translate-x-1 transition-transform">→</span>
                         </button>
+                        
                         <button
                             onClick={() => setCurrentView?.('templates')}
-                            className="px-8 py-4 bg-white/10 text-white font-bold text-lg rounded-full hover:bg-white/20 transition-all border border-white/20 backdrop-blur-sm"
+                            className="w-full sm:w-auto px-8 py-4 bg-slate-900/80 hover:bg-slate-800 text-white font-bold text-base sm:text-lg rounded-2xl transition-all duration-300 border border-slate-700/80 hover:border-slate-600 backdrop-blur-md flex items-center justify-center gap-2"
                         >
-                            Ver Modelos
+                            <span>Ver Todos os Modelos</span>
                         </button>
                     </div>
-                    <p className="mt-4 text-sm text-slate-500 animate-in fade-in slide-in-from-bottom-12 duration-1000">Não precisa de cartão de crédito.</p>
+
+                    {/* Trust Indicators */}
+                    <div className="mt-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs text-slate-400 font-medium">
+                        <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> Sem cadastro prévio</span>
+                        <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> 100% Grátis para criar</span>
+                        <span className="flex items-center gap-1.5"><CheckIcon className="w-4 h-4 text-emerald-400" /> Dados seguros no seu navegador</span>
+                    </div>
+
+                    {/* ==================== HERO SHOWCASE MOCKUP (THE PRODUCT IN ACTION) ==================== */}
+                    <div className="mt-14 sm:mt-18 w-full max-w-4xl mx-auto relative group">
+                        {/* Dramatic Glow behind window */}
+                        <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/30 via-indigo-600/25 to-cyan-500/30 rounded-3xl blur-2xl opacity-60 group-hover:opacity-90 transition duration-700"></div>
+
+                        {/* Simulated App Window */}
+                        <div className="relative rounded-2xl sm:rounded-3xl border border-slate-700/80 bg-slate-950/90 shadow-2xl shadow-black/80 overflow-hidden backdrop-blur-xl">
+                            {/* Window Header */}
+                            <div className="h-10 sm:h-12 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                    <span className="ml-3 text-[11px] font-mono text-slate-400 hidden sm:inline">
+                                        curriculo_executivo_2025.pdf
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        ● ATS MATCH 99%
+                                    </span>
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 hidden sm:inline">
+                                        A4 • 300 DPI
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Window Canvas: The Real Executive Resume Mockup */}
+                            <div className="p-4 sm:p-10 bg-slate-900/50 flex justify-center relative overflow-hidden">
+                                <div className="w-full max-w-2xl bg-white text-slate-900 rounded-xl shadow-2xl p-6 sm:p-10 text-left font-sans border border-slate-200 select-none">
+                                    {/* Document Header */}
+                                    <div className="border-b border-slate-200 pb-5 mb-5 flex flex-col sm:flex-row justify-between items-start gap-4">
+                                        <div>
+                                            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                                                Lucas M. Mendonça
+                                            </h2>
+                                            <p className="text-xs sm:text-sm font-bold text-blue-600 tracking-wide uppercase mt-0.5">
+                                                Tech Lead & Engenheiro de Software Sênior
+                                            </p>
+                                        </div>
+                                        <div className="text-[11px] sm:text-xs text-slate-500 space-y-1 sm:text-right">
+                                            <div>📍 São Paulo - SP</div>
+                                            <div>✉️ lucas.mendonca@email.com</div>
+                                            <div>🔗 linkedin.com/in/lucas-tech</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Document Summary */}
+                                    <div className="mb-5">
+                                        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                            <span className="w-2 h-2 rounded bg-blue-600 inline-block"></span>
+                                            Resumo Profissional
+                                        </h3>
+                                        <p className="text-xs text-slate-600 leading-relaxed">
+                                            Profissional de tecnologia com 8+ anos liderando desenvolvimento de plataformas distribuídas de alta escala. Especialista em microsserviços na nuvem, liderança de equipes ágeis e arquitetura de software de alta resiliência.
+                                        </p>
+                                    </div>
+
+                                    {/* Document Experience */}
+                                    <div className="mb-5">
+                                        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                                            <span className="w-2 h-2 rounded bg-blue-600 inline-block"></span>
+                                            Experiência Relevante
+                                        </h3>
+                                        <div className="space-y-3.5 pl-3 border-l-2 border-blue-500/40">
+                                            <div>
+                                                <div className="flex justify-between items-baseline">
+                                                    <span className="text-xs sm:text-sm font-bold text-slate-900">Tech Lead • FinTech Global</span>
+                                                    <span className="text-[11px] font-bold text-blue-600">2022 - Presente</span>
+                                                </div>
+                                                <ul className="text-xs text-slate-600 mt-1 space-y-1 list-disc list-inside">
+                                                    <li>Liderou esquadrão de 14 engenheiros mantendo 99.99% de disponibilidade em 6M+ requisições/dia.</li>
+                                                    <li>Otimizou infraestrutura AWS reduzindo custos operacionais em 34% em 6 meses.</li>
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <div className="flex justify-between items-baseline">
+                                                    <span className="text-xs sm:text-sm font-bold text-slate-900">Engenheiro Sênior • E-commerce Líder</span>
+                                                    <span className="text-[11px] font-bold text-slate-500">2019 - 2022</span>
+                                                </div>
+                                                <ul className="text-xs text-slate-600 mt-1 space-y-1 list-disc list-inside">
+                                                    <li>Redesenhou pipeline de checkout mobile aumentando taxa de conversão final em +18%.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Document Skills */}
+                                    <div>
+                                        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                            <span className="w-2 h-2 rounded bg-blue-600 inline-block"></span>
+                                            Habilidades & Tecnologias
+                                        </h3>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {['React', 'TypeScript', 'Node.js', 'Go', 'AWS Cloud', 'Kubernetes', 'Docker', 'PostgreSQL', 'Microservices', 'Scrum / Kanban'].map(s => (
+                                                <span key={s} className="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-semibold border border-slate-200">
+                                                    {s}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Floating Glass Badge 1 - ATS Match */}
+                                <div className="absolute top-6 right-4 sm:right-12 glass p-3 sm:p-4 rounded-2xl border border-emerald-500/40 bg-slate-950/90 shadow-2xl backdrop-blur-2xl flex items-center gap-3 animate-bounce duration-1000">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm">
+                                        99%
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="text-xs font-black text-white">ATS Compatível</div>
+                                        <div className="text-[10px] text-emerald-400 font-medium">Aprovado na Gupy & Workday</div>
+                                    </div>
+                                </div>
+
+                                {/* Floating Glass Badge 2 - PDF Vetorial */}
+                                <div className="absolute bottom-6 left-4 sm:left-12 glass p-3 sm:p-4 rounded-2xl border border-blue-500/40 bg-slate-950/90 shadow-2xl backdrop-blur-2xl flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                                        <DownloadIcon className="w-5 h-5 text-blue-400" />
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="text-xs font-black text-white">PDF Vetorial HD</div>
+                                        <div className="text-[10px] text-slate-400">Links clicáveis e textos nítidos</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Features Section */}
-            <section className="w-full py-24 bg-slate-900/50 border-y border-white/5 section-fade-in">
-                <PageWrapper>
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white">A plataforma <span className="text-blue-400">definitiva</span> para sua carreira</h2>
-                        <p className="text-slate-400 mt-4 max-w-2xl mx-auto text-lg">Tudo que você precisa para se destacar no mercado de trabalho.</p>
+            {/* ==================== TRUST / COMPANIES BAR ==================== */}
+            <section className="w-full py-12 border-y border-slate-800/80 bg-slate-950/60 section-fade-in">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-slate-500 mb-6">
+                        Candidatos que usam o CurriculumPro já foram contratados em:
+                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 opacity-75">
+                        {topCompanies.map((company) => (
+                            <span key={company} className="text-base sm:text-xl font-bold tracking-tight text-slate-400 hover:text-white transition-colors duration-200">
+                                {company}
+                            </span>
+                        ))}
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                        {features.map((feature, index) => (
-                            <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 hover:bg-slate-800/80 hover:-translate-y-2 transition-all duration-300">
-                                <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center mb-6 border border-slate-700">
-                                    {feature.icon}
+                </div>
+            </section>
+
+            {/* ==================== TEMPLATES SHOWCASE ==================== */}
+            <section className="w-full py-20 sm:py-28 relative section-fade-in">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+                        <span className="text-xs font-extrabold uppercase tracking-widest text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+                            Coleção Executiva 2025
+                        </span>
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
+                            Modelos desenhados para <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">impressionar</span>
+                        </h2>
+                        <p className="text-slate-400 mt-4 text-base sm:text-lg">
+                            Cada modelo foi estruturado milimetricamente para destacar seus diferenciais e passar sem atrito pelos robôs de triagem.
+                        </p>
+                    </div>
+
+                    <TemplateShowcaseCarousel onSelect={handleAction} />
+                </div>
+            </section>
+
+            {/* ==================== BENTO GRID FEATURES ==================== */}
+            <section className="w-full py-20 sm:py-28 bg-slate-950/60 border-y border-slate-800/80 section-fade-in relative">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+                            Por que somos superiores
+                        </span>
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
+                            Tecnologia que coloca sua carreira em outro nível
+                        </h2>
+                        <p className="text-slate-400 mt-4 text-base sm:text-lg">
+                            Tudo foi pensado para que você passe mais tempo treinando para entrevistas e zero tempo brigando com formatação.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Bento Card 1 - ATS Focus (Large 2 Columns) */}
+                        <div className="md:col-span-2 rounded-3xl p-8 sm:p-10 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 hover:border-blue-500/50 transition-all duration-300 relative overflow-hidden group shadow-xl">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all"></div>
+                            <div className="relative z-10">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-6">
+                                    <ShieldCheckIcon className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                                <p className="text-slate-400 text-base leading-relaxed">{feature.desc}</p>
+                                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                                    Arquitetura Semântica Anti-Descarte ATS
+                                </h3>
+                                <p className="text-slate-400 leading-relaxed max-w-xl text-sm sm:text-base">
+                                    Mais de 75% dos currículos são rejeitados por robôs de triagem (Gupy, Workday, Taleo) antes mesmo de serem lidos por uma pessoa. Nossa tecnologia estrutura cabeçalhos, tags e fontes para leitura robótica 100% perfeita.
+                                </p>
+                                <div className="mt-8 flex flex-wrap gap-2 text-xs font-bold text-blue-300">
+                                    <span className="px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20">Gupy Ready</span>
+                                    <span className="px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20">Workday Compliant</span>
+                                    <span className="px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20">Taleo Parser</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Bento Card 2 - Visual Live Editor */}
+                        <div className="rounded-3xl p-8 bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 transition-all duration-300 relative overflow-hidden group shadow-xl">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-6">
+                                <PencilIcon className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                                Edição Visual em Tempo Real
+                            </h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                                Esqueça adivinhações. Cada letra digitada ou cor alterada reflete instantaneamente no layout final com paginação precisa.
+                            </p>
+                        </div>
+
+                        {/* Bento Card 3 - Privacy Local */}
+                        <div className="rounded-3xl p-8 bg-slate-900/80 border border-slate-800 hover:border-emerald-500/50 transition-all duration-300 relative overflow-hidden group shadow-xl">
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6">
+                                <span className="text-xl">🔒</span>
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                                100% Privado no Seu Navegador
+                            </h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                                Seus dados pessoais pertencem apenas a você. Tudo é armazenado no seu navegador via LocalStorage seguro. Zero venda de dados.
+                            </p>
+                        </div>
+
+                        {/* Bento Card 4 - Smart Section Omission */}
+                        <div className="rounded-3xl p-8 bg-slate-900/80 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 relative overflow-hidden group shadow-xl">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6">
+                                <SparklesIcon className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                                Omissão Inteligente de Seções
+                            </h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                                Campos ou seções que você não quiser preencher simplesmente desaparecem no PDF final sem deixar espaços vazios desagradáveis.
+                            </p>
+                        </div>
+
+                        {/* Bento Card 5 - High Quality PDF */}
+                        <div className="rounded-3xl p-8 bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 relative overflow-hidden group shadow-xl">
+                            <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-6">
+                                <DownloadIcon className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
+                                PDF Vetorial com Links Vivos
+                            </h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                                Documentos em padrão A4 de alta definição com links clicáveis para seu LinkedIn, GitHub e Portfólio, prontos para envio.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ==================== ANTES VS DEPOIS ==================== */}
+            <section className="w-full py-20 sm:py-28 section-fade-in">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-16">
+                        <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                            A Diferença Real
+                        </span>
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
+                            A diferença entre ser descartado ou chamado
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        {/* O Currículo Comum */}
+                        <div className="rounded-3xl p-8 bg-red-950/20 border border-red-500/30 flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-2 text-red-400 font-bold mb-4">
+                                    <span className="text-lg">❌</span>
+                                    <span>Currículo Comum (Feito no Word)</span>
+                                </div>
+                                <ul className="space-y-3.5 text-sm text-slate-300">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-red-400 font-bold">•</span>
+                                        <span>Descartado pelos robôs ATS da Gupy por causa de formatação inadequada.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-red-400 font-bold">•</span>
+                                        <span>Blocos densos de texto que recrutadores não leem em 6 segundos.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-red-400 font-bold">•</span>
+                                        <span>Campos vazios aparentes que transmitem falta de experiência.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-red-400 font-bold">•</span>
+                                        <span>Sem links clicáveis ou métricas destacadas.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="mt-8 pt-4 border-t border-red-500/20 text-xs text-red-400 font-bold">
+                                Taxa de resposta média: menos de 5%
+                            </div>
+                        </div>
+
+                        {/* O Currículo CurriculumPro */}
+                        <div className="rounded-3xl p-8 bg-gradient-to-br from-emerald-950/30 to-blue-950/30 border-2 border-emerald-500/50 shadow-2xl shadow-emerald-500/10 flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-2 text-emerald-400 font-bold mb-4">
+                                    <span className="text-lg">✅</span>
+                                    <span>Currículo CurriculumPro Studio</span>
+                                </div>
+                                <ul className="space-y-3.5 text-sm text-slate-200">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-emerald-400 font-bold">✓</span>
+                                        <span>Hierarquia semântica 100% interpretada por robôs de recrutamento.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-emerald-400 font-bold">✓</span>
+                                        <span>Destaque imediato para métricas de impacto e competências-chave.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-emerald-400 font-bold">✓</span>
+                                        <span>Omissão automática de campos não preenchidos sem espaços mortos.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-emerald-400 font-bold">✓</span>
+                                        <span>Exportação vetorial em PDF A4 pronta para impressão e envio direto.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="mt-8 pt-4 border-t border-emerald-500/20 text-xs text-emerald-400 font-bold flex items-center justify-between">
+                                <span>Taxa de resposta comprovada: 3x maior</span>
+                                <span className="bg-emerald-500/20 px-2.5 py-0.5 rounded-full">Aprovado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ==================== TESTIMONIALS ==================== */}
+            <section className="w-full py-20 sm:py-28 bg-slate-950/60 border-y border-slate-800/80 section-fade-in">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-xs font-extrabold uppercase tracking-widest text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                            Casos de Sucesso
+                        </span>
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3">
+                            Quem usou, foi contratado
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {testimonials.map((t, i) => (
+                            <div key={i} className="rounded-3xl p-8 bg-slate-900/80 border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition-all duration-300 shadow-xl">
+                                <div>
+                                    <div className="flex gap-1 text-amber-400 mb-4">
+                                        {[...Array(t.stars)].map((_, j) => (
+                                            <StarIcon key={j} className="w-4 h-4 fill-amber-400" />
+                                        ))}
+                                    </div>
+                                    <p className="text-slate-300 text-sm sm:text-base leading-relaxed italic">
+                                        "{t.quote}"
+                                    </p>
+                                </div>
+                                <div className="mt-6 pt-6 border-t border-slate-800 flex items-center gap-3">
+                                    <img src={t.avatar} alt={t.name} className="w-11 h-11 rounded-full object-cover border border-slate-700" />
+                                    <div>
+                                        <div className="font-bold text-white text-sm">{t.name}</div>
+                                        <div className="text-xs text-slate-400">{t.role}</div>
+                                        <div className="text-[11px] font-bold text-emerald-400">{t.company}</div>
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
-                </PageWrapper>
-            </section>
-            
-             {/* Testimonials Section */}
-            <section className="w-full py-24 section-fade-in">
-                <PageWrapper>
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white">O que dizem <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">nossos usuários</span></h2>
-                        <p className="text-slate-400 mt-4 max-w-2xl mx-auto text-lg">Milhares de profissionais já conquistaram suas vagas dos sonhos.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {testimonials.map((t, i) => (
-                             <div key={i} className="glass rounded-2xl p-8 border border-white/10 flex flex-col">
-                                 <QuoteIcon className="w-8 h-8 text-purple-400 mb-4" />
-                                 <p className="text-slate-300 leading-relaxed flex-1">"{t.quote}"</p>
-                                 <div className="mt-6 pt-6 border-t border-white/10">
-                                     <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="font-bold text-white">{t.name}</p>
-                                            <p className="text-sm text-slate-400">{t.role}</p>
-                                        </div>
-                                        <div className="flex gap-1">
-                                            {[...Array(t.stars)].map((_, j) => <StarIcon key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
-                                        </div>
-                                     </div>
-                                 </div>
-                             </div>
-                        ))}
-                    </div>
-                </PageWrapper>
+                </div>
             </section>
 
-            {/* Templates Showcase */}
-            <section className="w-full bg-slate-900/50 py-24 border-t border-white/5 relative overflow-hidden section-fade-in">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
-                <PageWrapper>
-                    <div className="flex flex-col items-center justify-center mb-16 text-center">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Modelos que <span className="text-blue-400">Conquistam</span></h2>
-                        <p className="text-slate-300 max-w-2xl text-lg">Nossos templates são desenhados para passar nos sistemas de RH e impressionar recrutadores.</p>
+            {/* ==================== FINAL HIGH-IMPACT CTA ==================== */}
+            <section className="w-full py-24 sm:py-32 relative section-fade-in text-center px-4">
+                <div className="max-w-4xl mx-auto relative rounded-3xl p-10 sm:p-16 border border-blue-500/30 bg-gradient-to-b from-blue-950/40 via-slate-900 to-slate-950 shadow-2xl overflow-hidden">
+                    {/* Glowing background inside card */}
+                    <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div className="relative z-10">
+                        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                            Pronto para conquistar sua próxima vaga?
+                        </h2>
+                        <p className="text-slate-300 mt-4 text-base sm:text-lg max-w-xl mx-auto">
+                            Leva menos de 10 minutos para criar um currículo que chama a atenção dos melhores recrutadores do Brasil.
+                        </p>
+
+                        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <button 
+                                onClick={() => handleAction()} 
+                                className="group w-full sm:w-auto px-10 py-4.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-blue-600/40 hover:shadow-blue-600/60 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3"
+                            >
+                                <SparklesIcon className="w-5 h-5 text-blue-200 animate-pulse" />
+                                <span>Criar Meu Currículo Agora</span>
+                                <span className="text-blue-200 group-hover:translate-x-1 transition-transform">→</span>
+                            </button>
+                        </div>
+
+                        <p className="mt-4 text-xs text-slate-500">
+                            100% Gratuito • Sem necessidade de dados de cartão
+                        </p>
                     </div>
-                    <TemplateShowcaseCarousel onSelect={handleAction} />
-                </PageWrapper>
-            </section>
-            
-            {/* CTA Footer */}
-            <section className="w-full py-24 text-center section-fade-in">
-                <h2 className="text-4xl font-bold text-white mb-4">Pronto para conseguir o emprego?</h2>
-                <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">Junte-se a milhares de profissionais e dê o próximo passo na sua carreira.</p>
-                <button onClick={() => handleAction()} className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full text-xl shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition-all">
-                    Criar Meu Currículo Agora
-                </button>
+                </div>
             </section>
         </div>
     );
