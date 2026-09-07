@@ -611,7 +611,23 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
+                    {/* Direct Model Picker Button */}
+                    <button
+                        type="button"
+                        onClick={() => setStep(8)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 shadow-sm border ${
+                            step === 8 
+                                ? 'bg-blue-600 text-white border-blue-400' 
+                                : 'bg-blue-950/60 hover:bg-blue-900/60 text-blue-300 border-blue-700/50'
+                        }`}
+                        title="Ver e escolher entre todos os 35+ modelos de currículo"
+                    >
+                        <span>🎨</span>
+                        <span className="hidden sm:inline">Modelo:</span>
+                        <span className="text-white capitalize">{selectedTemplate}</span>
+                    </button>
+
                     {/* Mobile Toggle Preview Button */}
                     <button
                         onClick={() => setShowMobilePreview(!showMobilePreview)}
@@ -633,7 +649,7 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
 
             {/* ==================== PROGRESS BAR ==================== */}
             <div className="w-full bg-slate-900/90 border-b border-slate-800/80 px-4 sm:px-8 py-3">
-                <div className="max-w-6xl mx-auto flex flex-col gap-2">
+                <div className="max-w-6xl mx-auto flex flex-col gap-2.5">
                     <div className="flex items-center justify-between text-xs font-semibold">
                         <span className="text-slate-300 flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[11px] font-bold shadow-md shadow-blue-600/50">
@@ -651,27 +667,28 @@ export const ResumeWizard: React.FC<ResumeWizardProps> = ({ onComplete, onCancel
                         ></div>
                     </div>
 
-                    {/* Step Navigation Dots (Clickable) */}
-                    <div className="hidden md:flex items-center justify-between pt-1 text-[11px] text-slate-400 overflow-x-auto">
+                    {/* Step Navigation Tabs (Clickable on all screen sizes) */}
+                    <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400 overflow-x-auto no-scrollbar gap-1.5 pb-0.5">
                         {[
-                            { s: 1, label: '1. Objetivo' },
+                            { s: 1, label: '1. Foco' },
                             { s: 2, label: '2. Contato' },
                             { s: 3, label: '3. Experiência' },
                             { s: 4, label: '4. Formação' },
                             { s: 5, label: '5. Habilidades' },
                             { s: 6, label: '6. Idiomas' },
                             { s: 7, label: '7. Resumo' },
-                            { s: 8, label: '8. Modelo' },
+                            { s: 8, label: '8. 🎨 Modelos' },
                         ].map(item => (
                             <button
                                 key={item.s}
+                                type="button"
                                 onClick={() => setStep(item.s)}
-                                className={`transition-all font-medium py-0.5 px-1.5 rounded ${
+                                className={`transition-all font-semibold py-1 px-2.5 rounded-lg whitespace-nowrap text-[11px] sm:text-xs ${
                                     step === item.s 
-                                        ? 'text-blue-400 font-bold bg-blue-500/10 border-b-2 border-blue-400' 
+                                        ? 'text-white font-bold bg-blue-600 shadow-md shadow-blue-900/50 ring-1 ring-blue-400/40' 
                                         : step > item.s 
-                                            ? 'text-slate-300 hover:text-white' 
-                                            : 'text-slate-600 hover:text-slate-400'
+                                            ? 'text-blue-300 bg-blue-950/30 hover:text-white border border-blue-900/40' 
+                                            : 'text-slate-400 hover:text-white bg-slate-800/40 border border-slate-700/40'
                                 }`}
                             >
                                 {item.label}
