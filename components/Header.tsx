@@ -7,9 +7,10 @@ import type { View } from '../types';
 interface HeaderProps {
     setCurrentView: (view: View) => void;
     currentView: View;
+    onOpenVoiceChat?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) => {
+export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView, onOpenVoiceChat }) => {
     const { user } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { addToast } = useToast();
@@ -79,7 +80,20 @@ export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) =
                     </div>
 
                     {/* Right CTAs */}
-                    <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {/* Voice Chat Button */}
+                        {onOpenVoiceChat && (
+                            <button 
+                                onClick={onOpenVoiceChat}
+                                className="px-3 py-1.5 rounded-xl text-xs font-bold text-cyan-300 bg-cyan-950/40 border border-cyan-700/50 hover:bg-cyan-900/50 hover:border-cyan-500 transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                                title="Abrir Chat de Voz ao Vivo com a Sofia (Recrutadora IA)"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>🎙️</span>
+                                <span className="hidden sm:inline">Voz IA</span>
+                            </button>
+                        )}
+
                         <button 
                             onClick={() => { setCurrentView('templates'); setIsMobileMenuOpen(false); }} 
                             className="hidden sm:inline-flex px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all border border-transparent hover:border-slate-700"
@@ -89,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) =
 
                         <button 
                             onClick={() => { setCurrentView('wizard'); setIsMobileMenuOpen(false); }} 
-                            className="group relative inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95"
+                            className="group relative inline-flex items-center gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95"
                         >
                             <SparklesIcon className="w-4 h-4 text-blue-200 animate-pulse" />
                             <span>Criar Currículo</span>
@@ -116,8 +130,19 @@ export const Header: React.FC<HeaderProps> = ({ setCurrentView, currentView }) =
 
             {/* Mobile Dropdown Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-2xl px-4 py-4 space-y-2 animate-in slide-in-from-top-2 duration-200">
+                <div className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-2xl px-4 py-4 space-y-2.5 animate-in slide-in-from-top-2 duration-200">
                     <PublicNavLinks onSelect={() => setIsMobileMenuOpen(false)} />
+                    
+                    {onOpenVoiceChat && (
+                        <button
+                            onClick={() => { onOpenVoiceChat(); setIsMobileMenuOpen(false); }}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-800/60 rounded-xl shadow-sm"
+                        >
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>🎙️ Abrir Chat de Voz ao Vivo (BETA)</span>
+                        </button>
+                    )}
+
                     <div className="pt-2 border-t border-slate-800/80">
                         <button 
                             onClick={() => { setCurrentView('builder'); setIsMobileMenuOpen(false); }}

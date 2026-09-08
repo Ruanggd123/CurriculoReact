@@ -20,12 +20,15 @@ import { SubscriptionPage } from './pages/SubscriptionPage';
 import { Footer } from './components/Footer';
 import PageManager from './components/PageManager';
 import { ResumeWizard } from './components/ResumeWizard';
+import { VoiceAssistantModal } from './components/VoiceAssistantModal';
+import { MicrophoneIcon } from './components/icons';
 
 const AppContent: React.FC = () => {
     const { user, loading } = useAuth();
     const [currentView, setCurrentView] = useState<View>('home');
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [activeResumeId, setActiveResumeId] = useState<string | null>(null);
+    const [isVoiceModalOpen, setIsVoiceModalOpen] = useState<boolean>(false);
     const { addToast } = useToast();
 
     // Load resumes from local storage
@@ -215,8 +218,14 @@ const AppContent: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col h-[100dvh] text-white bg-[#090d16] overflow-hidden">
-            {!hideGlobalNav && <Header setCurrentView={setCurrentView} currentView={currentView} />}
+        <div className="flex flex-col h-[100dvh] text-white bg-[#090d16] overflow-hidden relative">
+            {!hideGlobalNav && (
+                <Header 
+                    setCurrentView={setCurrentView} 
+                    currentView={currentView} 
+                    onOpenVoiceChat={() => setIsVoiceModalOpen(true)}
+                />
+            )}
 
             <main className={`flex-1 ${isBuilder ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden scroll-smooth'} relative w-full bg-[#090d16]`}>
                 <div className="fixed inset-0 -z-10 pointer-events-none bg-[#090d16]">
@@ -226,6 +235,30 @@ const AppContent: React.FC = () => {
                 {renderPage()}
                 {!hideGlobalNav && <Footer setCurrentView={setCurrentView} />}
             </main>
+
+            {/* ==================== CHAT DE VOZ AO VIVO IA (MODAL & FLUTUANTE) ==================== */}
+            <VoiceAssistantModal 
+                isOpen={isVoiceModalOpen} 
+                onClose={() => setIsVoiceModalOpen(false)} 
+            />
+
+            {/* Botão Flutuante de Acesso Rápido ao Chat de Voz (Com indicador de Status) */}
+            <button
+                type="button"
+                onClick={() => setIsVoiceModalOpen(true)}
+                className={`fixed z-40 transition-all duration-300 flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-2xl shadow-blue-600/40 border border-blue-400/40 hover:scale-105 active:scale-95 backdrop-blur-md ${
+                    isBuilder ? 'bottom-20 right-4 sm:bottom-6 sm:right-6' : 'bottom-5 right-4 sm:bottom-6 sm:right-6'
+                }`}
+                title="Abrir Chat de Voz ao Vivo com a Recrutadora IA Sofia (Ativar/Desativar)"
+            >
+                <div className="relative flex items-center justify-center">
+                    <MicrophoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-950 shadow-sm animate-ping"></span>
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-950 shadow-sm"></span>
+                </div>
+                <span className="hidden sm:inline">🎙️ Chat de Voz IA (Beta)</span>
+                <span className="sm:hidden">🎙️ Voz IA</span>
+            </button>
         </div>
     );
 }
